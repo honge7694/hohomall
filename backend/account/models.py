@@ -42,7 +42,7 @@ class User(AbstractBaseUser):
     )
     password = models.CharField(max_length=100)
     nickname = models.CharField(max_length=100)
-    image_src = models.ImageField(upload_to="account/%Y/%m/%d", default='media/default_image.png')
+    image_src = models.ImageField(upload_to="account/%Y/%m/%d", default='default_image.png')
     status = models.CharField(
             max_length=20, 
             choices=[(status.value, status.name) for status in EmailVerificationStatus], 
