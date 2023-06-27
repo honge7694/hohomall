@@ -1,12 +1,14 @@
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, GenericAPIView
 from rest_framework.response import Response
+from rest_framework_simplejwt.exceptions import AuthenticationFailed
+from rest_framework_simplejwt.views import TokenObtainPairView
 from django.core import signing
 from django.core.mail import send_mail, EmailMessage
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect
-from .serializers import SignupSerializer
+from .serializers import SignupSerializer, CustomTokenObtainPairSerializer
 from .models import EmailVerificationStatus
 
 
@@ -20,9 +22,9 @@ class SignupListCreateAPIView(ListCreateAPIView):
     serializer_class = SignupSerializer
 
     def perform_create(self, serializer):
-        user = serializer.save()
-        self.send_email_verification(user)
-        return super().perform_create(serializer)
+        instance = serializer.save()
+        self.send_email_verification(instance)
+        return instance
     
     def send_email_verification(self, user):
         """
@@ -67,5 +69,21 @@ class EmailVerificationAPIView(GenericAPIView):
         # TODO: 프론트엔드 페이지로 리다이렉트
         # redirect_url = reverse('frontend-page')
         # return redirect(redirect_url)
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    """
+    유저 로그인
+    """
+    serializer_class = CustomTokenObtainPairSerializer
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        if response.status_code == status.HTTP_200_OK:
+            user = response.data.get('user')
+            if not user.get('status') == EmailVerificationStatus.VERIFIED.value:
+                raise AuthenticationFailed('이메일 인증이 필요합니다.')
+        
+        return response
 
 
