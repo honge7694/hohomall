@@ -20,9 +20,12 @@ import {
   SmileOutlined,
   FrownOutlined
 } from "@ant-design/icons";
+import { userState } from 'state';
+import { useSetRecoilState } from "recoil";
 
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { axiosInstance } from 'api';
+import { setToken, useAppContext } from 'store';
 
 function onChange(checked) {
   console.log(`switch to ${checked}`);
@@ -112,9 +115,12 @@ const signin = [
 ];
 
 const SignIn =  () => {
+  const { dispatch } = useAppContext();
+  const setUser = useSetRecoilState(userState);
+
   const [api, setApi] = notification.useNotification();
   const history = useNavigate();
-
+  
   const onFinish = async (values) => {
     console.log("Success:", values);
     const { email, password } = values;
@@ -122,7 +128,17 @@ const SignIn =  () => {
     try{
       const response = await axiosInstance.post('/account/api/token/', data);
       console.log('response : ', response);
-      
+
+      // simple jwt 토큰관리
+      const { data : {access : jwtToken, refresh: refreshToken } } = response;
+      dispatch(setToken(jwtToken, refreshToken));
+
+      // User 닉네임, Id
+      setUser({
+        userId: response.data.user_info.id,
+        userNickname: response.data.user_info.nickname,
+      });
+
       api.info({
         message: '로그인 성공',
         description: '메인페이지로 이동합니다',
@@ -132,7 +148,7 @@ const SignIn =  () => {
       // history('/');
 
     }catch(error){
-      console.log('error : ', error.response);
+      console.log('error : ', error);
 
       if (error.response.status === 401){
         api.info({
@@ -140,8 +156,7 @@ const SignIn =  () => {
           description: '등록한 이메일 인증을 진행해주세요.',
           icon: <FrownOutlined style={{ color: "red" }}/>
         });
-      }
-      else {
+      } else {
         api.info({
           message: '로그인 실패',
           description: '로그인 정보가 일치하지않습니다.',
