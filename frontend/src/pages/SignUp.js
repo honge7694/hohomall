@@ -1,15 +1,4 @@
-/*!
-=========================================================
-* Muse Ant Design Dashboard - v1.0.0
-=========================================================
-* Product Page: https://www.creative-tim.com/product/muse-ant-design-dashboard
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/muse-ant-design-dashboard/blob/main/LICENSE.md)
-* Coded by Creative Tim
-=========================================================
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-import React, { Component } from "react";
+import React, { useState, Component } from "react";
 import {
   Layout,
   Menu,
@@ -18,13 +7,17 @@ import {
   Card,
   Form,
   Input,
-  Checkbox,
+  notification,
+  Checkbox
 } from "antd";
 import logo1 from "../assets/images/logos-facebook.svg";
 import logo2 from "../assets/images/logo-apple.svg";
 import logo3 from "../assets/images/Google__G__Logo.svg.png";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { axiosInstance } from 'api';
+
+
 import {
   DribbbleOutlined,
   TwitterOutlined,
@@ -114,10 +107,47 @@ const signin = [
     />
   </svg>,
 ];
-export default class SignUp extends Component {
-  render() {
-    const onFinish = (values) => {
+
+const SignUp = () => {
+    const [ fieldsErrors, SetFieldsErrors ] = useState({});
+    const [api, setAPi] = notification.useNotification();
+    const history = useNavigate();
+    const location = useLocation();
+
+    const onFinish = async (values) => {
       console.log("Success:", values);
+      const { email, nickname, password } = values;
+      const data = { email, nickname, password };
+
+      try{
+        const response = await axiosInstance.post('/account/signup/', data);
+      }catch(error){
+        console.log('error : ', error.response);
+
+        if (error.response){
+          // api.info({
+          //     message: '회원가입 실패',
+          //     description: '필드 에러를 확인해주세요.',
+          //     icon: <FrownOutlined style={{ color: "red" }}/>
+          // });
+
+          const { data: fieldsErrorMessages } = error.response;
+          SetFieldsErrors(
+              Object.entries(fieldsErrorMessages).reduce(
+                  (acc, [fieldName, errors]) => {
+                      acc[fieldName] = {
+                          validateStatus: "error",
+                          help: errors.join(" ")
+                      };
+                      return acc;
+                  },
+                  {}
+              )
+          )
+          console.log(fieldsErrors);
+        }
+
+      }
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -197,37 +227,50 @@ export default class SignUp extends Component {
                 className="row-col"
               >
                 <Form.Item
-                  name="Name"
-                  rules={[
-                    { required: true, message: "Please input your username!" },
-                  ]}
-                >
-                  <Input placeholder="Name" />
-                </Form.Item>
-                <Form.Item
                   name="email"
                   rules={[
                     { required: true, message: "Please input your email!" },
                   ]}
                 >
-                  <Input placeholder="email" />
+                  <Input placeholder="Email" style={{height:'50px'}} />
                 </Form.Item>
+
                 <Form.Item
                   name="password"
                   rules={[
                     { required: true, message: "Please input your password!" },
                   ]}
                 >
-                  <Input placeholder="Passwoed" />
+                  <Input.Password placeholder="Password" />
                 </Form.Item>
 
-                <Form.Item name="remember" valuePropName="checked">
-                  <Checkbox>
-                    I agree the{" "}
-                    <a href="#pablo" className="font-bold text-dark">
-                      Terms and Conditions
-                    </a>
-                  </Checkbox>
+                <Form.Item 
+                  name="confirm" 
+                  dependencies={['password']} 
+                  rules={[
+                      {
+                          required: true, message: 'Please confirm your password!',
+                      },
+                      ({ getFieldValue }) => ({
+                          validator(_, value) {
+                          if (!value || getFieldValue('password') === value) {
+                              return Promise.resolve();
+                          }
+                          return Promise.reject(new Error('비밀번호가 일치하지 않습니다.'));
+                          },
+                      }),
+                  ]}
+                >
+                  <Input.Password placeholder="Confirm Password" />
+                </Form.Item>
+
+                <Form.Item
+                  name="nickname"
+                  rules={[
+                    { required: true, message: "Please input your nicknmame!" },
+                  ]}
+                >
+                  <Input placeholder="Nickname" style={{height:'50px'}} />
                 </Form.Item>
 
                 <Form.Item>
@@ -248,6 +291,7 @@ export default class SignUp extends Component {
               </p>
             </Card>
           </Content>
+
           <Footer>
             <Menu mode="horizontal">
               <Menu.Item>Company</Menu.Item>
@@ -291,5 +335,6 @@ export default class SignUp extends Component {
         </div>
       </>
     );
-  }
 }
+
+export default SignUp;
