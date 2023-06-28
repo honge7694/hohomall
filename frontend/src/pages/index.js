@@ -6,12 +6,14 @@ import Profile from "pages/Profile";
 import SignUp from "pages/SignUp";
 import SignIn from "pages/SignIn";
 import Main from "components/layout/Main";
+import { RecoilRoot } from 'recoil';
 import "../index.scss";
 import "assets/styles/main.css";
 import "assets/styles/responsive.css";
 
 const Root = () => {
     return (
+        <RecoilRoot>
         <div className="App">
             <Routes>
                 <Route path="/sign-up" element={<SignUp/> }/>
@@ -24,6 +26,7 @@ const Root = () => {
                 </Route>
             </Routes>
         </div>
+        </RecoilRoot>
     );
 };
 

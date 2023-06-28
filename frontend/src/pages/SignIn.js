@@ -128,15 +128,15 @@ const SignIn =  () => {
     try{
       const response = await axiosInstance.post('/account/api/token/', data);
       console.log('response : ', response);
-
+      console.log('response.data.user.id : ', response.data.user.id)
       // simple jwt 토큰관리
       const { data : {access : jwtToken, refresh: refreshToken } } = response;
       dispatch(setToken(jwtToken, refreshToken));
 
       // User 닉네임, Id
       setUser({
-        userId: response.data.user_info.id,
-        userNickname: response.data.user_info.nickname,
+        userId: response.data.user.id,
+        userNickname: response.data.user.nickname,
       });
 
       api.info({
@@ -145,7 +145,7 @@ const SignIn =  () => {
         icon: <SmileOutlined style={{ color: "#108ee9" }}/>  
       });
 
-      // history('/');
+      history('/');
 
     }catch(error){
       console.log('error : ', error);
