@@ -130,7 +130,7 @@ const SignUp = () => {
           icon: <SmileOutlined style={{ color: "#108ee9" }}/>  
         });
 
-        history('/sign-in')  ;
+        history('/sign-in');
 
       }catch(error){
         console.log('error : ', error.response);
