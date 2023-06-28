@@ -11,6 +11,7 @@ import "./assets/styles/main.css";
 import "./assets/styles/responsive.css";
 
 function App() {
+  // TODO: 삭제 예정.
   return (
     <div className="App">
         <Routes>

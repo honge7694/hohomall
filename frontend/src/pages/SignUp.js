@@ -23,6 +23,8 @@ import {
   TwitterOutlined,
   InstagramOutlined,
   GithubOutlined,
+  SmileOutlined, 
+  FrownOutlined 
 } from "@ant-design/icons";
 
 const { Title } = Typography;
@@ -110,7 +112,7 @@ const signin = [
 
 const SignUp = () => {
     const [ fieldsErrors, SetFieldsErrors ] = useState({});
-    const [api, setAPi] = notification.useNotification();
+    const [api, setApi] = notification.useNotification();
     const history = useNavigate();
     const location = useLocation();
 
@@ -121,15 +123,24 @@ const SignUp = () => {
 
       try{
         const response = await axiosInstance.post('/account/signup/', data);
+        
+        api.info({
+          message: '회원가입 성공',
+          description: '로그인페이지로 이동합니다',
+          icon: <SmileOutlined style={{ color: "#108ee9" }}/>  
+        });
+
+        history('/sign-in')  ;
+
       }catch(error){
         console.log('error : ', error.response);
 
         if (error.response){
-          // api.info({
-          //     message: '회원가입 실패',
-          //     description: '필드 에러를 확인해주세요.',
-          //     icon: <FrownOutlined style={{ color: "red" }}/>
-          // });
+          api.info({
+              message: '회원가입 실패',
+              description: '필드 에러를 확인해주세요.',
+              icon: <FrownOutlined style={{ color: "red" }}/>
+          });
 
           const { data: fieldsErrorMessages } = error.response;
           SetFieldsErrors(
@@ -155,10 +166,11 @@ const SignUp = () => {
     };
     return (
       <>
+      {setApi}
         <div className="layout-default ant-layout layout-sign-up">
           <Header>
             <div className="header-col header-brand">
-              <h5>Fix Me</h5>
+              <h5></h5>
             </div>
             <div className="header-col header-nav">
               <Menu mode="horizontal" defaultSelectedKeys={["1"]}>
@@ -231,6 +243,7 @@ const SignUp = () => {
                   rules={[
                     { required: true, message: "Please input your email!" },
                   ]}
+                  { ...fieldsErrors.email }
                 >
                   <Input placeholder="Email" style={{height:'50px'}} />
                 </Form.Item>
