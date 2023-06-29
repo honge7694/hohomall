@@ -1,5 +1,5 @@
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, GenericAPIView
+from rest_framework.generics import ListCreateAPIView, GenericAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -8,11 +8,46 @@ from django.core.mail import send_mail, EmailMessage
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect
-from .serializers import SignupSerializer, CustomTokenObtainPairSerializer
+from .serializers import SignupSerializer, CustomTokenObtainPairSerializer, UserInfoEditSerializer, UserPasswordEditSerializer
 from .models import EmailVerificationStatus
 
 
 User = get_user_model()
+
+
+class UserInfoRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    """
+    유저 정보 및 수정
+    """
+    queryset = User.objects.all()
+    serializer_class = UserInfoEditSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs.filter(id=self.request.user.id)
+        return qs
+    
+
+class UserPasswordRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    """
+    유저 패스워드 수정
+    """
+    queryset = User.objects.all()
+    serializer_class = UserPasswordEditSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs.filter(id=self.request.user.id)
+        return qs
+    
+    def perform_update(self, serializer):
+        current_password = self.request.data['current_password']
+        if not self.request.user.check_password(current_password):
+            return Response({'detail': '인증정보가 유효하지 않습니다.'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        return super().perform_update(serializer)
+
+
 
 class SignupListCreateAPIView(ListCreateAPIView):
     """
@@ -85,5 +120,8 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                 raise AuthenticationFailed('이메일 인증이 필요합니다.')
         
         return response
+    
+
+
 
 

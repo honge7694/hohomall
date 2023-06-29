@@ -5,6 +5,31 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 User = get_user_model()
 
+class UserInfoEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'nickname', 'image_src', 'status']
+
+
+class UserPasswordEditSerializer(serializers.ModelSerializer):
+    current_password = serializers.CharField(write_only=True)
+    class Meta:
+        model = User
+        fields = ['id', 'current_password', 'password']
+
+    def update(self, instance, validated_data):
+        current_password = validated_data.pop('current_password', None)
+
+        if current_password and instance.check_password(current_password):
+            new_password = validated_data.get('password')
+            instance.set_password(new_password)
+            instance.save()
+            return instance
+        else:
+            raise serializers.ValidationError("현재 비밀번호가 올바르지 않습니다.")
+
+
+
 class SignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
