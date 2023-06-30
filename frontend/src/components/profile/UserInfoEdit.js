@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { axiosInstance } from 'api';
 import { useAppContext } from 'store';
+import { userState } from 'state';
+import { useSetRecoilState } from "recoil";
 
 import {
     Layout,
@@ -34,6 +36,7 @@ const UserInfoEdit = ({data}) => {
     console.log('UserInfoEdit_data : ', data);
     const { userInfo, setUserInfo } = data;
     const { id, email, nickname, image_src } = userInfo;
+    const setUser = useSetRecoilState(userState); // Header
 
     const { store: token } = useAppContext();
     const headers = { Authorization: `Bearer ${token['jwtToken']}`};
@@ -62,6 +65,11 @@ const UserInfoEdit = ({data}) => {
                 updatedUserInfo.image_src = response.data.image_src;
             }
             setUserInfo(updatedUserInfo);
+            // Header User 닉네임, Id
+            setUser({
+                userId: id,
+                userNickname: values.nickname,
+            });
 
             api.info({
                 message: '유저 변경이 완료되었습니다.',
