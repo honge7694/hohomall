@@ -157,7 +157,6 @@ const SignUp = () => {
           )
           console.log(fieldsErrors);
         }
-
       }
     };
 

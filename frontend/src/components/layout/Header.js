@@ -358,7 +358,12 @@ function Header({
                     </Button>
                   </ButtonContainer>
                 </div>
-                                
+                
+                <div className="fixed-nav mb-2">
+                  <Title level={5}>Navbar Fixed </Title>
+                  <Switch onChange={(e) => handleFixedNavbar(e)} />
+                </div>
+        
 
                 <div className="ant-thank">
                   <Title level={5} className="mb-2">

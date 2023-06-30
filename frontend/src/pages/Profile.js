@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import {
   Row,
@@ -31,6 +31,13 @@ import convesionImg5 from "../assets/images/face-2.jpg";
 import project1 from "../assets/images/home-decor-1.jpeg";
 import project2 from "../assets/images/home-decor-2.jpeg";
 import project3 from "../assets/images/home-decor-3.jpeg";
+import { axiosInstance } from 'api';
+import { useRecoilValue } from "recoil";
+import { useAppContext } from 'store';
+import { userState } from 'state';
+import UserInfoEdit from 'components/profile/UserInfoEdit';
+import UserPasswordEdit from 'components/profile/UserPasswordEdit';
+import UserProfile from 'components/profile/UserProfile';
 
 function Profile() {
   const [imageURL, setImageURL] = useState(false);
@@ -67,26 +74,6 @@ function Profile() {
     }
   };
 
-  const pencil = [
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 20 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      key={0}
-    >
-      <path
-        d="M13.5858 3.58579C14.3668 2.80474 15.6332 2.80474 16.4142 3.58579C17.1953 4.36683 17.1953 5.63316 16.4142 6.41421L15.6213 7.20711L12.7929 4.37868L13.5858 3.58579Z"
-        className="fill-gray-7"
-      ></path>
-      <path
-        d="M11.3787 5.79289L3 14.1716V17H5.82842L14.2071 8.62132L11.3787 5.79289Z"
-        className="fill-gray-7"
-      ></path>
-    </svg>,
-  ];
-
   const uploadButton = (
     <div className="ant-upload-text font-semibold text-dark">
       {<VerticalAlignTopOutlined style={{ width: 20, color: "#000" }} />}
@@ -94,33 +81,6 @@ function Profile() {
     </div>
   );
 
-  const data = [
-    {
-      title: "Sophie B.",
-      avatar: convesionImg,
-      description: "Hi! I need more information…",
-    },
-    {
-      title: "Anne Marie",
-      avatar: convesionImg2,
-      description: "Awesome work, can you…",
-    },
-    {
-      title: "Ivan",
-      avatar: convesionImg3,
-      description: "About files I can…",
-    },
-    {
-      title: "Peterson",
-      avatar: convesionImg4,
-      description: "Have a great afternoon…",
-    },
-    {
-      title: "Nick Daniel",
-      avatar: convesionImg5,
-      description: "Hi! I need more information…",
-    },
-  ];
 
   const project = [
     {
@@ -145,6 +105,34 @@ function Profile() {
         "Different people have different taste, and various types of music, Zimbali Resort",
     },
   ];
+  const [selectedTab, setSelectedTab] = useState("a"); // Tab State
+
+  const [userInfo, setUserInfo] = useState([]); // UserInfo State
+  const user = useRecoilValue(userState);
+  const user_id = user['userId']
+
+  const apiUrl = `/account/info/${user_id}`;
+  const { store: token } = useAppContext();
+  const headers = { Authorization: `Bearer ${token['jwtToken']}`};
+  
+
+  // 유저 정보 불러오기.
+  useEffect(() => {
+    async function fetchUserInfo() {
+      try{
+        const { data } = await axiosInstance.get(apiUrl, {headers});
+        console.log("user_data :", data);
+        setUserInfo(data);
+      }catch(error){
+        console.log('error : ', error);
+      }
+    }
+    fetchUserInfo();
+  }, []);
+
+  const handleTabChange = (e) => {
+    setSelectedTab(e.target.value);
+  };
 
   return (
     <>
@@ -160,11 +148,11 @@ function Profile() {
           <Row justify="space-between" align="middle" gutter={[24, 0]}>
             <Col span={24} md={12} className="col-info">
               <Avatar.Group>
-                <Avatar size={74} shape="square" src={profilavatar} />
+                <Avatar size={74} shape="square" src={userInfo.image_src} />
 
                 <div className="avatar-info">
-                  <h4 className="font-semibold m-0">Sarah Jacob</h4>
-                  <p>CEO / Co-Founder</p>
+                  <h4 className="font-semibold m-0">{userInfo.email}</h4>
+                  <p>{userInfo.nickname}</p>
                 </div>
               </Avatar.Group>
             </Col>
@@ -177,136 +165,29 @@ function Profile() {
                 justifyContent: "flex-end",
               }}
             >
-              <Radio.Group defaultValue="a">
-                <Radio.Button value="a">OVERVIEW</Radio.Button>
-                <Radio.Button value="b">TEAMS</Radio.Button>
-                <Radio.Button value="c">PROJECTS</Radio.Button>
+              <Radio.Group defaultValue={selectedTab} onChange={handleTabChange}>
+                <Radio.Button value="a">Profile</Radio.Button>
+                <Radio.Button value="b">회원정보 수정</Radio.Button>
+                <Radio.Button value="c">비밀번호 변경</Radio.Button>
               </Radio.Group>
             </Col>
           </Row>
         }
-      ></Card>
+      >
+      </Card>
 
-      <Row gutter={[24, 0]}>
-        <Col span={24} md={8} className="mb-24 ">
-          <Card
-            bordered={false}
-            className="header-solid h-full"
-            title={<h6 className="font-semibold m-0">Platform Settings</h6>}
-          >
-            <ul className="list settings-list">
-              <li>
-                <h6 className="list-header text-sm text-muted">ACCOUNT</h6>
-              </li>
-              <li>
-                <Switch defaultChecked />
 
-                <span>Email me when someone follows me</span>
-              </li>
-              <li>
-                <Switch />
-                <span>Email me when someone answers me</span>
-              </li>
-              <li>
-                <Switch defaultChecked />
-                <span>Email me when someone mentions me</span>
-              </li>
-              <li>
-                <h6 className="list-header text-sm text-muted m-0">
-                  APPLICATION
-                </h6>
-              </li>
-              <li>
-                <Switch defaultChecked />
-                <span>New launches and projects</span>
-              </li>
-              <li>
-                <Switch defaultChecked />
-                <span>Monthly product updates</span>
-              </li>
-              <li>
-                <Switch defaultChecked />
-                <span>Subscribe to newsletter</span>
-              </li>
-            </ul>
-          </Card>
-        </Col>
-        <Col span={24} md={8} className="mb-24">
-          <Card
-            bordered={false}
-            title={<h6 className="font-semibold m-0">Profile Information</h6>}
-            className="header-solid h-full card-profile-information"
-            extra={<Button type="link">{pencil}</Button>}
-            bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
-          >
-            <p className="text-dark">
-              {" "}
-              Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer
-              is no. If two equally difficult paths, choose the one more painful
-              in the short term (pain avoidance is creating an illusion of
-              equality).{" "}
-            </p>
-            <hr className="my-25" />
-            <Descriptions title="Oliver Liam">
-              <Descriptions.Item label="Full Name" span={3}>
-                Sarah Emily Jacob
-              </Descriptions.Item>
-              <Descriptions.Item label="Mobile" span={3}>
-                (44) 123 1234 123
-              </Descriptions.Item>
-              <Descriptions.Item label="Email" span={3}>
-                sarahjacob@mail.com
-              </Descriptions.Item>
-              <Descriptions.Item label="Location" span={3}>
-                USA
-              </Descriptions.Item>
-              <Descriptions.Item label="Social" span={3}>
-                <a href="#pablo" className="mx-5 px-5">
-                  {<TwitterOutlined />}
-                </a>
-                <a href="#pablo" className="mx-5 px-5">
-                  {<FacebookOutlined style={{ color: "#344e86" }} />}
-                </a>
-                <a href="#pablo" className="mx-5 px-5">
-                  {<InstagramOutlined style={{ color: "#e1306c" }} />}
-                </a>
-              </Descriptions.Item>
-            </Descriptions>
-          </Card>
-        </Col>
-        <Col span={24} md={8} className="mb-24">
-          <Card
-            bordered={false}
-            title={<h6 className="font-semibold m-0">Conversations</h6>}
-            className="header-solid h-full"
-            bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
-          >
-            <List
-              itemLayout="horizontal"
-              dataSource={data}
-              split={false}
-              className="conversations-list"
-              renderItem={(item) => (
-                <List.Item actions={[<Button type="link">REPLY</Button>]}>
-                  <List.Item.Meta
-                    avatar={
-                      <Avatar shape="square" size={48} src={item.avatar} />
-                    }
-                    title={item.title}
-                    description={item.description}
-                  />
-                </List.Item>
-              )}
-            />
-          </Card>
-        </Col>
-      </Row>
+      {selectedTab === "a" && <UserProfile data={{userInfo}}  />}
+      {selectedTab === "b" && <UserInfoEdit data={{userInfo, setUserInfo}} />}
+      {selectedTab === "c" && <UserPasswordEdit data={{userInfo}}/>}
+
+
       <Card
         bordered={false}
         className="header-solid mb-24"
         title={
           <>
-            <h6 className="font-semibold">Projects</h6>
+            <h6 className="font-semibold">최근 본 상품</h6>
             <p>Architects design houses</p>
           </>
         }
