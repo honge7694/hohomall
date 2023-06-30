@@ -6,13 +6,15 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 User = get_user_model()
 
 class UserInfoEditSerializer(serializers.ModelSerializer):
+    email = serializers.CharField(read_only=True)
     class Meta:
         model = User
-        fields = ['id', 'email', 'nickname', 'image_src', 'status']
+        fields = ['id', 'email', 'nickname', 'image_src']
 
 
 class UserPasswordEditSerializer(serializers.ModelSerializer):
     current_password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True)
     class Meta:
         model = User
         fields = ['id', 'current_password', 'password']

@@ -39,14 +39,6 @@ class UserPasswordRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
         qs = super().get_queryset()
         qs.filter(id=self.request.user.id)
         return qs
-    
-    def perform_update(self, serializer):
-        current_password = self.request.data['current_password']
-        if not self.request.user.check_password(current_password):
-            return Response({'detail': '인증정보가 유효하지 않습니다.'}, status=status.HTTP_401_UNAUTHORIZED)
-        
-        return super().perform_update(serializer)
-
 
 
 class SignupListCreateAPIView(ListCreateAPIView):
