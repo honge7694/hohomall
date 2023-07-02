@@ -1,12 +1,13 @@
 from django.db import models
+from enum import Enum 
 
 
 class Brand(models.Model):
     name = models.CharField(max_length=50)
-    description = models.CharField(max_length=1000)
-    created_on = models.DateTimeField(auto_now_add=True)
-    updated_on = models.DateTimeField(auto_now=True)
-    logo_img = models.ImageField(max_length=1000, blank=True)
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    logo_img = models.ImageField(max_length=255, upload_to="product/%Y/%m/%d", blank=True)
     links = models.CharField(max_length=1000)
 
     class Meta:
@@ -25,8 +26,8 @@ class Product(models.Model):
     product_type = models.CharField(max_length=50)
     product_style = models.CharField(max_length=50)
     purchase_count = models.IntegerField(default=0)
-    created_on = models.DateTimeField(auto_now_add=True)
-    updated_on = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     is_active = models.CharField(max_length=1)
 
     class Meta:
@@ -44,14 +45,23 @@ class ProductImage(models.Model):
         db_table = 'product_image'
 
 
+class ProductActive(Enum):
+    ACTIVE = '활성화'
+    INACTIVE = '비활성화'
+
+
 class ProductOption(models.Model):
     product_id = models.ForeignKey(
         Product,
         on_delete=models.CASCADE
     )
     option_size = models.IntegerField()
-    options_color = models.CharField(max_length=50)
-    is_active = models.CharField(max_length=1)
+    option_color = models.CharField(max_length=50)
+    is_active = models.CharField(
+        max_length=20,
+        choices=[(status.value, status.name) for status in ProductActive], 
+        default=ProductActive.ACTIVE.value
+        )
     price = models.FloatField()
     delivery_fee = models.FloatField()
     quantity = models.IntegerField()

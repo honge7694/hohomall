@@ -31,7 +31,6 @@ class UserPasswordEditSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("현재 비밀번호가 올바르지 않습니다.")
 
 
-
 class SignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
