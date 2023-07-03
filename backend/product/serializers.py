@@ -90,7 +90,7 @@ class ProductSerializer(serializers.ModelSerializer):
                 'id': brand.id,
                 'name': brand.name,
                 'description': brand.description,
-                
+                'logo_img': self.context['request'].build_absolute_uri(brand.logo_img.url),
                 'links': brand.links
             }
         return brand_data
