@@ -122,7 +122,7 @@ const SignIn =  () => {
   const history = useNavigate();
   
   const onFinish = async (values) => {
-    console.log("Success:", values);
+    console.log("Login Form Value:", values);
     const { email, password } = values;
     const data = { email, password }
     try{
@@ -149,20 +149,11 @@ const SignIn =  () => {
 
     }catch(error){
       console.log('error : ', error);
-
-      if (error.response.status === 401){
-        api.info({
-          message: '로그인 실패',
-          description: '등록한 이메일 인증을 진행해주세요.',
-          icon: <FrownOutlined style={{ color: "red" }}/>
-        });
-      } else {
-        api.info({
-          message: '로그인 실패',
-          description: '로그인 정보가 일치하지않습니다.',
-          icon: <FrownOutlined style={{ color: "red" }}/>
-        });
-      }
+      api.info({
+        message: '로그인 실패',
+        description: '로그인 정보가 일치하지않습니다.',
+        icon: <FrownOutlined style={{ color: "red" }}/>
+      });
     }
   };
 

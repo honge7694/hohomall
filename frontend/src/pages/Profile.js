@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-
+import { useNavigate } from 'react-router-dom';
 import {
   Row,
   Col,
@@ -32,7 +32,7 @@ import project1 from "../assets/images/home-decor-1.jpeg";
 import project2 from "../assets/images/home-decor-2.jpeg";
 import project3 from "../assets/images/home-decor-3.jpeg";
 import { axiosInstance } from 'api';
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useResetRecoilState } from "recoil";
 import { useAppContext } from 'store';
 import { userState } from 'state';
 import UserInfoEdit from 'components/profile/UserInfoEdit';
@@ -109,7 +109,9 @@ function Profile() {
 
   const [userInfo, setUserInfo] = useState([]); // UserInfo State
   const user = useRecoilValue(userState);
-  const user_id = user['userId']
+  const user_id = user['userId'];
+  const resetUser = useResetRecoilState(userState);
+  const history = useNavigate();
 
   const apiUrl = `/account/info/${user_id}`;
   const { store: token } = useAppContext();
@@ -125,6 +127,8 @@ function Profile() {
         setUserInfo(data);
       }catch(error){
         console.log('error : ', error);
+        resetUser();
+        history('/sign-in');
       }
     }
     fetchUserInfo();
