@@ -2,6 +2,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from .serializers import BrandSerializer, ProductSerializer
 from .models import Brand, Product
 
+
 class BrandListCreateAPIView(ListCreateAPIView):
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer

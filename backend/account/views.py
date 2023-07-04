@@ -1,5 +1,5 @@
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, GenericAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, GenericAPIView, RetrieveUpdateDestroyAPIView, get_object_or_404
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -8,8 +8,11 @@ from django.core.mail import send_mail, EmailMessage
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect
-from .serializers import SignupSerializer, CustomTokenObtainPairSerializer, UserInfoEditSerializer, UserPasswordEditSerializer
-from .models import EmailVerificationStatus
+from django.utils import timezone
+from product.models import Product
+from .serializers import SignupSerializer, CustomTokenObtainPairSerializer, UserInfoEditSerializer, UserPasswordEditSerializer, RecentViewedSerializer
+from .models import EmailVerificationStatus, RecentViewed
+from datetime import timedelta
 
 
 User = get_user_model()
@@ -114,6 +117,33 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         return response
     
 
+class RecentListCreateAPIView(ListCreateAPIView):
+    """
+    최근 조회 목록
+    """
+    queryset = RecentViewed.objects.all()
+    serializer_class = RecentViewedSerializer
+
+    def get_queryset(self):
+        timesince = timezone.now() - timedelta(days=1)
+        qs = super().get_queryset()
+        qs = qs.filter(user_id=self.request.user)
+        qs = qs.filter(created_at__gte=timesince)
+        return qs
+    
+    def perform_create(self, serializer):
+        user = self.request.user
+
+        # 중복으로 본 최근 상품
+        product_id = self.request.data.get('product_id')
+        product = get_object_or_404(Product, id=product_id)
+        
+        if RecentViewed.objects.filter(user_id=user, product_id=product).exists():
+            # 최근 본 상품이 있다면 삭제
+            RecentViewed.objects.filter(user_id=user, product_id=product).delete()
+        
+        serializer.save(user_id=user)
+        return super().perform_create(serializer)
 
 
 

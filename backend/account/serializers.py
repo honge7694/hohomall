@@ -58,3 +58,9 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             "status": self.user.status,
         }
         return data
+
+
+class RecentViewedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'user_id', 'created_at']
