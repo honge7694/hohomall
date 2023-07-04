@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from .models import Brand, Product, ProductImage, ProductOption
+import locale
 
+locale.setlocale(locale.LC_ALL, '') # 현재 환경의 로칼 설정
 
 class BrandSerializer(serializers.ModelSerializer):
     class Meta:
@@ -58,12 +60,20 @@ class ProductSerializer(serializers.ModelSerializer):
             'product_type',
             'product_style',
             'purchase_count',
+            'price',
+            'view_count',
             'images',
             'options',
             'created_at',
             'updated_at',
             'is_active'
         ]
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # 가격 필드를 포맷팅된 문자열로 변환
+        representation['price'] = locale.format_string("%d", int(instance.price), grouping=True)
+        return representation
     
     def get_images(self, obj):
         """

@@ -26,6 +26,8 @@ class Product(models.Model):
     product_type = models.CharField(max_length=50)
     product_style = models.CharField(max_length=50)
     purchase_count = models.IntegerField(default=0)
+    price = models.CharField(max_length=100)
+    view_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.CharField(max_length=1)
