@@ -5,12 +5,12 @@ import Billing from "pages/Billing";
 import Profile from "pages/Profile";
 import SignUp from "pages/SignUp";
 import SignIn from "pages/SignIn";
-import Product from "pages/Product";
 import Main from "components/layout/Main";
 import { RecoilRoot } from 'recoil';
 import "../index.scss";
 import "assets/styles/main.css";
 import "assets/styles/responsive.css";
+import ProductIndex from './product/index';
 
 const Root = () => {
     return (
@@ -24,7 +24,7 @@ const Root = () => {
                     <Route path="/tables" element={<Tables/> }/>
                     <Route path="/billing" element={<Billing/> }/>
                     <Route path="/profile" element={<Profile/> }/>
-                    <Route path="/product" element={<Product/> }/>
+                    <Route path="/product/*" element={<ProductIndex/> }/>
                 </Route>
             </Routes>
         </div>

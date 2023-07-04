@@ -1,0 +1,63 @@
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Card, Row, Col, Typography, Space } from 'antd';
+import Rating from 'react-rating-stars-component';
+
+import { axiosInstance } from 'api';
+
+
+const { Meta } = Card;
+const { Title, Text } = Typography;
+
+
+
+const ProductList = ({productList}) => {
+    const history = useNavigate();
+
+    const handlerOnClick = (e, id) => {
+        e.preventDefault();
+        console.log(id);
+        
+        history(''+id);
+    };
+
+    return (
+        <>
+            <h1>쇼핑몰 메인 페이지</h1>
+            <Row gutter={[16, 16]}>
+                {productList.map((product) => (
+                    <Col span={6} key={product.id}>
+                        <a href="#" onClick={ (e) => handlerOnClick(e, product.id) }>
+                            <Card
+                                hoverable
+                                cover={<img alt={product.name} src={product.images[0].image_src} />}
+                                style={{ display: 'grid', gridTemplateRows: 'auto 1fr auto' }}
+                            >
+                                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                                    <Title level={5}>{product.name}</Title>
+                                    <Title level={5} style={{ marginBottom: 0 }}> ₩ {product.price}</Title>
+                                </div>
+                                {/* TODO: rating, review 개수 가져오기 */}
+                                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                                    <Rating
+                                        count={5}
+                                        value={product.rating}
+                                        size={24}
+                                        activeColor="#ffd700"
+                                        edit={false}
+                                    />
+                                    <Text type="secondary">{product.view_count} hits</Text> 
+                                </div>
+                                <div>
+                                    <Text type="secondary">{product.reviewCount} reviews</Text> 
+                                </div>
+                            </Card>
+                        </a>
+                    </Col>
+                ))}
+            </Row>
+        </>
+    )
+}
+
+export default ProductList;
