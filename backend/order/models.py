@@ -50,3 +50,14 @@ class OrderStatus(models.Model):
 
     class Meta:
         db_table = 'order_status'
+
+
+class Cart(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product_option_id = models.ForeignKey(ProductOption, on_delete=models.CASCADE)
+    price = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        ordering = ['-id']
