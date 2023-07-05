@@ -4,19 +4,33 @@ import { Card, Row, Col, Typography, Space } from 'antd';
 import Rating from 'react-rating-stars-component';
 
 import { axiosInstance } from 'api';
+import { useAppContext } from 'store';
 
 
 const { Meta } = Card;
 const { Title, Text } = Typography;
 
-
-
 const ProductList = ({productList}) => {
+    const { store: token } = useAppContext();
+    const headers = { Authorization: `Bearer ${token['jwtToken']}`};
     const history = useNavigate();
 
     const handlerOnClick = (e, id) => {
         e.preventDefault();
         console.log(id);
+
+        async function fetchRecentViewed() {
+            const data = { 
+                'product_id': id
+            }
+            try{
+                const response = await axiosInstance.post('/account/recent/viewed/', data, { headers });
+                console.log('ProductList RecentViewed response : ', response);
+            }catch(error){
+                console.log('error : ', error);
+            }
+        }
+        fetchRecentViewed();
         
         history(''+id);
     };

@@ -7,9 +7,6 @@ import ProductDetail from 'components/product/ProductDetail';
 const Product = () => {
   const { id } = useParams();
   const [product, setProduct] = useState();
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedColor, setSelectedColor] = useState('');
-  const [selectedSize, setSelectedSize] = useState('');
   
   useEffect(() => {
     async function fetchProduct() {
@@ -32,12 +29,19 @@ const Product = () => {
           id: option.id,
           value: option.option_size,
         }));
+        const formattedOptions = options.map((option) => ({
+          id: option.id,
+          color: option.option_color,
+          size: option.option_size,
+          price: option.price,
+        }));
 
 
         setProduct({
           images: formattedImages,
           optionColor: formattedColorOptions,
           optionSize: formattedSizeOptions,
+          option: formattedOptions,
           productInfo: productInfo,
         });
       } catch (error) {
