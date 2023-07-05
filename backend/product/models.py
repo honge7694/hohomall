@@ -70,4 +70,7 @@ class ProductOption(models.Model):
 
     class Meta:
         db_table = 'product_option'
+    
+    def __str__(self):
+        return f'{self.option_size} {self.option_color}'
 

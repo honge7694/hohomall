@@ -1,6 +1,7 @@
 from rest_framework.generics import ListCreateAPIView
 from .models import Cart
 from .serializers import CartSerializer
+from django.db.models import F
 
 
 class CartListCreateAPIView(ListCreateAPIView):
@@ -18,6 +19,17 @@ class CartListCreateAPIView(ListCreateAPIView):
     
     def perform_create(self, serializer):
         user = self.request.user
+        product_id = self.request.data['product_id']
+        product_option_id = self.request.data['product_option_id']
+        price = self.request.data['price']
+
+        cart_item = self.queryset.filter(product_id=product_id, product_option_id=product_option_id, price=price).first()
+        if cart_item:
+            # 이미 존재하는 상품인 경우 quantity를 증가시킴
+            cart_item.quantity = F('quantity') + 1
+            cart_item.save()
+            return 
+        
         serializer.save(user_id=user)
         return super().perform_create(serializer)
 
