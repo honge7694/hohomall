@@ -3,6 +3,6 @@ from .views import BrandListCreateAPIView, ProductListCreateAPIView, ProductRetr
 
 urlpatterns = [
     path('', ProductListCreateAPIView.as_view(), name='product'),
-    path('edit/<int:pk>/', ProductRetrieveUpdateDestroyAPIView.as_view(), name='product-edt'),
+    path('detail/<int:pk>/', ProductRetrieveUpdateDestroyAPIView.as_view(), name='product-detail'),
     path('brand/', BrandListCreateAPIView.as_view(), name='brand'),
 ]

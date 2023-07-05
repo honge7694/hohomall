@@ -1,6 +1,9 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from .models import RecentViewed
+from product.models import Product
+from product.serializers import ProductSerializer
 
 
 User = get_user_model()
@@ -61,6 +64,12 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 
 class RecentViewedSerializer(serializers.ModelSerializer):
+    product_id = serializers.PrimaryKeyRelatedField(
+        queryset=Product.objects.all(),
+        write_only=True,
+    )
+    product = ProductSerializer(read_only=True, source='product_id')
+    
     class Meta:
-        model = User
-        fields = ['id', 'user_id', 'created_at']
+        model = RecentViewed
+        fields = ['id', 'product_id', 'product', 'created_at']

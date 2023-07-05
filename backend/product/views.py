@@ -4,16 +4,25 @@ from .models import Brand, Product
 
 
 class BrandListCreateAPIView(ListCreateAPIView):
+    """
+    브랜드 생성 및 리스트
+    """
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer
 
 
 class ProductListCreateAPIView(ListCreateAPIView):
+    """
+    상품 생성 및 리스트
+    """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
 
 class ProductRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    """
+    상품 조회 및 수정, 삭제
+    """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
