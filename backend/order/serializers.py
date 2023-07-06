@@ -45,12 +45,15 @@ class CartSerializer(serializers.ModelSerializer):
         return product_option_data
     
     def get_product_image(self, obj):
+        request = self.context.get('request')
+        print(request)
         product = obj.product_id
         try:
             # Assuming there is only one image associated with the product
             image = product.productimage_set.first()
             if image:
-                return image.image_src.url
+                image_url = request.build_absolute_uri(image.image_src.url)
+                return image_url
         except ProductImage.DoesNotExist:
             pass
         return None
