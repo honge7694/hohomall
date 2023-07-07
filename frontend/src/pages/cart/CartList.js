@@ -31,6 +31,7 @@ const CartList = () => {
   }, []);
 
   const handleOrderClick = () => {
+    // TODO: 주문하기
     console.log("Order Click : ", selectedItems)
   }
 
@@ -53,8 +54,18 @@ const CartList = () => {
   };
 
   const handleRemoveClick = (productId) => {
-    // TODO: 장바구니 삭제
-    console.log('remove_button : ', productId)
+    console.log('remove_button : ', productId);
+    async function fetchRemoveCartItem() {
+      try{
+          const response = await axiosInstance.delete(`/order/cart/detail/${productId}/`, { headers });
+          console.log('CartList RemoveCartItem response : ', response);
+          const { data } = await axiosInstance.get(apiUrl, { headers });
+          setCartList(data);
+      }catch(error){
+          console.log('error : ', error);
+      }
+  }
+  fetchRemoveCartItem();
   };
 
   const handleDecreaseClick = (productId) => {
