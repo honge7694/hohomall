@@ -79,8 +79,7 @@ const ProductDetail = ({productData}) => {
     };
 
     const handleWishlistModalConfirm = () => {
-        // TODO: 찜목록 확인 모달에서 예 버튼 클릭시 찜목록 이동.
-    
+        history('/cart');
         // 모달 창 닫기
         setWishlistModalVisible(false);
     };

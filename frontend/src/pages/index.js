@@ -11,6 +11,7 @@ import "../index.scss";
 import "assets/styles/main.css";
 import "assets/styles/responsive.css";
 import ProductIndex from './product/index';
+import CartIndex from './cart';
 
 const Root = () => {
     return (
@@ -25,6 +26,7 @@ const Root = () => {
                     <Route path="/billing" element={<Billing/> }/>
                     <Route path="/profile" element={<Profile/> }/>
                     <Route path="/product/*" element={<ProductIndex/> }/>
+                    <Route path="/cart/*" element={<CartIndex/> }/>
                 </Route>
             </Routes>
         </div>
