@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from product.models import Product, ProductOption, Brand
-from coupon.models import Coupon
+from coupon.models import CouponUser
 from enum import Enum
 
 
@@ -11,9 +11,10 @@ User = get_user_model()
 class Order(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     total_price = models.IntegerField()
+    delivery_fee = models.FloatField(default='3000')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    
     class Meta:
         db_table = 'order'
 
@@ -23,10 +24,9 @@ class OrderDetail(models.Model):
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
     product_option_id = models.ForeignKey(ProductOption, on_delete=models.CASCADE)
     brand_id = models.ForeignKey(Brand, on_delete=models.CASCADE)
-    coupon_id = models.ForeignKey(Coupon, on_delete=models.CASCADE)
+    coupon_user_id = models.ForeignKey(CouponUser, on_delete=models.CASCADE, null=True, blank=True)
     quantity = models.IntegerField()
     price = models.FloatField()
-    delivery_fee = models.FloatField()
 
     class Meta:
         db_table = 'order_detail'
