@@ -69,7 +69,9 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def get_order_details(self, obj):
         order_details = obj.orderdetail_set.all()
-        serializer = OrderDetailSerializer(order_details, many=True)
+        context = self.context.copy()  # 기존 context 복사
+        context['request'] = self.context['request']  # 필요한 context 추가
+        serializer = OrderDetailSerializer(order_details, many=True, context=context)
         return serializer.data
 
     def create(self, validated_data):
@@ -141,7 +143,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
             'name': product.name,
             'price': product.price,
             'view_count': product.view_count,
-            'image_src': product.productimage_set.first().image_src.url,
+            'image_src': self.context['request'].build_absolute_uri(product.productimage_set.first().image_src.url),
         }
         return product
     
@@ -163,7 +165,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
             'id': brand.id,
             'name': brand.name,
             'description': brand.description,
-            'logo_img': brand.logo_img.url,
+            'logo_img': self.context['request'].build_absolute_uri(brand.logo_img.url),
             'links': brand.links,
         }
         return brand_data
