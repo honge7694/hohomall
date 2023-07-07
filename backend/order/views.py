@@ -1,4 +1,4 @@
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from .models import Cart
 from .serializers import CartSerializer
 from django.db.models import F
@@ -33,3 +33,10 @@ class CartListCreateAPIView(ListCreateAPIView):
         serializer.save(user_id=user)
         return super().perform_create(serializer)
 
+
+class CartRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    """
+    장바구니 아이템 삭제
+    """
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
