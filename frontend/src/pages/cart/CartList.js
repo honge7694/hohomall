@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 import { List, Checkbox, InputNumber, Button, Row, Col, Divider, Typography } from 'antd';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 
@@ -16,6 +17,7 @@ const CartList = () => {
   const [quantities, setQuantities] = useState({});
   const [checkedItems, setCheckedItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
+  const history = useNavigate();
 
   useEffect(() => {
     async function fetchCart() {
@@ -82,6 +84,11 @@ const CartList = () => {
     }));
   };
 
+  const handleMoveProductPage = (productId) => {
+    console.log('MoveProductPage : ', productId);
+    history(`/product/${productId}`);
+  }
+
   const totalPrice = cartList
     .filter(item => checkedItems.includes(item.id))
     .reduce((sum, item) => sum + item.price * (quantities[item.id] || item.quantity), 0);
@@ -113,7 +120,7 @@ const CartList = () => {
 
               <Col span={8}>
                 <div style={{ textAlign: 'center' }}>
-                  <img src={item.product_image} alt="Product" style={{ maxHeight: '160px', maxWidth: '100%' }} />
+                  <img src={item.product_image} alt="Product" style={{ maxHeight: '160px', maxWidth: '100%', cursor: 'pointer', }} onClick={() => handleMoveProductPage(item.product.id)}/>
                 </div>
               </Col>
 
@@ -122,7 +129,7 @@ const CartList = () => {
                     <Text level={2} style={{ fontSize: 25 }}>{item.product.name}</Text>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16, marginTop: 10 }}>
                   <div style={{ flexShrink: 0, width: 200 }}>
                       <Text style={{ fontSize: 15 }}>옵션</Text>
                   </div>
