@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
-import { List, Checkbox, InputNumber, Button, Row, Col, Input, Select, Modal, Typography, Divider } from 'antd';
+import { List, Checkbox, InputNumber, Button, Row, Col, Input, Select, Modal, Typography, Divider, Table } from 'antd';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import DaumPostcode from 'react-daum-postcode';
 
 import { useRecoilValue, useResetRecoilState } from "recoil";
 import { userState } from 'state';
 import { axiosInstance } from 'api';
 import { useAppContext } from 'store';
 import moment from "moment";
+import axios from 'axios';
 
 const { Option } = Select;
 const { confirm } = Modal;
 const { Text } = Typography;
+const { Search } = Input;
 
 const Order = () => {
   const { store: token } = useAppContext();
@@ -33,6 +36,9 @@ const Order = () => {
   const [brandCoupon, setBrandCoupon] = useState(); // 주문 목록의 브랜드.id와 쿠폰의 브랜드.id 일치하는 쿠폰 상태관리
   const [totalProductPrice, setTotalProductPrice] = useState(0); // 선택한 상품의 가격 상태관리
   const [discountedPrice, setDiscountedPrice] = useState(0);
+  const [postalCodeModalVisible, setPostalCodeModalVisible] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState('');
+  const [selectedPostalCode, setSelectedPostalCode] = useState('');
 
   useEffect(() => {
     async function fetchUserInfo(){
@@ -63,9 +69,6 @@ const Order = () => {
   }, [])
 
   const handleCouponApply = () => {
-    // setSelectedProductPrice(price*quantity); // 선택한 상품의 가격 저장
-    // const filteredCoupons = couponInfo.filter(coupon => coupon.coupon.brand_id === brandId); // 쿠폰의 목록 (Coupon.filter(brand_id = 상품의 brand_id))
-    // setBrandCoupon(filteredCoupons);
     setCouponModalVisible(true);
   };
 
@@ -84,7 +87,6 @@ const Order = () => {
       content: '쿠폰을 적용하시겠습니까?',
       onOk: () => {
         const discountPrice = selectedCoupon ? selectedCoupon.coupon.discount_rate : 0;
-        // const totalPrice = selectedProductPrice; // 해당 항목의 총 가격 계산
         const totalPrice = totalProductPrice; // 해당 항목의 총 가격 계산
         const newDiscountedPrice = totalPrice * (discountPrice / 100);
 
@@ -102,10 +104,22 @@ const Order = () => {
   const handlePaymentMethodChange = (value) => {
     setPaymentMethod(value);
   };
+  
+  const handleComplete = (data) => {
+    setSelectedAddress(data.address);
+    setSelectedPostalCode(data.zonecode);
+    setPostalCodeModalVisible(false);
+  };
+
+  const handleAddressSearch = () => {
+
+    setPostalCodeModalVisible(true);
+  };
 
   const handleOrderClick = () => {
     // Handle order click
   };
+  
 
   return (
     <div>
@@ -130,13 +144,6 @@ const Order = () => {
             <Col span={3}>
               <h3>총 가격</h3>
             </Col>
-            {/* <Col span={3}>
-              <h3>할인가</h3>
-            </Col>
-            <Col span={3}>
-              <h3>쿠폰</h3>
-                Discount information
-            </Col> */}
           </Row>
         </div>
       {cartData.map(item => (
@@ -160,13 +167,6 @@ const Order = () => {
             <Col span={3}>
               <p>{(item.price * item.quantity).toLocaleString()} 원</p>
             </Col>
-            {/* <Col span={3}>
-              <p>{discountedPrice ? discountedPrice : '할인가 없음'}</p>
-            </Col>
-            <Col span={3}>
-              <Button onClick={() => handleCouponApply(item.product.brand.id, item.price, item.quantity)}>쿠폰 적용</Button>
-              {/* Discount information 
-            </Col> */}
           </Row>
         </div>
       ))}
@@ -183,7 +183,7 @@ const Order = () => {
                 <div style={{ flexShrink: 0, width: 200 }}>
                     <Text style={{ fontSize: 15 }}>수령인</Text>
                 </div>
-                <div>
+                <div style={{ flexShrink: 0, width: 300 }}>
                   <Input
                     placeholder="수령인"
                     value={shippingAddress}
@@ -197,18 +197,24 @@ const Order = () => {
                 <div style={{ flexShrink: 0, width: 200 }}>
                     <Text style={{ fontSize: 15 }}>연락처 1 </Text>
                 </div>
-                <div>
+                <div style={{ flexShrink: 0, width: 300 }}>
                   <Input placeholder="연락처1" style={{ margin: '2px 0' }} />
                 </div>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
-                <div style={{ flexShrink: 0, width: 200 }}>
-                    <Text style={{ fontSize: 15 }}>우편번호</Text>
-                </div>
-                <div>
-                  <Input placeholder="우편번호" style={{ margin: '2px 0' }} />
-                </div>
+              <div style={{ flexShrink: 0, width: 200 }}>
+                <Text style={{ fontSize: 15 }}>우편 번호</Text>
+              </div>
+              <div style={{ marginRight: '30px', width: 300 }}>
+                <Input
+                  placeholder="우편 번호"
+                  value={selectedPostalCode}
+                  disabled
+                  style={{ margin: '2px 0' }}
+                />
+              </div>
+              <Button onClick={ handleAddressSearch }>우편번호 검색</Button>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
@@ -216,7 +222,7 @@ const Order = () => {
                     <Text style={{ fontSize: 15 }}>배송지 주소</Text>
                 </div>
                 <div>
-                  <Input placeholder="배송지 주소" style={{ margin: '2px 0' }} />
+                  <Input placeholder="배송지 주소" value={selectedAddress} style={{ margin: '2px 0', width: 300 }} />
                 </div>
             </div>
 
@@ -225,7 +231,7 @@ const Order = () => {
                     <Text style={{ fontSize: 15 }}>상세주소</Text>
                 </div>
                 <div>
-                  <Input placeholder="상세주소" style={{ margin: '2px 0' }} />
+                  <Input placeholder="상세주소" style={{ margin: '2px 0', width: 300 }} />
                 </div>
             </div>
             
@@ -391,7 +397,17 @@ const Order = () => {
           </Button>
         </div>
       </Modal>
-
+      
+      <Modal
+        title="주소 검색"
+        visible={postalCodeModalVisible}
+        onCancel={() => setPostalCodeModalVisible(false)}
+        defaultQuery={selectedAddress}
+        footer={null}
+        style={{ width: '500px' }}
+      >
+        <DaumPostcode onComplete={handleComplete} />
+      </Modal>
     </div>
     
   );
