@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Cart, Order, OrderDetail
-from coupon.models import Coupon, CouponUser
+from coupon.models import Coupon, CouponUser, CouponStatus
 from product.models import Product, ProductOption, ProductImage, Brand
 from product.serializers import ProductImageSerializer
 
@@ -124,6 +124,7 @@ class OrderSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         order_details_data = self.context['request'].data.get('order_details', []) 
+        coupon_user_id = validated_data.get('coupon_user_id')
         order = Order.objects.create(**validated_data)
 
         # OrderDetail 생성
@@ -140,6 +141,11 @@ class OrderSerializer(serializers.ModelSerializer):
                 quantity=order_detail_data['quantity'],
                 price=order_detail_data['price'],
             )
+
+        # 쿠폰의 is_used 변경
+        if coupon_user_id:
+            coupon_user_id.is_used = CouponStatus.USED.value
+            coupon_user_id.save()
 
         return order
 

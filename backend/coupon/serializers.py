@@ -35,7 +35,7 @@ class CouponUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CouponUser
-        fields = ['id', 'coupon_id', 'coupon', 'is_used', 'download_date', 'use_date']
+        fields = ['id', 'coupon_id', 'user_id', 'coupon', 'is_used', 'download_date', 'use_date']
 
     def get_coupon(self, obj):
         coupon = obj.coupon_id

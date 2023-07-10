@@ -1,5 +1,5 @@
 from rest_framework.generics import ListCreateAPIView
-from .models import Coupon, CouponUser
+from .models import Coupon, CouponUser, CouponStatus
 from .serializers import CouponSerializer, CouponUserSerializer
 
 
@@ -19,7 +19,9 @@ class CouponUserListCreateAPIView(ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return CouponUser.objects.filter(user_id=user)
+        qs = CouponUser.objects.filter(is_used=CouponStatus.NOT_USED.value)
+        qs = qs.filter(user_id=user)
+        return qs
 
     def perform_create(self, serializer):
         user = self.request.user
