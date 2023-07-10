@@ -21,24 +21,28 @@ const Order = () => {
   const headers = { Authorization: `Bearer ${token['jwtToken']}`};
   const history = useNavigate();
   const user = useRecoilValue(userState);
+  const resetUser = useResetRecoilState(userState);
   console.log('user : ', user);
 
   const location = useLocation();
   const cartData = location.state;
   console.log('cartList -> orderData : ', cartData);
 
-  const [shippingAddress, setShippingAddress] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
   const [couponModalVisible, setCouponModalVisible] = useState(false);
   const [selectedCoupon, setSelectedCoupon] = useState(null);
   const [userInfo, setUserInfo] = useState();
   const [couponInfo, setCouponInfo] = useState(); // 쿠폰의 정보 상태관리
-  const [brandCoupon, setBrandCoupon] = useState(); // 주문 목록의 브랜드.id와 쿠폰의 브랜드.id 일치하는 쿠폰 상태관리
   const [totalProductPrice, setTotalProductPrice] = useState(0); // 선택한 상품의 가격 상태관리
   const [discountedPrice, setDiscountedPrice] = useState(0);
   const [postalCodeModalVisible, setPostalCodeModalVisible] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState('');
   const [selectedPostalCode, setSelectedPostalCode] = useState('');
+  const [orderDetails, setOrderDetails] = useState([]);
+  const [recipient, setRecipient] = useState('');
+  const [contact, setContact] = useState('');
+  const [detailAddress, setDetailAddress] = useState('');
+  const [memo, setMemo] = useState('');
 
   useEffect(() => {
     async function fetchUserInfo(){
@@ -48,6 +52,8 @@ const Order = () => {
         setUserInfo(data);
       }catch(error){
         console.log('UserInfo Error : ', error);
+        resetUser();
+        history('/sign-in');
       }
     }
     fetchUserInfo();
@@ -97,10 +103,6 @@ const Order = () => {
     });
   }; 
   
-  const handleShippingAddressChange = (event) => {
-    setShippingAddress(event.target.value);
-  };
-
   const handlePaymentMethodChange = (value) => {
     setPaymentMethod(value);
   };
@@ -112,12 +114,55 @@ const Order = () => {
   };
 
   const handleAddressSearch = () => {
-
     setPostalCodeModalVisible(true);
   };
 
-  const handleOrderClick = () => {
-    // Handle order click
+  const handleRecipientChange = (event) => {
+    setRecipient(event.target.value);
+  };
+  
+  const handleContactChange = (event) => {
+    setContact(event.target.value);
+  };
+    
+  const handleDetailAddressChange = (event) => {
+    setDetailAddress(event.target.value);
+  };
+  
+  const handleMemoChange = (event) => {
+    setMemo(event.target.value);
+  };
+
+  const handleOrderClick = async () => {
+    const couponId = selectedCoupon?.coupon?.id ?? null;
+    const orderData = {
+      'coupon_user_id': couponId,
+      'discount_price': discountedPrice,
+      'total_price': (totalProductPrice + 3000 - discountedPrice),
+      'delivery_fee': 3000,
+      'recipient': recipient,
+      'contact': contact,
+      'postcode': selectedPostalCode,
+      'address': selectedAddress,
+      'detail_address': detailAddress,
+      'memo': memo,
+      'order_details': cartData.map(item => ({
+        product_id: item.product.id,
+        product_option_id: item.product_option.id,
+        brand_id: item.product.brand.id,
+        quantity: item.quantity,
+        price: item.price,
+      }))
+    }
+
+    try {
+      const response = await axiosInstance.post('/order/', orderData, { headers });
+      console.log(response.data);
+
+      // TODO: 주문 내역으로 화면이동.
+    } catch (error) {
+      console.error('주문 실패:', error);
+    }      
   };
   
 
@@ -175,31 +220,38 @@ const Order = () => {
       <div style={{ margin: '16px 0' }}>
         <Row gutter={16}>
           <Col span={16}>
-            <div style={{display: 'flex', justifyContent: 'space-between'}}>
-              <h2>배송지 정보</h2>
+            <div style={{display: 'flex', flexDirection: 'row' }}>
+              <h2>배송지 정보</h2> <Text style={{marginLeft: '10px', marginTop: '3px', color: 'red'}}> * 정보를 모두 입력해주세요.</Text>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
-                <div style={{ flexShrink: 0, width: 200 }}>
-                    <Text style={{ fontSize: 15 }}>수령인</Text>
-                </div>
-                <div style={{ flexShrink: 0, width: 300 }}>
-                  <Input
-                    placeholder="수령인"
-                    value={shippingAddress}
-                    onChange={handleShippingAddressChange}
-                    style={{ margin: '2px 0' }}
-                  />
-                </div>
+              <div style={{ flexShrink: 0, width: 200 }}>
+                <Text style={{ fontSize: 15 }}>수령인</Text>
+              </div>
+              <div style={{ flexShrink: 0, width: 300 }}>
+                <Input
+                  placeholder="수령인"
+                  value={recipient}
+                  onChange={handleRecipientChange}
+                  style={{ margin: '2px 0' }}
+                  required
+                />
+              </div>
             </div>
-            
+
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
-                <div style={{ flexShrink: 0, width: 200 }}>
-                    <Text style={{ fontSize: 15 }}>연락처 1 </Text>
-                </div>
-                <div style={{ flexShrink: 0, width: 300 }}>
-                  <Input placeholder="연락처1" style={{ margin: '2px 0' }} />
-                </div>
+              <div style={{ flexShrink: 0, width: 200 }}>
+                <Text style={{ fontSize: 15 }}>연락처</Text>
+              </div>
+              <div style={{ flexShrink: 0, width: 300 }}>
+                <Input
+                  placeholder="연락처"
+                  value={contact}
+                  onChange={handleContactChange}
+                  style={{ margin: '2px 0' }}
+                  required
+                />
+              </div>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
@@ -212,6 +264,7 @@ const Order = () => {
                   value={selectedPostalCode}
                   disabled
                   style={{ margin: '2px 0' }}
+                  required
                 />
               </div>
               <Button onClick={ handleAddressSearch }>우편번호 검색</Button>
@@ -222,17 +275,26 @@ const Order = () => {
                     <Text style={{ fontSize: 15 }}>배송지 주소</Text>
                 </div>
                 <div>
-                  <Input placeholder="배송지 주소" value={selectedAddress} style={{ margin: '2px 0', width: 300 }} />
+                  <Input placeholder="배송지 주소" value={selectedAddress} style={{ margin: '2px 0', width: 300 }} required />
                 </div>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
-                <div style={{ flexShrink: 0, width: 200 }}>
-                    <Text style={{ fontSize: 15 }}>상세주소</Text>
-                </div>
-                <div>
-                  <Input placeholder="상세주소" style={{ margin: '2px 0', width: 300 }} />
-                </div>
+              <div style={{ flexShrink: 0, width: 200 }}>
+                <Text style={{ fontSize: 15 }}>상세주소</Text>
+              </div>
+              <div>
+                <Input placeholder="상세주소" value={detailAddress} onChange={handleDetailAddressChange} style={{ margin: '2px 0', width: 300 }} required />
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
+              <div style={{ flexShrink: 0, width: 200 }}>
+                <Text style={{ fontSize: 15 }}>배송메모</Text>
+              </div>
+              <div style={{ flexShrink: 0, width: 300 }}>
+                <Input placeholder="배송메모" value={memo} onChange={handleMemoChange} style={{ margin: '2px 0' }}/>
+              </div>
             </div>
             
           </Col>
