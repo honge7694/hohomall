@@ -29,6 +29,11 @@ class CartSerializer(serializers.ModelSerializer):
             'name': product.name,
             'price': product.price,
             'view_count': product.view_count,
+            'brand': {
+                'id': product.brand_id.id,
+                'name': product.brand_id.name,
+                'description': product.brand_id.description,
+            }
         }
 
         return product_data
@@ -50,7 +55,6 @@ class CartSerializer(serializers.ModelSerializer):
         print(request)
         product = obj.product_id
         try:
-            # Assuming there is only one image associated with the product
             image = product.productimage_set.first()
             if image:
                 image_url = request.build_absolute_uri(image.image_src.url)
@@ -61,11 +65,33 @@ class CartSerializer(serializers.ModelSerializer):
     
 
 class OrderSerializer(serializers.ModelSerializer):
+    coupon_user_id = serializers.PrimaryKeyRelatedField(
+        queryset=CouponUser.objects.all(),
+        write_only=True,
+        required=False,
+        allow_null=True,
+    )
+    coupon_user = serializers.SerializerMethodField(read_only=True)
     order_details = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
-        fields = ['id', 'order_details', 'total_price', 'delivery_fee', 'created_at']
+        fields = [
+            'id',
+            'order_details',
+            'coupon_user_id',
+            'coupon_user',
+            'total_price',
+            'discount_price',
+            'delivery_fee',
+            'recipient',
+            'contact',
+            'postcode',
+            'address',
+            'memo',
+            'detail_address',
+            'created_at'
+        ]
 
     def get_order_details(self, obj):
         order_details = obj.orderdetail_set.all()
@@ -74,6 +100,28 @@ class OrderSerializer(serializers.ModelSerializer):
         serializer = OrderDetailSerializer(order_details, many=True, context=context)
         return serializer.data
 
+    def get_coupon_user(self, obj):
+        coupon_user = obj.coupon_user_id
+        
+        # 쿠폰 적용을 안했을 때
+        if coupon_user is None:
+            return None
+        
+        coupon_user_data = {
+            'id': coupon_user.id,
+            'is_used': coupon_user.is_used,
+            'use_date': coupon_user.use_date,
+            'download_date': coupon_user.download_date,
+            'coupon': {
+                'id': coupon_user.coupon_id.id,
+                'description': coupon_user.coupon_id.description,
+                'is_active': coupon_user.coupon_id.is_active,
+                'start_date': coupon_user.coupon_id.start_date,
+                'end_date': coupon_user.coupon_id.end_date,
+            }
+        }
+        return coupon_user_data
+    
     def create(self, validated_data):
         order_details_data = self.context['request'].data.get('order_details', []) 
         order = Order.objects.create(**validated_data)
@@ -83,14 +131,12 @@ class OrderSerializer(serializers.ModelSerializer):
             # print("order_detail_data : ", order_detail_data)
             product = Product.objects.filter(pk=order_detail_data['product_id']).first()
             product_option = ProductOption.objects.filter(pk=order_detail_data['product_option_id']).first()
-            coupon_user = CouponUser.objects.filter(pk=order_detail_data['coupon_user_id']).first()
             brand = Brand.objects.filter(pk=order_detail_data['brand_id']).first()
             order_detail = OrderDetail.objects.create(
                 order_id=order, 
                 product_id=product,
                 product_option_id=product_option,
                 brand_id=brand,
-                coupon_user_id=coupon_user,
                 quantity=order_detail_data['quantity'],
                 price=order_detail_data['price'],
             )
@@ -111,14 +157,10 @@ class OrderDetailSerializer(serializers.ModelSerializer):
         queryset=Brand.objects.all(),
         write_only=True
     )
-    coupon_user_id = serializers.PrimaryKeyRelatedField(
-        queryset=CouponUser.objects.all(),
-        write_only=True
-    )
+    
     product = serializers.SerializerMethodField(read_only=True)
     product_option = serializers.SerializerMethodField(read_only=True)
     brand = serializers.SerializerMethodField(read_only=True)
-    coupon_user = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = OrderDetail
@@ -127,11 +169,9 @@ class OrderDetailSerializer(serializers.ModelSerializer):
             'product_id',
             'product_option_id',
             'brand_id',
-            'coupon_user_id',
             'product',
             'product_option',
             'brand',
-            'coupon_user',
             'quantity',
             'price',
         ]
@@ -169,25 +209,3 @@ class OrderDetailSerializer(serializers.ModelSerializer):
             'links': brand.links,
         }
         return brand_data
-
-    def get_coupon_user(self, obj):
-        coupon_user = obj.coupon_user_id
-        
-        # 쿠폰 적용을 안했을 때
-        if coupon_user is None:
-            return None
-        
-        coupon_user_data = {
-            'id': coupon_user.id,
-            'is_used': coupon_user.is_used,
-            'use_date': coupon_user.use_date,
-            'download_date': coupon_user.download_date,
-            'coupon': {
-                'id': coupon_user.coupon_id.id,
-                'description': coupon_user.coupon_id.description,
-                'is_active': coupon_user.coupon_id.is_active,
-                'start_date': coupon_user.coupon_id.start_date,
-                'end_date': coupon_user.coupon_id.end_date,
-            }
-        }
-        return coupon_user_data

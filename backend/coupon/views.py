@@ -15,13 +15,11 @@ class CouponUserListCreateAPIView(ListCreateAPIView):
     """
     유저 쿠폰 등록 및 목록
     """
-    queryset = CouponUser.objects.all()
     serializer_class = CouponUserSerializer
 
     def get_queryset(self):
-        qs = super().get_queryset()
-        qs.filter(user_id=self.request.user)
-        return qs
+        user = self.request.user
+        return CouponUser.objects.filter(user_id=user)
 
     def perform_create(self, serializer):
         user = self.request.user

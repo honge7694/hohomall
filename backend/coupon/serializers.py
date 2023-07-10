@@ -12,7 +12,7 @@ class CouponSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Coupon
-        fields = ['id', 'brand_id', 'brand', 'name', 'description', 'image_src', 'start_date', 'end_date', 'is_active', 'created_at', 'updated_at']
+        fields = ['id', 'brand_id', 'brand', 'name', 'description', 'discount_rate', 'image_src', 'start_date', 'end_date', 'is_active', 'created_at', 'updated_at']
 
     def get_brand(self, obj):
         brand = obj.brand_id
@@ -41,9 +41,11 @@ class CouponUserSerializer(serializers.ModelSerializer):
         coupon = obj.coupon_id
         coupon_data = {
             'id': coupon.id,
+            'brand_id': coupon.brand_id.id,
             'brand_name': coupon.brand_id.name,
             'name': coupon.name,
             'description': coupon.description,
+            'discount_rate': coupon.discount_rate,
             'image_src': self.context['request'].build_absolute_uri(coupon.image_src.url),
             'start_date': coupon.start_date,
             'end_date': coupon.end_date,

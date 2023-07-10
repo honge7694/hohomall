@@ -7,11 +7,18 @@ from enum import Enum
 
 User = get_user_model()
 
-
 class Order(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    coupon_user_id = models.ForeignKey(CouponUser, on_delete=models.CASCADE, null=True, blank=True)
     total_price = models.IntegerField()
+    discount_price = models.IntegerField()
     delivery_fee = models.FloatField(default='3000')
+    recipient = models.CharField(max_length=100)  
+    contact = models.CharField(max_length=20) 
+    postcode = models.CharField(max_length=10) 
+    address = models.CharField(max_length=200)  
+    detail_address = models.CharField(max_length=200)
+    memo = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -24,7 +31,6 @@ class OrderDetail(models.Model):
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
     product_option_id = models.ForeignKey(ProductOption, on_delete=models.CASCADE)
     brand_id = models.ForeignKey(Brand, on_delete=models.CASCADE)
-    coupon_user_id = models.ForeignKey(CouponUser, on_delete=models.CASCADE, null=True, blank=True)
     quantity = models.IntegerField()
     price = models.FloatField()
 

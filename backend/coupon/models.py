@@ -10,6 +10,7 @@ class Coupon(models.Model):
     brand_id = models.ForeignKey(Brand, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=500)
+    discount_rate = models.IntegerField(default=0)
     image_src = models.ImageField(blank=True, upload_to="coupons/%Y/%m/%d")
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
