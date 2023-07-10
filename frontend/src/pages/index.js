@@ -12,6 +12,8 @@ import "assets/styles/main.css";
 import "assets/styles/responsive.css";
 import ProductIndex from './product/index';
 import CartIndex from './cart';
+import OrderIndex from './order/index';
+
 
 const Root = () => {
     return (
@@ -27,6 +29,7 @@ const Root = () => {
                     <Route path="/profile" element={<Profile/> }/>
                     <Route path="/product/*" element={<ProductIndex/> }/>
                     <Route path="/cart/*" element={<CartIndex/> }/>
+                    <Route path="/order/*" element={<OrderIndex/> }/>
                 </Route>
             </Routes>
         </div>

@@ -10,14 +10,15 @@ import { useAppContext } from 'store';
 const { Text } = Typography;
 
 const CartList = () => {
-  const [cartList, setCartList] = useState([]);
-  const apiUrl = `order/cart/`;
   const { store: token } = useAppContext();
   const headers = { Authorization: `Bearer ${token['jwtToken']}`};
+  const history = useNavigate();
+  const apiUrl = `order/cart/`;
+
+  const [cartList, setCartList] = useState([]);
   const [quantities, setQuantities] = useState({});
   const [checkedItems, setCheckedItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
-  const history = useNavigate();
 
   useEffect(() => {
     async function fetchCart() {
@@ -33,8 +34,13 @@ const CartList = () => {
   }, []);
 
   const handleOrderClick = () => {
-    // TODO: 주문하기
-    console.log("Order Click : ", selectedItems)
+    console.log("Order Click : ", selectedItems);
+    const orderData = selectedItems.map(item => ({
+      ...item,
+      quantity: quantities[item.id] || item.quantity
+    }));
+    
+    history('/order', {state: orderData});
   }
 
   const handleQuantityChange = (productId, value) => {
@@ -172,10 +178,6 @@ const CartList = () => {
                     </div>
                   </div>
                 </div>
-                {/*                 
-                <h3>{item.product.name}</h3>
-                <p>Price: {item.price}</p>
-                <p>Quantity:</p> */}
               </Col>
               <Col span={4}>
                 <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
