@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Cart, Order, OrderDetail
+from .models import Cart, Order, OrderDetail, OrderStatus
 from coupon.models import Coupon, CouponUser, CouponStatus
 from product.models import Product, ProductOption, ProductImage, Brand
 from product.serializers import ProductImageSerializer
@@ -146,6 +146,11 @@ class OrderSerializer(serializers.ModelSerializer):
         if coupon_user_id:
             coupon_user_id.is_used = CouponStatus.USED.value
             coupon_user_id.save()
+        
+        # OrderStatus 생성
+        OrderStatus.objects.create(
+            order_detail_id=order_detail
+        )
 
         return order
 
