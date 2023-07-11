@@ -1,7 +1,8 @@
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from .models import Cart, Order
-from .serializers import CartSerializer, OrderSerializer
+from .models import Cart, Order, Purchase
+from .serializers import CartSerializer, OrderSerializer, PurchaseSerializer
 from django.db.models import F
+from product.models import Product
 
 
 class CartListCreateAPIView(ListCreateAPIView):
@@ -53,3 +54,34 @@ class OrderListCreateAPIView(ListCreateAPIView):
         user = self.request.user
         serializer.save(user_id=user)
         return super().perform_create(serializer)
+    
+
+class PurchaseListCreateAPIView(ListCreateAPIView):
+    """
+    구매 기록 생성 및 리스트 API
+    """
+    queryset = Purchase.objects.all()
+    serializer_class = PurchaseSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        qs = super().get_queryset()
+        qs = qs.filter(user_id=user)
+        return qs
+    
+    # def post(self, request, *args, **kwargs):
+    #     data = self.request.data
+    #     print("data : ", data)
+    #     products = request.data.get('products')
+
+    #     for product in products:
+    #         # product_id = product.get('product_id')
+    #         product_id = product['product_id']  # 수정된 부분
+    #         product_pk = Product.objects.filter(id=product_id).first()
+    #         purchase = Purchase.objects.create(user_id=request.user, product_id=product_pk)
+    #     return super().post(request, *args, **kwargs)
+    
+    # def perform_create(self, serializer):
+    #     user = self.request.user
+    #     serializer.save(user_id=user)
+    #     return super().perform_create(serializer)

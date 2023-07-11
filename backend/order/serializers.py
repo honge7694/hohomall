@@ -1,5 +1,6 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from .models import Cart, Order, OrderDetail, OrderStatus
+from .models import Cart, Order, OrderDetail, OrderStatus, Purchase
 from coupon.models import Coupon, CouponUser, CouponStatus
 from product.models import Product, ProductOption, ProductImage, Brand
 from product.serializers import ProductImageSerializer
@@ -220,3 +221,22 @@ class OrderDetailSerializer(serializers.ModelSerializer):
             'links': brand.links,
         }
         return brand_data
+    
+
+class PurchaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Purchase
+        fields = ['id']
+    
+    def create(self, validated_data):
+        products_data = self.context['request'].data.get('products')
+        user = self.context['request'].user
+        purchases = []
+        for product_data in products_data:
+            product_id = Product.objects.filter(id=product_data['product_id']).first()
+
+            # 중복된 객체를 삭제하고 최신 객체로 만듦
+            Purchase.objects.filter(user_id=user, product_id=product_id).delete()
+            purchase = Purchase.objects.create(user_id=user, product_id=product_id)
+            purchases.append(purchase)
+        return purchases
