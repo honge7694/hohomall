@@ -158,25 +158,40 @@ const Order = () => {
     try {
       const response = await axiosInstance.post('/order/', orderData, { headers });
       console.log(response.data);
-
-      const orderHistoryData = {
-        'order_data': cartData,
-        'discount_price': discountedPrice,
-        'total_price': (totalProductPrice + 3000 - discountedPrice),
-        'total_product_price': totalProductPrice,
-        'delivery_fee': 3000,
-        'recipient': recipient,
-        'contact': contact,
-        'postcode': selectedPostalCode,
-        'address': selectedAddress,
-        'detail_address': detailAddress,
-        'memo': memo,
-      }
-
-      history('/order/history', {state: orderHistoryData});
     } catch (error) {
       console.error('주문 실패:', error);
     }      
+
+    // 구매 기록
+    const purchaseData = {
+      'products': cartData.map(item => ({
+        'product_id': item.product.id,
+      }))
+    }
+    console.log('purchaseData : ', purchaseData);
+    try {
+      const response = await axiosInstance.post('/order/purchase/', purchaseData, { headers });
+      console.log(response.data);
+
+      // 구매 내역
+      const orderHistoryData = {
+      'order_data': cartData,
+      'discount_price': discountedPrice,
+      'total_price': (totalProductPrice + 3000 - discountedPrice),
+      'total_product_price': totalProductPrice,
+      'delivery_fee': 3000,
+      'recipient': recipient,
+      'contact': contact,
+      'postcode': selectedPostalCode,
+      'address': selectedAddress,
+      'detail_address': detailAddress,
+      'memo': memo,
+    }
+      
+      history('/order/history', {state: orderHistoryData});
+    }catch(error){
+      console.log('구매 기록 저장 실패 : ', error)
+    }
   };
   
 

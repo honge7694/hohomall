@@ -38,7 +38,7 @@ const OrderHistory = () => {
         // fetchUserInfo();
     }, []);
 
-    const handleHomeButton = () => {
+    const handleHomeClick = () => {
         history('/');
     }
 
@@ -202,7 +202,7 @@ const OrderHistory = () => {
             </div>
 
             <div>
-                <Button type="primary" onClick={handleHomeButton} >
+                <Button type="primary" onClick={handleHomeClick} >
                     홈으로
                 </Button>
             </div>
