@@ -134,7 +134,7 @@ const Order = () => {
   };
 
   const handleOrderClick = async () => {
-    const couponId = selectedCoupon?.coupon?.id ?? null;
+    const couponId = selectedCoupon?.id ?? null;
     const orderData = {
       'coupon_user_id': couponId,
       'discount_price': discountedPrice,
@@ -159,7 +159,21 @@ const Order = () => {
       const response = await axiosInstance.post('/order/', orderData, { headers });
       console.log(response.data);
 
-      // TODO: 주문 내역으로 화면이동.
+      const orderHistoryData = {
+        'order_data': cartData,
+        'discount_price': discountedPrice,
+        'total_price': (totalProductPrice + 3000 - discountedPrice),
+        'total_product_price': totalProductPrice,
+        'delivery_fee': 3000,
+        'recipient': recipient,
+        'contact': contact,
+        'postcode': selectedPostalCode,
+        'address': selectedAddress,
+        'detail_address': detailAddress,
+        'memo': memo,
+      }
+
+      history('/order/history', {state: orderHistoryData});
     } catch (error) {
       console.error('주문 실패:', error);
     }      
@@ -220,7 +234,7 @@ const Order = () => {
       <div style={{ margin: '16px 0' }}>
         <Row gutter={16}>
           <Col span={16}>
-            <div style={{display: 'flex', flexDirection: 'row' }}>
+            <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
               <h2>배송지 정보</h2> <Text style={{marginLeft: '10px', marginTop: '3px', color: 'red'}}> * 정보를 모두 입력해주세요.</Text>
             </div>
 
@@ -385,7 +399,7 @@ const Order = () => {
 
               <div style={{ display: 'flex', alignItems: 'center', marginBottom: 10 }}>
                 <div style={{ flexShrink: 0, width: 200 }}>
-                    <Text style={{ fontSize: 23, color: 'blue', fontSize: 'bold' }}>총 결제 금액</Text>
+                    <Text style={{ fontSize: 23, color: 'blue', fontSize: '20px' }}>총 결제 금액</Text>
                 </div>
                 <div style={{ width: '100px',textAlign: 'right',}}>
                   + { (totalProductPrice + 3000 - discountedPrice).toLocaleString()} 원
