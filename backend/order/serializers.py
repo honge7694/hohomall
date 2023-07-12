@@ -224,9 +224,13 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     
 
 class PurchaseSerializer(serializers.ModelSerializer):
+    product_id = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Purchase
-        fields = ['id']
+        fields = ['id', 'product_id']
+
+    def get_product_id(self, obj):
+        return obj.product_id.id
     
     def create(self, validated_data):
         products_data = self.context['request'].data.get('products')

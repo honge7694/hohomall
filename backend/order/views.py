@@ -65,8 +65,9 @@ class PurchaseListCreateAPIView(ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
+        product_id = self.request.query_params.get('product_id')
         qs = super().get_queryset()
-        qs = qs.filter(user_id=user)
+        qs = qs.filter(user_id=user, product_id=product_id)
         return qs
     
     # def post(self, request, *args, **kwargs):
