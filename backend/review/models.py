@@ -10,6 +10,9 @@ class Review(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
     content = models.TextField()
+    rating = models.IntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'review'
@@ -22,3 +25,13 @@ class ReviewImage(models.Model):
 
     class Meta:
         db_table = 'review_image'
+
+
+class ReviewLike(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    review_id =models.ForeignKey(Review, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'review_like'
