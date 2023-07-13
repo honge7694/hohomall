@@ -1,6 +1,8 @@
+from rest_framework import status
 from rest_framework.generics import ListCreateAPIView
-from .models import Review
-from .serializers import ReviewSerializer
+from rest_framework.response import Response
+from .models import Review, ReviewLike
+from .serializers import ReviewSerializer, ReviewLikeSerializer
 from product.models import Product
 
 
@@ -23,3 +25,28 @@ class ReviewListCreateAPIView(ListCreateAPIView):
         serializer.save(user_id=user, product_id=product)
         return super().perform_create(serializer)
 
+# TODO: 리뷰 수정 및 삭제
+
+# TODO: 리뷰 좋아요
+class ReviewLikeListCreateAPIView(ListCreateAPIView):
+    """
+    Review 좋아요
+    """
+    queryset = ReviewLike.objects.all()
+    serializer_class = ReviewLikeSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        user = self.request.user
+        qs = qs.filter(review_id=self.kwargs['pk'], user_id=user)
+        return qs
+
+    def perform_create(self, serializer):
+        if self.get_queryset().exists():
+            self.get_queryset().delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        user = self.request.user
+        review_id = self.kwargs['pk']
+        review = Review.objects.get(pk=review_id)
+        serializer.save(review_id=review, user_id=user)
+        return super().perform_create(serializer)

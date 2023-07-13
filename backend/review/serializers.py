@@ -10,27 +10,15 @@ class ReviewImageSerializer(serializers.ModelSerializer):
         fields = ['id', 'review_id', 'image_src']
 
 
-class ReviewLikeSerializer(serializers.ModelSerializer):
-    user = UserInfoEditSerializer(read_only=True)
-    review = serializers.SerializerMethodField(read_only=True)
-
-    class Meta:
-        model = ReviewLike
-        fields = ['id', 'user', 'review']
-    
-    def get_review(self, obj):
-        review = obj.review_id
-        return review.id
-
-
 class ReviewSerializer(serializers.ModelSerializer):
-    user = UserInfoEditSerializer(read_only=True)
+    user = UserInfoEditSerializer(source='user_id', read_only=True)
     images = serializers.SerializerMethodField()
     like = serializers.SerializerMethodField()
+    is_like = serializers.SerializerMethodField()
 
     class Meta:
         model = Review
-        fields = ['id', 'user', 'content', 'rating', 'like', 'images', 'created_at', 'updated_at']
+        fields = ['id', 'user', 'content', 'rating', 'like', 'is_like', 'images', 'created_at', 'updated_at']
 
     def get_images(self, obj):
         image = obj.reviewimage_set.all()
@@ -39,6 +27,12 @@ class ReviewSerializer(serializers.ModelSerializer):
     def get_like(self, obj):
         like = obj.reviewlike_set.all()
         return len(like)
+    
+    def get_is_like(self, obj):
+        if 'request' in self.context and self.context['request'].user.is_authenticated:
+            user = self.context['request'].user
+            return obj.reviewlike_set.filter(user_id=user).exists()
+        return None
         
     def create(self, validated_data):
         instance = Review.objects.create(**validated_data)
@@ -47,3 +41,12 @@ class ReviewSerializer(serializers.ModelSerializer):
         for image_data in image_set.getlist('images'):
             ReviewImage.objects.create(review_id=instance, image_src=image_data)
         return instance
+    
+
+class ReviewLikeSerializer(serializers.ModelSerializer):
+    user = UserInfoEditSerializer(source='user_id', read_only=True)
+    review = ReviewSerializer(source='review_id', read_only=True)
+
+    class Meta:
+        model = ReviewLike
+        fields = ['id', 'user', 'review']

@@ -108,7 +108,6 @@ class ProductSerializer(serializers.ModelSerializer):
         브랜드 정보
         """
         brand = obj.brand_id
-        print('brand_logo_img : ', brand.logo_img)
         if brand:
             brand_data = {
                 'id': brand.id,
@@ -133,7 +132,6 @@ class ProductSerializer(serializers.ModelSerializer):
 
         for option_data in options_data:
             option_data = dict(option_data) 
-            print(option_data)
             ProductOption.objects.create(product_id=product, **option_data)
 
         return product

@@ -53,7 +53,6 @@ class CartSerializer(serializers.ModelSerializer):
     
     def get_product_image(self, obj):
         request = self.context.get('request')
-        print(request)
         product = obj.product_id
         try:
             image = product.productimage_set.first()
