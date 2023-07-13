@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Brand, Product, ProductImage, ProductOption
+from review.models import Review
 import locale
 
 locale.setlocale(locale.LC_ALL, '') # 현재 환경의 로칼 설정
@@ -49,6 +50,8 @@ class ProductSerializer(serializers.ModelSerializer):
     brand = serializers.SerializerMethodField(read_only=True)
     images = serializers.SerializerMethodField()
     options = serializers.SerializerMethodField()
+    rating = serializers.SerializerMethodField(read_only=True)
+    review_count = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Product
@@ -62,6 +65,8 @@ class ProductSerializer(serializers.ModelSerializer):
             'purchase_count',
             'price',
             'view_count',
+            'review_count',
+            'rating',
             'images',
             'options',
             'created_at',
@@ -75,6 +80,15 @@ class ProductSerializer(serializers.ModelSerializer):
         representation['price'] = locale.format_string("%d", int(instance.price), grouping=True)
         return representation
     
+    def get_review_count(self, obj):
+        review = Review.objects.filter(product_id=obj.id)
+        return len(review)
+
+    def get_rating(self, obj):
+        rating = Review.objects.filter(product_id=obj.id).values_list('rating', flat=True)
+        average_rating = sum(rating) / len(Review.objects.filter(product_id=obj.id))
+        return average_rating
+
     def get_images(self, obj):
         """
         이미지 가져오기
