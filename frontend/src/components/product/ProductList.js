@@ -51,7 +51,6 @@ const ProductList = ({productList}) => {
                                     <Title level={5}>{product.name}</Title>
                                     <Title level={5} style={{ marginBottom: 0 }}> ₩ {product.price}</Title>
                                 </div>
-                                {/* TODO: rating, review 개수 가져오기 */}
                                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
                                     <Rating
                                         count={5}
@@ -63,7 +62,7 @@ const ProductList = ({productList}) => {
                                     <Text type="secondary">{product.view_count} hits</Text> 
                                 </div>
                                 <div>
-                                    <Text type="secondary">{product.reviewCount} reviews</Text> 
+                                    <Text type="secondary">{product.review_count} reviews</Text> 
                                 </div>
                             </Card>
                         </a>

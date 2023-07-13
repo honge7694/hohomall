@@ -15,6 +15,7 @@ const ProductReview = ({productId}) => {
     const headers = { Authorization: `Bearer ${token['jwtToken']}`};
     const [canLeaveReview, setCanLeaveReview] = useState(false);
 
+    const [reviewList, setReviewList] = useState([]);
     const [reviewContent, setReviewContent] = useState('');
     const [reviewImages, setReviewImages] = useState([]);
     const [rating, setRating] = useState(1); // 추가: 초기 별점 값은 0으로 설정
@@ -38,6 +39,18 @@ const ProductReview = ({productId}) => {
             }       
         }
         checkReviewWrite();
+
+        // TODO: 리뷰 리스트 가져오기.
+        const fetchReviewList = async () => {
+            try {
+                const { data } = await axiosInstance.get(`/review/?product_id=${productId}`);
+                console.log('Review List Data : ', data)
+                setReviewList(data);
+            } catch (error) {
+                console.error('Failed to check review eligibility:', error);
+            }       
+        }
+        fetchReviewList();
     }, []);
 
     const handleImageClick = (images) => {
