@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Upload, List, Rate, Divider, Space,Typography, Modal, Image} from 'antd';
-import { PlusOutlined, HeartTwoTone, HeartOutlined, MessageOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { PlusOutlined, HeartTwoTone, HeartOutlined, MessageOutlined, LeftOutlined, RightOutlined, DeleteOutlined } from '@ant-design/icons';
 
+import { useRecoilValue, useResetRecoilState } from "recoil";
 import { userState } from 'state';
 import { axiosInstance } from 'api';
 import { useAppContext } from 'store';
@@ -9,8 +10,10 @@ import { useAppContext } from 'store';
 
 const { Text } = Typography;
 
-const ProductReview = ({productId}) => {
-    console.log("productId : ", productId);
+const ProductReview = ({productId, productRating}) => {
+    console.log("productId / productRating : ", productId, productRating);
+    const user = useRecoilValue(userState);
+    console.log('user : ', user);
     const { store: token } = useAppContext();
     const headers = { Authorization: `Bearer ${token['jwtToken']}`};
     const [canLeaveReview, setCanLeaveReview] = useState(false);
@@ -18,8 +21,7 @@ const ProductReview = ({productId}) => {
     const [reviewList, setReviewList] = useState([]);
     const [reviewContent, setReviewContent] = useState('');
     const [reviewImages, setReviewImages] = useState([]);
-    const [rating, setRating] = useState(1); // 추가: 초기 별점 값은 0으로 설정
-
+    const [rating, setRating] = useState(1); 
 
     const [showAllImages, setShowAllImages] = useState(false);
     const [selectedImages, setSelectedImages] = useState([]);
@@ -40,15 +42,25 @@ const ProductReview = ({productId}) => {
         }
         checkReviewWrite();
 
-        // TODO: 리뷰 리스트 가져오기.
+        // 리뷰 리스트 가져오기.
         const fetchReviewList = async () => {
-            try {
-                const { data } = await axiosInstance.get(`/review/?product_id=${productId}`);
-                console.log('Review List Data : ', data)
-                setReviewList(data);
-            } catch (error) {
-                console.error('Failed to check review eligibility:', error);
-            }       
+            if (user.userId){
+                try {
+                    const { data } = await axiosInstance.get(`/review/?product_id=${productId}`, {headers});
+                    console.log('Review List Data : ', data)
+                    setReviewList(data);
+                } catch (error) {
+                    console.error('Failed to check review eligibility:', error);
+                } 
+            } else {
+                try {
+                    const { data } = await axiosInstance.get(`/review/?product_id=${productId}`);
+                    console.log('Review List Data : ', data)
+                    setReviewList(data);
+                } catch (error) {
+                    console.error('Failed to check review eligibility:', error);
+                } 
+            }
         }
         fetchReviewList();
     }, []);
@@ -92,89 +104,97 @@ const ProductReview = ({productId}) => {
         </Space>
     );
 
-    const handleLike = async (review_id) => {
-        console.log(review_id);
-        try{
-            // // const response = await axiosInstance.post(`/post/${post.item.id}/like/`, '', { headers });
-            // // const { data } = await axiosInstance.get(apiUrl, { headers });
-            // setPostList(data);
-        }catch(error){
-            console.log('error : ', error);
+    const handleLike = async (review) => {
+        console.log(review);
+        if (user.userId){
+            try{
+                const response = await axiosInstance.post(`/review/like/${review.item.id}/`, '', { headers });
+                const { data } = await axiosInstance.get(`/review/?product_id=${productId}`, {headers});
+                console.log('Review List Data : ', data)
+                setReviewList(data);
+            }catch(error){
+                console.log('error : ', error);
+            }
+        } else {
+            console.log('비회원 사용자');
         }
     }
     
-    const handleSubmit = async () => {
+    const handleSubmit = async (fieldValues) => {
+        console.log(fieldValues);
+        const { content, rating, images } = fieldValues;
         const formData = new FormData();
-        formData.append('content', reviewContent);
+        formData.append('content', content);
         reviewImages.forEach((file) => {
             formData.append('images', file.originFileObj);
         });
 
         // 별점 데이터를 formData에 추가
         formData.append('rating', rating);
-        
-        // onSubmit(formData);
-    };
+        try{
+            const response = await axiosInstance.post(`/review/?product_id=${productId}`, formData, { headers });
+            console.log(response);
 
-    const sampleComments = [
-        { user: 'User 1', content: 'Great product!', rating: 5, 'images': [
-            {
-                "id": 1,
-                "review_id": 1,
-                "image_src": "http://127.0.0.1:8000/media/coupons/2023/07/12/default_image.png"
-            },
-            {
-                "id": 2,
-                "review_id": 1,
-                "image_src": "http://127.0.0.1:8000/media/coupons/2023/07/12/image01.png"
-            }
-        ]},
-        { user: 'User 2', content: 'Nice item!', rating: 4 },
-        { user: 'User 3', content: 'Nice!', rating: 3 },
-        { user: 'User 4', content: 'item!', rating: 2.5 },
-    ];
+            // fieldValues 초기화
+            setReviewContent('');
+            setReviewImages([]);
+            setRating(1);
+
+            // 리뷰 데이터 
+            const { data } = await axiosInstance.get(`/review/?product_id=${productId}`, {headers});
+            console.log('Review List Data : ', data)
+            setReviewList(data);
+        }catch(error){
+            console.log(error);
+        }
+    };
 
     return (
         <>
             <Divider />
             <h2>리뷰</h2>
             
-            <Form>
+            <Form
+                onFinish={handleSubmit}
+            >
                 {!canLeaveReview ? (
                     <Form.Item>
                         <Input.TextArea placeholder='상품 구매시 리뷰를 남길 수 있습니다.' disabled />
                     </Form.Item>
                 ):(
                     <>
-                        <Form.Item>
+                        <Form.Item name='rating' >
                             <Rate value={rating} onChange={handleRatingChange}  /> 
                         </Form.Item>
 
-                        <Form.Item>
-                            <Input.TextArea value={reviewContent} onChange={handleContentChange} />
+                        <Form.Item name='content' initialValue={reviewContent}>
+                            <Input.TextArea onChange={handleContentChange} />
                         </Form.Item>
                     
-                        <Form.Item>
+                        <Form.Item name='images' initialValue={reviewImages}>
                             <Upload
                                 multiple
+                                fileList={reviewImages}
                                 onChange={handleImageUpload}
                                 listType="picture-card"
                                 showUploadList={{
                                     showPreviewIcon: true,
                                     showRemoveIcon: true,
                                     showDownloadIcon: false,
-                                    removeIcon: <span>삭제</span>,
+                                    removeIcon: <span><DeleteOutlined/></span>,
                                 }}
                             >
-                                <div>
-                                    <PlusOutlined />
-                                    <div className='ant-upload-text'>Upload</div>
-                                </div>
+                                {reviewImages.length > 5 ? null : (
+                                    <div>
+                                        <PlusOutlined />
+                                        <div className='ant-upload-text'>Upload</div>
+                                    </div>
+                                )}
                             </Upload>
                         </Form.Item>
 
                         <Form.Item>
-                            <Button type="primary" onClick={handleSubmit}>
+                            <Button type="primary" htmlType='submit'>
                                 리뷰 작성
                             </Button>
                         </Form.Item>
@@ -183,13 +203,13 @@ const ProductReview = ({productId}) => {
                 {/* 댓글 리스트 컴포넌트 */}
                 <List
                     itemLayout="vertical"
-                    dataSource={sampleComments}
+                    dataSource={reviewList}
                     renderItem={(item) => (
                         <List.Item>
                         <List.Item.Meta />
                             <div>
-                                <Text style={{fontSize: '19px', fontWeight: 'bold', marginRight: '15px'}}>{item.user}</Text>
-                                <Rate disabled defaultValue={item.rating} /> {/* 추가: 기존 댓글에 대한 별점 표시 */}
+                                <Text style={{fontSize: '19px', fontWeight: 'bold', marginRight: '15px'}}>{item.user.nickname}</Text>
+                                <Rate disabled defaultValue={item.rating} />
                             </div>
                             <div style={{ marginTop: '10px' }}>
                                 <Text style={{ fontSize: '17px' }}>{item.content}</Text>
@@ -230,12 +250,13 @@ const ProductReview = ({productId}) => {
                                 actions={[
                                     <IconText icon={() => item.is_like ? (
                                             // console.log(item.is_like),
-                                            <HeartTwoTone twoToneColor="#eb2f96" onClick={()=> handleLike({item})} /> 
+                                            <HeartTwoTone twoToneColor="#eb2f96" onClick={()=> handleLike({item})} />
                                         ):(
                                             // console.log(item.id),
-                                            <HeartOutlined onClick={()=> handleLike({item})}/>
+                                            <HeartOutlined onClick={()=> handleLike({item})} />
                                         )} 
-                                        text={item.likes} key="list-vertical-like-o" />,
+                                        text={item.like} key="list-vertical-like-o" />,
+                                    
                                     <IconText icon={MessageOutlined} text={item.comments} key="list-vertical-message" />,
                                 ]}
                             >

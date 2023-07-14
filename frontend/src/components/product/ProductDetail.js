@@ -7,6 +7,8 @@ import 'react-image-gallery/styles/css/image-gallery.css';
 
 import { axiosInstance } from 'api';
 import { useAppContext } from 'store';
+import { useRecoilValue, useResetRecoilState } from "recoil";
+import { userState } from 'state';
 
 
 const { Title, Text } = Typography;
@@ -17,7 +19,9 @@ const ProductDetail = ({productData}) => {
     const { id } = useParams();
     const { store: token } = useAppContext();
     const headers = { Authorization: `Bearer ${token['jwtToken']}`};
+    const user = useRecoilValue(userState);
     const history = useNavigate();
+
     const [selectedImage, setSelectedImage] = useState(null);
     const [selectedOption, setSelectedOption] = useState('');
     const [wishlistModalVisible, setWishlistModalVisible] = useState(false);
@@ -49,33 +53,36 @@ const ProductDetail = ({productData}) => {
     const handleAddToWishlist = () => {
         // 찜하기 버튼 동작
         const selectOption = productData.option.find((option) => option.id === selectedOption);
-
-        if (selectOption) {
-            const wishlistItem = {
-                product_id: productData.productInfo.id,
-                product_option_id: selectedOption,
-                price: totalPrice,
-            };
-            console.log(wishlistItem);
-
-            async function fetchCart() {
-                try{
-                    const response = await axiosInstance.post('/order/cart/', wishlistItem, { headers });
-                    console.log('ProductList Cart response : ', response);
-                }catch(error){
-                    console.log('error : ', error);
+        if (user.userId){
+            if (selectOption) {
+                const wishlistItem = {
+                    product_id: productData.productInfo.id,
+                    product_option_id: selectedOption,
+                    price: totalPrice,
+                };
+                console.log(wishlistItem);
+    
+                async function fetchCart() {
+                    try{
+                        const response = await axiosInstance.post('/order/cart/', wishlistItem, { headers });
+                        console.log('ProductList Cart response : ', response);
+                    }catch(error){
+                        console.log('error : ', error);
+                    }
                 }
+                fetchCart();
+    
+                setWishlistModalVisible(true);
+            } else {
+                console.log('선택되지 않았습니다.');
             }
-            fetchCart();
-
-            setWishlistModalVisible(true);
         } else {
-            console.log('선택되지 않았습니다.');
+            console.log('로그인을 해주세요.');
         }
     };
 
     const handleBuyNow = () => {
-        // TODO: 구매하기 버튼 동작
+        // 구매하기 버튼 동작
     };
 
     const handleWishlistModalConfirm = () => {
@@ -166,9 +173,9 @@ const ProductDetail = ({productData}) => {
                                 onConfirm={handleWishlistModalConfirm}
                                 onCancel={handleWishlistModalCancel}
                             />
-                            <Button type="primary" onClick={handleBuyNow} style={{ marginLeft: 8 }}>
+                            {/* <Button type="primary" onClick={handleBuyNow} style={{ marginLeft: 8 }}>
                                 구매하기
-                            </Button>
+                            </Button> */}
                         </div>
                     </Card>
                 </Col>
