@@ -42,7 +42,6 @@ const ProductReviewEditModal = ({ reviewData, onSave, onCancel }) => {
     
     const handleEditRatingChange = (value) => {
         setEditRating(value);
-
     }
 
     const handleImageUpload = (info) => {
@@ -75,12 +74,10 @@ const ProductReviewEditModal = ({ reviewData, onSave, onCancel }) => {
         try {
             const response = await axiosInstance.patch(`/review/detail/${editReviewId}/`, formData, { headers });
             console.log(response);
-        
-            // 리뷰 데이터 다시 가져오기
-
-            // 수정 모달 닫기 등 필요한 동작 수행
+            onSave();
+            onCancel();
         } catch (error) {
-        console.log(error);
+            console.log(error);
         }
     };
 

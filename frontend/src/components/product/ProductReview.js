@@ -163,16 +163,15 @@ const ProductReview = ({productId, productRating}) => {
         setShowEditModal(true);
     };
 
-    const handleEditModalSave = (reviewId, updatedData) => {
-        // 리뷰 수정 요청 등 필요한 로직 수행
-        console.log('Review ID:', reviewId);
-        console.log('Updated Data:', updatedData);
+    const handleEditModalSave = async () => {
     
         // 모달 닫기
         setShowEditModal(false);
     
-        // 리뷰 리스트 업데이트 등 다른 로직 처리
-        // ...
+        // 리뷰 데이터  업데이트
+        const { data } = await axiosInstance.get(`/review/?product_id=${productId}`, {headers});
+        console.log('Review List Data : ', data)
+        setReviewList(data);
     };
     
     const handleEditModalCancel = () => {
