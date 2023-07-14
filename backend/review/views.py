@@ -1,8 +1,9 @@
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from .models import Review, ReviewLike
 from .serializers import ReviewSerializer, ReviewLikeSerializer
+from .permissions import IsAuthorOrReadonly
 from product.models import Product
 
 
@@ -26,8 +27,15 @@ class ReviewListCreateAPIView(ListCreateAPIView):
         return super().perform_create(serializer)
 
 # TODO: 리뷰 수정 및 삭제
+class ReviewRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    """
+    Review 수정 및 삭제
+    """
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    permission_classes = [IsAuthorOrReadonly, ]
 
-# TODO: 리뷰 좋아요
+
 class ReviewLikeListCreateAPIView(ListCreateAPIView):
     """
     Review 좋아요

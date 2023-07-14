@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Upload, List, Rate, Divider, Space,Typography, Modal, Image} from 'antd';
-import { PlusOutlined, HeartTwoTone, HeartOutlined, MessageOutlined, LeftOutlined, RightOutlined, DeleteOutlined } from '@ant-design/icons';
+import { PlusOutlined, HeartTwoTone, HeartOutlined, MessageOutlined, LeftOutlined, RightOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 
 import { useRecoilValue, useResetRecoilState } from "recoil";
 import { userState } from 'state';
 import { axiosInstance } from 'api';
 import { useAppContext } from 'store';
+import ProductReviewEditModal from './ProductReviewEditModal';
 
 
 const { Text } = Typography;
@@ -26,6 +27,12 @@ const ProductReview = ({productId, productRating}) => {
     const [showAllImages, setShowAllImages] = useState(false);
     const [selectedImages, setSelectedImages] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
+    
+
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [selectedReview, setSelectedReview] = useState(null);
+
+
 
     useEffect(() => {
         // 리뷰 가능 여부를 확인하는 요청
@@ -149,6 +156,35 @@ const ProductReview = ({productId, productRating}) => {
         }
     };
 
+    // 리뷰 모달 수정 함수
+    const handleEditClick = (review) => {
+        console.log(review)
+        setSelectedReview(review);
+        setShowEditModal(true);
+    };
+
+    const handleEditModalSave = (reviewId, updatedData) => {
+        // 리뷰 수정 요청 등 필요한 로직 수행
+        console.log('Review ID:', reviewId);
+        console.log('Updated Data:', updatedData);
+    
+        // 모달 닫기
+        setShowEditModal(false);
+    
+        // 리뷰 리스트 업데이트 등 다른 로직 처리
+        // ...
+    };
+    
+    const handleEditModalCancel = () => {
+        setShowEditModal(false);
+        setSelectedReview(null);
+    };
+
+    // 리뷰 삭제
+    const handleDeleteReview = () => {
+        
+    }
+
     return (
         <>
             <Divider />
@@ -204,6 +240,12 @@ const ProductReview = ({productId, productRating}) => {
                 <List
                     itemLayout="vertical"
                     dataSource={reviewList}
+                    pagination={{
+                        onChange: (page) => {
+                            console.log(page);
+                        },
+                        pageSize: 5,
+                    }}
                     renderItem={(item) => (
                         <List.Item>
                         <List.Item.Meta />
@@ -247,18 +289,37 @@ const ProductReview = ({productId, productRating}) => {
                             </div>
                             <List.Item
                                 key={item.id}
-                                actions={[
-                                    <IconText icon={() => item.is_like ? (
-                                            // console.log(item.is_like),
-                                            <HeartTwoTone twoToneColor="#eb2f96" onClick={()=> handleLike({item})} />
-                                        ):(
-                                            // console.log(item.id),
-                                            <HeartOutlined onClick={()=> handleLike({item})} />
-                                        )} 
-                                        text={item.like} key="list-vertical-like-o" />,
-                                    
-                                    <IconText icon={MessageOutlined} text={item.comments} key="list-vertical-message" />,
-                                ]}
+                                actions={
+                                    item.user.id === user.userId ?  (
+                                        [
+                                            <IconText icon={() => item.is_like ? (
+                                                    // console.log(item.is_like),
+                                                    <HeartTwoTone twoToneColor="#eb2f96" onClick={()=> handleLike({item})} />
+                                                ):(
+                                                    // console.log(item.id),
+                                                    <HeartOutlined onClick={()=> handleLike({item})} />
+                                                )} 
+                                                text={item.like} key="list-vertical-like-o" />,
+                                            
+                                            // <IconText icon={MessageOutlined} text={item.comments} key="list-vertical-message" />,
+                                            <EditOutlined onClick={(e) => {handleEditClick({item})}}/>,
+                                            <DeleteOutlined onClick={(e) => {handleDeleteReview({item})}}/>
+                                        ]
+                                    ):(
+                                        [
+                                            <IconText icon={() => item.is_like ? (
+                                                    // console.log(item.is_like),
+                                                    <HeartTwoTone twoToneColor="#eb2f96" onClick={()=> handleLike({item})} />
+                                                ):(
+                                                    // console.log(item.id),
+                                                    <HeartOutlined onClick={()=> handleLike({item})} />
+                                                )} 
+                                                text={item.like} key="list-vertical-like-o" />,
+                                            
+                                            <IconText icon={MessageOutlined} text={item.comments} key="list-vertical-message" />,
+                                        ]
+                                    )
+                            }
                             >
                             </List.Item>
                         </List.Item>            
@@ -286,6 +347,15 @@ const ProductReview = ({productId, productRating}) => {
                     )}
                 </div>
             </Modal>
+
+            {/* 리뷰 수정 모달 */}
+            {selectedReview && (
+                <ProductReviewEditModal
+                    reviewData={selectedReview}
+                    onSave={handleEditModalSave}
+                    onCancel={handleEditModalCancel}
+                />
+            )}
         </>
     );
 };

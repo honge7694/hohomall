@@ -15,7 +15,7 @@ class CartListCreateAPIView(ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         qs = super().get_queryset()
-        qs.filter(user_id=user)
+        qs = qs.filter(user_id=user)
         return qs
     
     def perform_create(self, serializer):

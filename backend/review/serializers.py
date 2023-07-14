@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Review, ReviewImage, ReviewLike
 from account.serializers import UserInfoEditSerializer
 from product.models import Product
+import json
 
 
 class ReviewImageSerializer(serializers.ModelSerializer):
@@ -29,8 +30,8 @@ class ReviewSerializer(serializers.ModelSerializer):
         return len(like)
     
     def get_is_like(self, obj):
-        if 'request' in self.context and self.context['request'].user.is_authenticated:
-            user = self.context['request'].user
+        user = self.context['request'].user
+        if not user.is_anonymous:
             return obj.reviewlike_set.filter(user_id=user).exists()
         return None
         
@@ -40,6 +41,28 @@ class ReviewSerializer(serializers.ModelSerializer):
         
         for image_data in image_set.getlist('images'):
             ReviewImage.objects.create(review_id=instance, image_src=image_data)
+        return instance
+
+    def update(self, instance, validated_data):
+        deleted_images_str = self.context['request'].data.get('deleted_images', '[]')
+        deleted_images = json.loads(deleted_images_str)
+        new_images = self.context['request'].FILES
+        print("new_images : ", new_images)
+
+        # 이미지 삭제 처리
+        for image_id in deleted_images:
+            print(image_id)
+            instance.reviewimage_set.filter(id=image_id).delete()
+
+        # 새로운 이미지 추가 처리
+        for image_data in new_images.getlist('new_images'):
+            ReviewImage.objects.create(review_id=instance, image_src=image_data)
+
+        # Review 모델의 필드 업데이트
+        instance.content = validated_data.get('content', instance.content)
+        instance.rating = validated_data.get('rating', instance.rating)
+        instance.save()
+
         return instance
     
 

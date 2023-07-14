@@ -142,6 +142,8 @@ class OrderSerializer(serializers.ModelSerializer):
                 price=order_detail_data['price'],
             )
 
+            # TODO: 주문하면 장바구니 비우기
+
         # 쿠폰의 is_used 변경
         if coupon_user_id:
             coupon_user_id.is_used = CouponStatus.USED.value
@@ -223,13 +225,13 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     
 
 class PurchaseSerializer(serializers.ModelSerializer):
-    product_id = serializers.SerializerMethodField(read_only=True)
+    # product_id = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Purchase
-        fields = ['id', 'product_id']
+        fields = ['id']
 
-    def get_product_id(self, obj):
-        return obj.product_id.id
+    # def get_product_id(self, obj):
+    #     return obj.product_id.id
     
     def create(self, validated_data):
         products_data = self.context['request'].data.get('products')
