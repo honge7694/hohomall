@@ -24,7 +24,14 @@ class CartSerializer(serializers.ModelSerializer):
         fields = ['id', 'product_id', 'product', 'product_option_id', 'product_option', 'product_image', 'price', 'quantity']
 
     def get_product(self, obj):
-        product = obj.product_id
+        request_data = self.context['request'].data
+        
+        if not request_data:
+            product = obj.product_id
+        else:
+            product_id = request_data.get('product_id')
+            product = Product.objects.get(id=product_id)
+
         product_data = {
             'id': product.id,
             'name': product.name,
@@ -40,7 +47,13 @@ class CartSerializer(serializers.ModelSerializer):
         return product_data
     
     def get_product_option(self, obj):
-        product_option = obj.product_option_id
+        request_data = self.context['request'].data
+        if not request_data:
+            product_option = obj.product_option_id
+        else:
+            product_option_id = request_data.get('product_option_id')
+            product_option = ProductOption.objects.get(id=product_option_id)
+        
         product_option_data = {
             'id': product_option.id,
             'option_size': product_option.option_size,
@@ -53,7 +66,14 @@ class CartSerializer(serializers.ModelSerializer):
     
     def get_product_image(self, obj):
         request = self.context.get('request')
-        product = obj.product_id
+        request_data = self.context['request'].data
+
+        if not request_data:
+            product = obj.product_id
+        else:
+            product_id = request_data.get('product_id')
+            product = Product.objects.get(id=product_id)
+
         try:
             image = product.productimage_set.first()
             if image:
@@ -142,7 +162,8 @@ class OrderSerializer(serializers.ModelSerializer):
                 price=order_detail_data['price'],
             )
 
-            # TODO: 주문하면 장바구니 비우기
+            if product and Cart.objects.filter(product_id=product, user_id=self.context['request'].user, product_option_id=product_option).exists():
+                Cart.objects.filter(product_id=product, user_id=self.context['request'].user, product_option_id=product_option).delete()
 
         # 쿠폰의 is_used 변경
         if coupon_user_id:

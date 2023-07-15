@@ -42,6 +42,14 @@ class ProductOptionSerializer(serializers.ModelSerializer):
         ]
 
 
+# class ProductInfoSerializer(serializers.ModelSerializer):
+#     model = Product
+#     fields = [
+#         'id',
+#         'name',
+#         ''
+#     ]
+
 class ProductSerializer(serializers.ModelSerializer):
     brand_id = serializers.PrimaryKeyRelatedField(
         queryset=Brand.objects.all(),

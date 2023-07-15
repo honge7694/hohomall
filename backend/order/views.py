@@ -15,7 +15,7 @@ class CartListCreateAPIView(ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         qs = super().get_queryset()
-        qs = qs.filter(user_id=user)
+        qs.filter(user_id=user)
         return qs
     
     def perform_create(self, serializer):
@@ -25,6 +25,7 @@ class CartListCreateAPIView(ListCreateAPIView):
         price = self.request.data['price']
 
         cart_item = self.queryset.filter(product_id=product_id, product_option_id=product_option_id, price=price).first()
+        print(cart_item)
         if cart_item:
             # 이미 존재하는 상품인 경우 quantity를 증가시킴
             cart_item.quantity = F('quantity') + 1

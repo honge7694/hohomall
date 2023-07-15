@@ -26,7 +26,7 @@ class ReviewListCreateAPIView(ListCreateAPIView):
         serializer.save(user_id=user, product_id=product)
         return super().perform_create(serializer)
 
-# TODO: 리뷰 수정 및 삭제
+
 class ReviewRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     """
     Review 수정 및 삭제
