@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Upload, List, Rate, Divider, Space,Typography, Modal, Image} from 'antd';
-import { PlusOutlined, HeartTwoTone, HeartOutlined, MessageOutlined, LeftOutlined, RightOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { Form, Input, Button, Upload, List, Rate, Divider, Space,Typography, Modal, Image, notification} from 'antd';
+import { PlusOutlined, HeartTwoTone, HeartOutlined, MessageOutlined, LeftOutlined, RightOutlined, DeleteOutlined, EditOutlined, SmileOutlined } from '@ant-design/icons';
 
 import { useRecoilValue, useResetRecoilState } from "recoil";
 import { userState } from 'state';
@@ -12,11 +12,11 @@ import ProductReviewEditModal from './ProductReviewEditModal';
 const { Text } = Typography;
 
 const ProductReview = ({productId, productRating}) => {
-    console.log("productId / productRating : ", productId, productRating);
+    // console.log("productId / productRating : ", productId, productRating);
     const user = useRecoilValue(userState);
-    console.log('user : ', user);
     const { store: token } = useAppContext();
     const headers = { Authorization: `Bearer ${token['jwtToken']}`};
+    const [api, setApi] = notification.useNotification();
     const [canLeaveReview, setCanLeaveReview] = useState(false);
 
     const [reviewList, setReviewList] = useState([]);
@@ -72,36 +72,51 @@ const ProductReview = ({productId, productRating}) => {
         fetchReviewList();
     }, []);
 
+    /*  
+        리뷰 다중 이미지 더보기
+    */
+
+    // 더보기 이미지 모달 열기
     const handleImageClick = (images) => {
         setSelectedImages(images);
         setShowAllImages(true);
     };
 
+    // 더보기 이미지 모달 닫기
     const handleModalClose = () => {
         setShowAllImages(false);
         setSelectedImages([]);
     };
 
+    // 더보기 이전 이미지 
     const handlePrevImage = () => {
         setCurrentIndex((prevIndex) => prevIndex - 1);
     };
 
+    // 더보기 다음 이미지 
     const handleNextImage = () => {
         setCurrentIndex((prevIndex) => prevIndex + 1);
     };
 
+    /* 
+        리뷰 작성
+    */
 
+    // 리뷰 내용 작성
     const handleContentChange = (e) => {
         setReviewContent(e.target.value);
     };
 
+    // 이미지 업로드
     const handleImageUpload = (info) => {
         const fileList = info.fileList;
         setReviewImages(fileList);
     };
 
+    // 별점 
     const handleRatingChange = (value) => {
         setRating(value);
+        console.log('rating : ', rating)
     };
 
     const IconText = ({ icon, text }) => (
@@ -111,6 +126,9 @@ const ProductReview = ({productId, productRating}) => {
         </Space>
     );
 
+    /*
+        리뷰 좋아요
+    */
     const handleLike = async (review) => {
         console.log(review);
         if (user.userId){
@@ -127,6 +145,9 @@ const ProductReview = ({productId, productRating}) => {
         }
     }
     
+    /*
+        리뷰 작성
+    */
     const handleSubmit = async (fieldValues) => {
         console.log(fieldValues);
         const { content, rating, images } = fieldValues;
@@ -149,43 +170,67 @@ const ProductReview = ({productId, productRating}) => {
 
             // 리뷰 데이터 
             const { data } = await axiosInstance.get(`/review/?product_id=${productId}`, {headers});
-            console.log('Review List Data : ', data)
             setReviewList(data);
         }catch(error){
             console.log(error);
         }
     };
 
-    // 리뷰 모달 수정 함수
+    /*
+        리뷰 모달 수정 
+    */
+    
+    // 수정 모달 오픈
     const handleEditClick = (review) => {
         console.log(review)
         setSelectedReview(review);
         setShowEditModal(true);
     };
 
+    // 수정 저장
     const handleEditModalSave = async () => {
-    
         // 모달 닫기
         setShowEditModal(false);
     
         // 리뷰 데이터  업데이트
         const { data } = await axiosInstance.get(`/review/?product_id=${productId}`, {headers});
-        console.log('Review List Data : ', data)
         setReviewList(data);
+
+        api.info({
+            message: '리뷰 수정이 완료되었습니다.',
+            icon: <SmileOutlined style={{ color: "#108ee9" }}/>  
+        });
     };
     
+    // 리뷰 모달 닫기
     const handleEditModalCancel = () => {
         setShowEditModal(false);
         setSelectedReview(null);
     };
 
     // 리뷰 삭제
-    const handleDeleteReview = () => {
-        
+    const handleDeleteReview = async (reviewData) => {
+        console.log(reviewData)
+        try{
+            const response = await axiosInstance.delete(`/review/detail/${reviewData.item.id}/`, { headers });
+            console.log(response);
+
+            const { data } = await axiosInstance.get(`/review/?product_id=${productId}`, {headers});
+            setReviewList(data);
+
+            api.info({
+                message: '리뷰 삭제가 완료되었습니다.',
+                icon: <SmileOutlined style={{ color: "#108ee9" }}/>  
+            });
+
+        }catch(error){
+            console.log(error)
+        }
     }
 
     return (
         <>
+            {setApi}
             <Divider />
             <h2>리뷰</h2>
             
@@ -325,6 +370,8 @@ const ProductReview = ({productId, productRating}) => {
                     )}
                 />
             </Form>
+
+            {/* 리뷰 다중이미지 더보기 */}
             <Modal visible={showAllImages} onCancel={handleModalClose} footer={null}>
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <Image

@@ -89,6 +89,7 @@ const UserInfoEdit = ({data}) => {
 
     return (
         <>
+            {setApi}
             <Card
                 className="card-signup header-solid ant-card pt-0"
                 title={<h5>회원정보 수정</h5>}
