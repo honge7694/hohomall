@@ -31,7 +31,7 @@ const OrderHistoryList = ({orderList}) => {
             dataIndex: 'order_details',
             key: 'id',
             render: (order_details, record, index) => (
-                <span onClick={() => history(`/order/list/${orderList[index].id}`)}>
+                <span style={{cursor: 'pointer'}} onClick={() => history(`/order/list/${orderList[index].id}`)}>
                     {order_details[0].product.name}{' '}
                     {order_details.length > 1 ? `외 ${order_details.length - 1}` : null}
                 </span>
