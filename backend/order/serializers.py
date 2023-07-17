@@ -162,6 +162,12 @@ class OrderSerializer(serializers.ModelSerializer):
                 price=order_detail_data['price'],
             )
 
+            # OrderStatus 생성
+            OrderStatus.objects.create(
+                order_detail_id=order_detail
+            )
+
+            # 주문시 장바구니 비우기
             if product and Cart.objects.filter(product_id=product, user_id=self.context['request'].user, product_option_id=product_option).exists():
                 Cart.objects.filter(product_id=product, user_id=self.context['request'].user, product_option_id=product_option).delete()
 
@@ -170,12 +176,15 @@ class OrderSerializer(serializers.ModelSerializer):
             coupon_user_id.is_used = CouponStatus.USED.value
             coupon_user_id.save()
         
-        # OrderStatus 생성
-        OrderStatus.objects.create(
-            order_detail_id=order_detail
-        )
+        
 
         return order
+    
+
+class OrderStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderStatus
+        fields = "__all__"
 
 
 class OrderDetailSerializer(serializers.ModelSerializer):
@@ -195,6 +204,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     product = serializers.SerializerMethodField(read_only=True)
     product_option = serializers.SerializerMethodField(read_only=True)
     brand = serializers.SerializerMethodField(read_only=True)
+    status = serializers.SerializerMethodField()
 
     class Meta:
         model = OrderDetail
@@ -208,7 +218,13 @@ class OrderDetailSerializer(serializers.ModelSerializer):
             'brand',
             'quantity',
             'price',
+            'status',
         ]
+    
+    def get_status(self, obj):
+        status = obj.orderstatus_set.all()
+        serializer = OrderStatusSerializer(status, many=True)
+        return serializer.data
 
     def get_product(self, obj):
         product = obj.product_id

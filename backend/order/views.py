@@ -50,6 +50,11 @@ class OrderListCreateAPIView(ListCreateAPIView):
     """
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        qs = qs.filter(user_id=self.request.user)
+        return qs
         
     def perform_create(self, serializer):
         user = self.request.user
@@ -59,7 +64,7 @@ class OrderListCreateAPIView(ListCreateAPIView):
 
 class PurchaseListCreateAPIView(ListCreateAPIView):
     """
-    구매 기록 생성 및 리스트 API
+    구매 기록 생성 및 리스트 API (Review 작성 가능 여부)
     """
     queryset = Purchase.objects.all()
     serializer_class = PurchaseSerializer

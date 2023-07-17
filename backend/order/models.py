@@ -24,6 +24,7 @@ class Order(models.Model):
     
     class Meta:
         db_table = 'order'
+        ordering = ['-id']
 
 
 class OrderDetail(models.Model):
