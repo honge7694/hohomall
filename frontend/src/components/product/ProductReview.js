@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Form, Input, Button, Upload, List, Rate, Divider, Space,Typography, Modal, Image, notification} from 'antd';
 import { PlusOutlined, HeartTwoTone, HeartOutlined, MessageOutlined, LeftOutlined, RightOutlined, DeleteOutlined, EditOutlined, SmileOutlined } from '@ant-design/icons';
 
@@ -14,8 +15,10 @@ const { Text } = Typography;
 const ProductReview = ({productId, productRating}) => {
     // console.log("productId / productRating : ", productId, productRating);
     const user = useRecoilValue(userState);
+    const resetUser = useResetRecoilState(userState);
     const { store: token } = useAppContext();
     const headers = { Authorization: `Bearer ${token['jwtToken']}`};
+    const history = useNavigate();
     const [api, setApi] = notification.useNotification();
     const [canLeaveReview, setCanLeaveReview] = useState(false);
 
@@ -57,7 +60,12 @@ const ProductReview = ({productId, productRating}) => {
                     console.log('Review List Data : ', data)
                     setReviewList(data);
                 } catch (error) {
-                    console.error('Failed to check review eligibility:', error);
+                    console.error('Failed to ReviewList:', error);
+
+                    if (error.response.status === 404){
+                        resetUser();
+                        history('/sign-in');
+                    }
                 } 
             } else {
                 try {
@@ -65,7 +73,7 @@ const ProductReview = ({productId, productRating}) => {
                     console.log('Review List Data : ', data)
                     setReviewList(data);
                 } catch (error) {
-                    console.error('Failed to check review eligibility:', error);
+                    console.error('Failed to ReviewList:', error);
                 } 
             }
         }

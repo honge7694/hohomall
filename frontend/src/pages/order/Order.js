@@ -175,17 +175,17 @@ const Order = () => {
 
       // 구매 내역
       const orderHistoryData = {
-      'order_data': cartData,
-      'discount_price': discountedPrice,
-      'total_price': (totalProductPrice + 3000 - discountedPrice),
-      'total_product_price': totalProductPrice,
-      'delivery_fee': 3000,
-      'recipient': recipient,
-      'contact': contact,
-      'postcode': selectedPostalCode,
-      'address': selectedAddress,
-      'detail_address': detailAddress,
-      'memo': memo,
+        'order_data': cartData,
+        'discount_price': discountedPrice,
+        'total_price': (totalProductPrice + 3000 - discountedPrice),
+        'total_product_price': totalProductPrice,
+        'delivery_fee': 3000,
+        'recipient': recipient,
+        'contact': contact,
+        'postcode': selectedPostalCode,
+        'address': selectedAddress,
+        'detail_address': detailAddress,
+        'memo': memo,
     }
       
       history('/order/history', {state: orderHistoryData});

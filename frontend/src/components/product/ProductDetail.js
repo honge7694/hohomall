@@ -39,6 +39,7 @@ const ProductDetail = ({productData}) => {
     };
 
     const handleOptionSelect = (value) => {
+        console.log('select value : ', value);
         setSelectedOption(value);
         const selectOption = productData.option.find((option) => option.id === value);
         if (selectOption) {
@@ -53,6 +54,7 @@ const ProductDetail = ({productData}) => {
     const handleAddToWishlist = () => {
         // 찜하기 버튼 동작
         const selectOption = productData.option.find((option) => option.id === selectedOption);
+        console.log("handleWishList : ", selectOption);
         if (user.userId){
             if (selectOption) {
                 const wishlistItem = {
@@ -60,9 +62,9 @@ const ProductDetail = ({productData}) => {
                     product_option_id: selectedOption,
                     price: totalPrice,
                 };
-                console.log(wishlistItem);
-    
+                
                 async function fetchCart() {
+                    console.log('wishlistItem',wishlistItem);
                     try{
                         const response = await axiosInstance.post('/order/cart/', wishlistItem, { headers });
                         console.log('ProductList Cart response : ', response);
