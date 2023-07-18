@@ -21,9 +21,17 @@ const OrderHistoryList = () => {
 
     useEffect(() => {
         const fetchOrderList = async () => {
-            const { data } = await axiosInstance.get('/order/', { headers })
-            console.log('Order List : ', data);
-            setOrderList(data);
+            try{
+                const { data } = await axiosInstance.get('/order/', { headers })
+                console.log('Order List : ', data);
+                setOrderList(data);
+            }catch(error){
+                console.log(error);
+                if (error.response.status === 403){
+                    resetUser();
+                    history('/sign-in');
+                }
+            }
         }
 
         fetchOrderList();

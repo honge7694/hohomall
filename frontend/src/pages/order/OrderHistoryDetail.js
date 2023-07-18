@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Row, Col, Typography, Divider } from 'antd';
+import { Button, Row, Col, Typography, Divider, notification } from 'antd';
+import { SmileOutlined } from '@ant-design/icons';
 import { axiosInstance } from 'api';
 import { useAppContext } from 'store';
 
@@ -12,9 +13,12 @@ const OrderHistoryDetail = () => {
     const { id } = useParams();
     const { store: token } = useAppContext();
     const headers = { Authorization: `Bearer ${token['jwtToken']}`};
-
+    const history = useNavigate();
+    
     const [orderDetail, setOrderDetail] = useState();
+    const [api, setApi] = notification.useNotification();
 
+    // OrderHistoryDetail Data 가져오기
     useEffect(() => {
         const fetchOrderDetail = async () => {
             try {
@@ -39,17 +43,36 @@ const OrderHistoryDetail = () => {
         return orderDetail && orderDetail.order_details.every(detail => detail.status[0].status === "배송준비중");
     };
 
+    // 주문 취소
     const handleCancelOrder = () => {
-        // 주문 취소 로직을 구현
+        const fetchOrderDetailDelete = async () => {
+            try {
+                const response = await axiosInstance.delete(`/order/detail/${id}/`, { headers });
+                console.log(response);
+
+                api.info({
+                    message: '주문 취소(이)가 완료되었습니다.',
+                    icon: <SmileOutlined style={{ color: "#108ee9" }}/>  
+                });
+                
+                history('/order/list');
+            }catch(error){
+                console.log(error);
+            }
+        }
+        fetchOrderDetailDelete();
     };
     
+    // 이전으로 버튼
     const handleGoHome = () => {
         // 홈으로 이동하는 로직을 구현
+        history('/order/list');
     };
 
 
     return (
         <>
+            {setApi}
             <h2>주문 내역</h2>
             <div style={{ marginBottom: '16px' }}>
                 <div style={{ textAlign: 'center'}}>
@@ -218,7 +241,7 @@ const OrderHistoryDetail = () => {
                 
                 <div style={{ textAlign: 'center', marginTop: '30px' }}>
                     <Button type="primary" onClick={handleCancelOrder} style={{ marginRight: '8px' }} disabled={!isAllReadyForShipment()}>주문 취소</Button>
-                    <Button onClick={handleGoHome}>홈으로</Button>
+                    <Button onClick={handleGoHome}>이전으로</Button>
                 </div>
             </div>
         </>

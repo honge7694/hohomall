@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
-import { Card, Table } from 'antd';
+import { Card, Table, notification } from 'antd';
 
 import { useRecoilValue, useResetRecoilState } from "recoil";
 import { userState } from 'state';
@@ -17,6 +17,7 @@ const OrderHistoryList = ({orderList}) => {
     const history = useNavigate();
     const user = useRecoilValue(userState);
     const resetUser = useResetRecoilState(userState);
+    const [api, setApi] = notification.useNotification();
     
     const columns = [
         {
@@ -72,6 +73,7 @@ const OrderHistoryList = ({orderList}) => {
 
     return (
         <>
+            {setApi}
             <Card
                 bordered={false}
                 className="criclebox tablespace mb-24"
