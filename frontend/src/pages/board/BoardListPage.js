@@ -15,12 +15,13 @@ const BoardListPage = () => {
     const resetUser = useResetRecoilState(userState);
 
     const [questionList, setQuestionList] = useState([]);
+    const [answerList, setAnswerList] = useState([]);
 
     useEffect(() => {
         const fetchQuestionList = async () => {
             try{
-                const { data } = await axiosInstance.get('/question/', { headers })
-                console.log('BoardList : ', data);
+                const { data } = await axiosInstance.get('/board/question/', { headers })
+                console.log('QuestionList : ', data);
                 setQuestionList(data);
             }catch(error){
                 console.log(error);
@@ -32,11 +33,27 @@ const BoardListPage = () => {
         }
 
         fetchQuestionList();
+
+        const fetchAnswerList = async () => {
+            try{
+                const { data } = await axiosInstance.get('/board/answer/', { headers })
+                console.log('AnswerList : ', data);
+                setAnswerList(data);
+            }catch(error){
+                console.log(error);
+                // if (error.response.status === 403){
+                //     resetUser();
+                //     history('/sign-in');
+                // }
+            }
+        }
+
+        fetchAnswerList();
     }, []);
         
     return (
         <>
-            {questionList && <BoardList questionList={questionList} />}
+            {questionList && <BoardList questionList={questionList} answerList={answerList} />}
         </>
     )
 }

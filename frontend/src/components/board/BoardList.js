@@ -5,7 +5,7 @@ import { Card, Table, notification, Typography } from 'antd';
 
 const { Text } = Typography;
 
-const BoardList = ({questionList}) => {
+const BoardList = ({questionList, answerList}) => {
     console.log('questionList : ', questionList)
     const history = useNavigate();
     const [api, setApi] = notification.useNotification();
@@ -24,7 +24,7 @@ const BoardList = ({questionList}) => {
             key: 'title',
             render: (text, record, index) => {
                 let color = 'black'; // title 기본 색깔
-        
+                console.log('reacord :', record)
                 // subject에 따라 색깔 변경
                 if (record.subject === '배송문의') color = 'blue';
                 else if (record.subject === '상품문의') color = 'green';
@@ -56,17 +56,57 @@ const BoardList = ({questionList}) => {
             ),
         },
         {
-
+            title: '답변 확인',
+            dataIndex: 'answer',
+            key: 'answer',
+            render: (answer, record) => (
+            answer ? (
+                <span onClick={() => history(`/board/detail/${record.key}`)} style={{ text: 'bold', color: 'red'}}>
+                    [답변 완료]
+                </span>
+            ) : (
+                <span>답변 없음</span>
+            )
+        ),
         },
-        // {
-        //     title: '답변',
-        //     dataIndex: 'answer',
-        //     key: 'answer',
-        //     render: (text, record) => (
-        //         <p>{answerList.find((answer) => answer.question === record.id)?.content}</p>
-        //     ),
-        // },
     ];
+
+    // 계단식 형태로 데이터 가공
+    const qnaData = questionList.map((question) => {
+        const answer = answerList.find((answer) => answer.question_id === question.id);
+        return {
+            key: question.id,
+            question: question,
+            answer: answer,
+        };
+    });
+    console.log('qnaData: ', qnaData)
+
+    const data = qnaData.map((qna) => ({
+        key: qna.key,
+        subject: qna.question.subject,
+        title: qna.question.title,
+        user: qna.question.user,
+        answer: qna.answer,
+        created_at: qna.question.created_at,
+    }));
+
+    // const expandedRowRender = (record) => {
+    //     // 해당 질문에 대한 답변을 찾아옴
+    //     const answer = answerList.find((answer) => answer.question_id === record.key);
+    
+    //     return (
+    //         <div>
+    //             {answer &&
+    //                 <div>
+    //                     <p>[답변] {answer.title}</p>
+    //                     <p>작성자: {answer.admin.nickname}</p>
+    //                     <p>작성일: {new Date(answer.created_at).toLocaleDateString()}</p>
+    //                 </div>
+    //             }
+    //         </div>
+    //     );
+    // };
 
     return (
         <>
@@ -77,7 +117,7 @@ const BoardList = ({questionList}) => {
                 title="문의"
             >
                 <div className="table-responsive">
-                    <Table dataSource={questionList} columns={columns}  className="ant-border-space" />;
+                    <Table dataSource={data} columns={columns} className="ant-border-space" />;
                 </div>
             </Card>
         </>
