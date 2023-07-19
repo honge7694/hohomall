@@ -94,8 +94,10 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_rating(self, obj):
         rating = Review.objects.filter(product_id=obj.id).values_list('rating', flat=True)
-        average_rating = sum(rating) / len(Review.objects.filter(product_id=obj.id))
-        return average_rating
+        if rating:
+            average_rating = sum(rating) / len(Review.objects.filter(product_id=obj.id))
+            return average_rating
+        return 0
 
     def get_images(self, obj):
         """

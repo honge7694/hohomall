@@ -10,6 +10,7 @@ urlpatterns = [
     path('coupon/', include('coupon.urls')),
     path('order/', include('order.urls')),
     path('review/', include('review.urls')),
+    path('board/', include('board.urls')),
 ]
 
 if settings.DEBUG:

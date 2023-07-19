@@ -62,6 +62,14 @@ class OrderListCreateAPIView(ListCreateAPIView):
         return super().perform_create(serializer)
     
 
+class OrderRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    """
+    주문 detail API
+    """
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+
 class PurchaseListCreateAPIView(ListCreateAPIView):
     """
     구매 기록 생성 및 리스트 API (Review 작성 가능 여부)
