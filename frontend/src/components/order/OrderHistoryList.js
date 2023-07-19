@@ -1,22 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from "react-router-dom";
+import React from 'react';
+import { useNavigate } from "react-router-dom";
 import { Card, Table, notification } from 'antd';
-
-import { useRecoilValue, useResetRecoilState } from "recoil";
-import { userState } from 'state';
-import { axiosInstance } from 'api';
-import { useAppContext } from 'store';
 
 
 const OrderHistoryList = ({orderList}) => {
     console.log('orderList : ', orderList)
-    const { id, created_at, order_details, total_price } = orderList;
-    
-    const { store: token } = useAppContext();
-    const headers = { Authorization: `Bearer ${token['jwtToken']}`};
     const history = useNavigate();
-    const user = useRecoilValue(userState);
-    const resetUser = useResetRecoilState(userState);
     const [api, setApi] = notification.useNotification();
     
     const columns = [

@@ -13,6 +13,7 @@ import "assets/styles/responsive.css";
 import ProductIndex from './product/index';
 import CartIndex from './cart';
 import OrderIndex from './order/index';
+import BoardIndex from './board';
 
 
 const Root = () => {
@@ -22,7 +23,7 @@ const Root = () => {
             <Routes>
                 <Route path="/sign-up" element={<SignUp/> }/>
                 <Route path="/sign-in" element={<SignIn/> }/>
-                <Route  path="/" element={<Main />}>
+                <Route  path="/" element={<Main/> }>
                     <Route path="/dashboard" element={<Home/> }/>
                     <Route path="/tables" element={<Tables/> }/>
                     <Route path="/billing" element={<Billing/> }/>
@@ -30,6 +31,7 @@ const Root = () => {
                     <Route path="/product/*" element={<ProductIndex/> }/>
                     <Route path="/cart/*" element={<CartIndex/> }/>
                     <Route path="/order/*" element={<OrderIndex/> }/>
+                    <Route path="/board/*" element={<BoardIndex/> }/>
                 </Route>
             </Routes>
         </div>

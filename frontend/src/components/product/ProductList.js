@@ -44,7 +44,7 @@ const ProductList = ({productList}) => {
                         <a href="#" onClick={ (e) => handlerOnClick(e, product.id) }>
                             <Card
                                 hoverable
-                                cover={<img alt={product.name} src={product.images[0].image_src} />}
+                                cover={<img alt={product.name} src={product.images[0].image_src} style={{ height: '280px', objectFit: 'cover' }} />}
                                 style={{ display: 'grid', gridTemplateRows: 'auto 1fr auto' }}
                             >
                                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
