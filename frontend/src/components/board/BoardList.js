@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
-import { Card, Table, notification, Typography } from 'antd';
+import { Card, Table, notification, Typography, Button } from 'antd';
 
 
 const { Text } = Typography;
@@ -32,7 +32,7 @@ const BoardList = ({questionList, answerList}) => {
                 else if (record.subject === '기타문의') color = 'violet';
         
                 return (
-                    <Text style={{cursor: 'pointer'}} onClick={() => history(`/board/detail/${questionList[index].id}`)}>
+                    <Text style={{cursor: 'pointer'}} onClick={() => history(`question/${questionList[index].id}`)}>
                         <span style={{ color }}>{`[${record.subject}]`}</span>
                         {` ${text}`}
                     </Text>
@@ -61,7 +61,7 @@ const BoardList = ({questionList, answerList}) => {
             key: 'answer',
             render: (answer, record) => (
             answer ? (
-                <span onClick={() => history(`/board/detail/${record.key}`)} style={{ text: 'bold', color: 'red'}}>
+                <span onClick={() => history(`answer/${record.key}`)} style={{ text: 'bold', color: 'red'}}>
                     [답변 완료]
                 </span>
             ) : (
@@ -108,13 +108,23 @@ const BoardList = ({questionList, answerList}) => {
     //     );
     // };
 
+    const handlerNew = (e) => {
+        e.preventDefault();
+        history('new');
+    }
+
     return (
         <>
             {setApi}
             <Card
                 bordered={false}
                 className="criclebox tablespace mb-24"
-                title="문의"
+                title={
+                    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                        자유게시판
+                        <Button onClick={handlerNew}>글쓰기</Button>
+                    </div>
+                }
             >
                 <div className="table-responsive">
                     <Table dataSource={data} columns={columns} className="ant-border-space" />;

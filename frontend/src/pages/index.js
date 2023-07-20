@@ -31,7 +31,7 @@ const Root = () => {
                     <Route path="/product/*" element={<ProductIndex/> }/>
                     <Route path="/cart/*" element={<CartIndex/> }/>
                     <Route path="/order/*" element={<OrderIndex/> }/>
-                    <Route path="/board/*" element={<BoardIndex/> }/>
+                    <Route path="/qna/*" element={<BoardIndex/> }/>
                 </Route>
             </Routes>
         </div>

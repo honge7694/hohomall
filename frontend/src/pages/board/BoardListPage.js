@@ -20,7 +20,7 @@ const BoardListPage = () => {
     useEffect(() => {
         const fetchQuestionList = async () => {
             try{
-                const { data } = await axiosInstance.get('/board/question/', { headers })
+                const { data } = await axiosInstance.get('/board/question/')
                 console.log('QuestionList : ', data);
                 setQuestionList(data);
             }catch(error){
@@ -36,7 +36,7 @@ const BoardListPage = () => {
 
         const fetchAnswerList = async () => {
             try{
-                const { data } = await axiosInstance.get('/board/answer/', { headers })
+                const { data } = await axiosInstance.get('/board/answer/')
                 console.log('AnswerList : ', data);
                 setAnswerList(data);
             }catch(error){
