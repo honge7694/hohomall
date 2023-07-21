@@ -1,9 +1,12 @@
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from .models import Question, Answer
 from .serializers import QuestionSerializer, AnswerSerializer
 
 
 class QuestionListCreateAPIView(ListCreateAPIView):
+    """
+    Question 생성 및 리스트
+    """
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
 
@@ -16,7 +19,18 @@ class QuestionListCreateAPIView(ListCreateAPIView):
         return super().perform_create(serializer)
     
 
+class QuestionRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    """
+    Question 수정 및 삭제
+    """
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+    
+
 class AnswerListCreateAPIView(ListCreateAPIView):
+    """
+    Answer 생성 및 리스트
+    """
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
 
@@ -28,3 +42,10 @@ class AnswerListCreateAPIView(ListCreateAPIView):
         serializer.save(admin=user)
         return super().perform_create(serializer)
     
+
+class AnswerRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    """
+    Answer 수정 및 삭제
+    """
+    queryset = Answer.objects.all()
+    serializer_class = AnswerSerializer
