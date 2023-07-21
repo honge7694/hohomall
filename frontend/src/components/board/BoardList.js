@@ -1,14 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { Card, Table, notification, Typography, Button } from 'antd';
+import { Card, Table, notification, Typography, Button, Input, Select, Checkbox } from 'antd';
 
 
 const { Text } = Typography;
+const { Option } = Select;
 
 const BoardList = ({questionList, answerList}) => {
     console.log('questionList : ', questionList)
     const history = useNavigate();
     const [api, setApi] = notification.useNotification();
+    
+    const [searchText, setSearchText] = useState('');
+    const [searchType, setSearchType] = useState('title'); // Default search by title
+    const [showCompleted, setShowCompleted] = useState(false);
+
+    const onSearchTextChange = (e) => {
+        setSearchText(e.target.value);
+    };
+    
+    const onSearchTypeChange = (value) => {
+        setSearchType(value);
+    };
+    
+    const onShowCompletedChange = (e) => {
+        setShowCompleted(e.target.checked);
+    };
     
     const columns = [
         {
@@ -82,31 +99,44 @@ const BoardList = ({questionList, answerList}) => {
     });
     console.log('qnaData: ', qnaData)
 
-    const data = qnaData.map((qna) => ({
-        key: qna.key,
-        subject: qna.question.subject,
-        title: qna.question.title,
-        user: qna.question.user,
-        answer: qna.answer,
-        created_at: qna.question.created_at,
-    }));
+    const data = qnaData
+        .filter((qna) => {
+            if (showCompleted) {
+            return qna.answer;
+            } else {
+            return true; // Show all questions if showCompleted is false
+            }
+        })
+        .filter((qna) => {
+            const questionText = qna.question.title.toLowerCase();
+            const userName = qna.question.user.nickname.toLowerCase();
+            const searchTextLower = searchText.toLowerCase();
+            
+            if (searchType === 'title') {
+            return questionText.includes(searchTextLower);
+            } else if (searchType === 'user') {
+            return userName.includes(searchTextLower);
+            } else {
+            return true; // Show all questions if searchType is invalid
+            }
+        })
+        .map((qna) => ({
+            key: qna.key,
+            subject: qna.question.subject,
+            title: qna.question.title,
+            user: qna.question.user,
+            answer: qna.answer,
+            created_at: qna.question.created_at,
+        }));
 
-    // const expandedRowRender = (record) => {
-    //     // 해당 질문에 대한 답변을 찾아옴
-    //     const answer = answerList.find((answer) => answer.question_id === record.key);
-    
-    //     return (
-    //         <div>
-    //             {answer &&
-    //                 <div>
-    //                     <p>[답변] {answer.title}</p>
-    //                     <p>작성자: {answer.admin.nickname}</p>
-    //                     <p>작성일: {new Date(answer.created_at).toLocaleDateString()}</p>
-    //                 </div>
-    //             }
-    //         </div>
-    //     );
-    // };
+    // const data = qnaData.map((qna) => ({
+    //     key: qna.key,
+    //     subject: qna.question.subject,
+    //     title: qna.question.title,
+    //     user: qna.question.user,
+    //     answer: qna.answer,
+    //     created_at: qna.question.created_at,
+    // }));
 
     const handlerNew = (e) => {
         e.preventDefault();
@@ -116,13 +146,34 @@ const BoardList = ({questionList, answerList}) => {
     return (
         <>
             {setApi}
+            <div>
+                {/* <Checkbox checked={showCompleted} onChange={onShowCompletedChange}>
+                    답변 완료된 것만 보기
+                </Checkbox> */}
+            </div>
             <Card
                 bordered={false}
                 className="criclebox tablespace mb-24"
                 title={
                     <div style={{display: 'flex', justifyContent: 'space-between'}}>
                         자유게시판
+                        <div>
+                        <Select
+                            value={searchType}
+                            onChange={onSearchTypeChange}
+                            style={{ width: 200, marginRight: 16 }}
+                        >
+                            <Option value="title">제목으로 검색</Option>
+                            <Option value="user">작성자 이름으로 검색</Option>
+                        </Select>
+                        <Input
+                            placeholder="검색어 입력"
+                            value={searchText}
+                            onChange={onSearchTextChange}
+                            style={{ width: 200, marginRight: 16 }}
+                        />
                         <Button onClick={handlerNew}>글쓰기</Button>
+                        </div>
                     </div>
                 }
             >

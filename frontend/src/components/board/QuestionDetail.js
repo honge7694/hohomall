@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
-import { useNavigate, seParams } from "react-router-dom";
-import { Card, Image, Typography, List, Modal, Row, Col, Button } from 'antd';
-import { EditOutlined, DeleteOutlined, MenuOutlined, MessageOutlined , CheckSquareOutlined} from "@ant-design/icons";
+import { useNavigate, useParams } from "react-router-dom";
+import { Card, Image, Typography, List, Modal, Row, Col, Button, notification } from 'antd';
+import { EditOutlined, DeleteOutlined, MenuOutlined, MessageOutlined , CheckSquareOutlined, SmileOutlined, FrownOutlined } from "@ant-design/icons";
 import ImageGallery from 'react-image-gallery';
+
 import { useRecoilValue, useResetRecoilState } from "recoil";
 import { userState } from 'state';
+import { axiosInstance } from 'api';
+import { useAppContext } from 'store';
+
 
 const { Title, Text } = Typography;
 
 const QuestionDetail = ({questionData, userInfo}) => {
+    const { id } = useParams();
     console.log('questionData : ', questionData)
     const user = useRecoilValue(userState);
+    const { store: token } = useAppContext();
+    const headers = { Authorization: `Bearer ${token['jwtToken']}`};
     const history = useNavigate();
 
     const [selectedImage, setSelectedImage] = useState(null);
@@ -34,6 +41,34 @@ const QuestionDetail = ({questionData, userInfo}) => {
         return color
     }
 
+    // 삭제 함수
+    const handlerDelete = async (e, userId) => {
+        e.preventDefault();
+        console.log('user : ', userId, user['userId'])
+        if (userId === user.userId){
+            try{
+                const response = await axiosInstance.delete(`/board/question/detail/${id}/`, { headers });
+                console.log(response);
+    
+                notification.open({
+                    message: '게시글 삭제가 완료되었습니다.',
+                    icon: <SmileOutlined style={{ color: "#108ee9" }}/>
+                    
+                });
+            }catch(error){
+                console.log('error : ', error);
+            }
+
+            history('/qna');
+        } else{
+            notification.open({
+                message: '게시글 작성자가 아닙니다.',
+                description: '게시글을 삭제할 권한이 없습니다.',
+                icon: <FrownOutlined style={{ color: "red" }}/>
+            });
+        }
+    }
+
     // 사용자 권한에 따라 수정, 삭제 버튼 렌더링
     const renderActionButtons = () => {
         if (user['userId'] === null) {
@@ -49,7 +84,7 @@ const QuestionDetail = ({questionData, userInfo}) => {
                 <MenuOutlined onClick={() => history('/qna')}></MenuOutlined>,
                 <MessageOutlined onClick={() => history('answer')}>답변</MessageOutlined>,
                 <EditOutlined onClick={() => history('edit')}>수정</EditOutlined>,
-                <DeleteOutlined onClick={() => history('delete')}>삭제</DeleteOutlined>,
+                <DeleteOutlined onClick={(e) => handlerDelete(e, questionData.user.id)}>삭제</DeleteOutlined>,
             ];
         } else if (user['userId'] === questionData.user.id) {
              // 글 작성자는 수정, 삭제 버튼 렌더링
