@@ -26,7 +26,7 @@ const ProductReviewEditModal = ({ reviewData, onSave, onCancel }) => {
         setEditRating(reviewData.item.rating);
         // setEditReviewImages(reviewData.item.images);
 
-        // 이미지를 모달 미리보기에 넣기 위한 커스텀
+        // 이미지를 모달 미리보기에 넣기위한 커스텀
         if ((reviewData.item.images).length > 0 ){
             const convertedFileList = reviewData.item.images.map((image) => ({
                 id: image.id,

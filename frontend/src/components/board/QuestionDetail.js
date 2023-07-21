@@ -79,7 +79,7 @@ const QuestionDetail = ({questionData, userInfo}) => {
                     </Title>
                     
                 <Row gutter={[16, 16]}>
-                    <Col span={12}>
+                    <Col span={12} style={{minHeight: '410px'}}>
                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
                             <div style={{ flexShrink: 0, width: 200 }}>
                                 <Text style={{ fontSize: '16px' }}>작성자</Text>
@@ -112,6 +112,7 @@ const QuestionDetail = ({questionData, userInfo}) => {
                     </Col>
                     
                     <Col span={12}>
+                    {imageItems.length > 0 ? (
                         <ImageGallery
                             items={imageItems}
                             showThumbnails={true}
@@ -124,6 +125,7 @@ const QuestionDetail = ({questionData, userInfo}) => {
                                 </div>
                             )}
                         />
+                    ):( null ) }
                     </Col>
 
                     <Modal visible={selectedImage} onCancel={() => setSelectedImage(null)}>

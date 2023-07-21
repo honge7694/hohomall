@@ -75,7 +75,7 @@ const QuestionDetail = ({answerData, userInfo}) => {
 
             >
                 <Title level={3} style={{ fontSize: '24px' }}>
-                    <span style={{ color: subjectColor() }}>{`[${answerData.subject}]`}</span>
+                    <span style={{ color: 'blue' }}>{`[답변완료]`}</span>
                     {answerData.title}
                 </Title>
                     
