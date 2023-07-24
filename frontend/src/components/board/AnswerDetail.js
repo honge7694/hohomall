@@ -51,7 +51,7 @@ const QuestionDetail = ({answerData, userInfo}) => {
                 <EditOutlined onClick={() => history('edit')}>수정</EditOutlined>,
                 <DeleteOutlined onClick={() => history('delete')}>삭제</DeleteOutlined>,
             ];
-        } else if (user['userId'] === answerData.user.id) {
+        } else if (user['userId'] === answerData.admin.id) {
              // 글 작성자는 수정, 삭제 버튼 렌더링
             console.log("글 작성자");
             return [
@@ -60,8 +60,10 @@ const QuestionDetail = ({answerData, userInfo}) => {
                 <DeleteOutlined onClick={() => history('delete')}>삭제</DeleteOutlined>,
             ];
         } else {
-          // 다른 사용자는 버튼 없음
-            return null;
+          // 다른 사용자는 홈 버튼
+            return [
+                <MenuOutlined onClick={() => history('/qna')}></MenuOutlined>,
+            ];
         }
     };
 

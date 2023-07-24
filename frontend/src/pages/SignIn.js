@@ -149,11 +149,19 @@ const SignIn =  () => {
 
     }catch(error){
       console.log('error : ', error);
-      api.info({
-        message: '로그인 실패',
-        description: '로그인 정보가 일치하지않습니다.',
-        icon: <FrownOutlined style={{ color: "red" }}/>
-      });
+      if (error.response.data.detail === "이메일 인증이 필요합니다."){
+        api.info({
+          message: '로그인 실패',
+          description: '이메일 인증을 완료해주세요.',
+          icon: <FrownOutlined style={{ color: "red" }}/>
+        });
+      } else {
+        api.info({
+          message: '로그인 실패',
+          description: '로그인 정보가 일치하지않습니다.',
+          icon: <FrownOutlined style={{ color: "red" }}/>
+        });
+      }
     }
   };
 

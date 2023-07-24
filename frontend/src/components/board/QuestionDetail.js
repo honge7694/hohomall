@@ -95,8 +95,10 @@ const QuestionDetail = ({questionData, userInfo}) => {
                 <DeleteOutlined onClick={() => history('delete')}>삭제</DeleteOutlined>,
             ];
         } else {
-          // 다른 사용자는 버튼 없음
-            return null;
+          // 다른 사용자는 홈 버튼
+            return [
+                <MenuOutlined onClick={() => history('/qna')}></MenuOutlined>,
+            ];
         }
     };
 

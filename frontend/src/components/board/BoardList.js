@@ -140,6 +140,7 @@ const BoardList = ({questionList, answerList}) => {
 
     const handlerNew = (e) => {
         e.preventDefault();
+        // TODO: 로그인 안했으면 로그인 다시하기.
         history('new');
     }
 
