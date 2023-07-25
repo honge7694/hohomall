@@ -24,17 +24,14 @@ import {
     VerticalAlignTopOutlined,
 } from "@ant-design/icons";
 
-import convesionImg from "assets/images/face-3.jpg";
-import convesionImg2 from "assets/images/face-4.jpg";
-import convesionImg3 from "assets/images/face-5.jpeg";
-import convesionImg4 from "assets/images/face-6.jpeg";
-import convesionImg5 from "assets/images/face-2.jpg";
 import UserProfileCart from './UserProfileCart';
+import UserProfileReviewList from './UserProfileReviewList';
 const UserProfile = () => {
     const { store: token } = useAppContext();
     const headers = { Authorization: `Bearer ${token['jwtToken']}`};
     const history = useNavigate();
     const [cartList, setCartList] = useState([]);
+    const [reviewList, setReviewList] = useState([]);
 
     const pencil = [
         <svg
@@ -56,33 +53,6 @@ const UserProfile = () => {
         </svg>,
     ];
     
-    const data = [
-        {
-            title: "Sophie B.",
-            avatar: convesionImg,
-            description: "Hi! I need more information…",
-        },
-        {
-            title: "Anne Marie",
-            avatar: convesionImg2,
-            description: "Awesome work, can you…",
-        },
-        {
-            title: "Ivan",
-            avatar: convesionImg3,
-            description: "About files I can…",
-        },
-        {
-            title: "Peterson",
-            avatar: convesionImg4,
-            description: "Have a great afternoon…",
-        },
-        {
-            title: "Nick Daniel",
-            avatar: convesionImg5,
-            description: "Hi! I need more information…",
-        },
-    ];
 
     useEffect(() => {
         async function fetchCart() {
@@ -92,10 +62,22 @@ const UserProfile = () => {
                 console.log("cart_data :", data);
                 setCartList(data);
             }catch(error){
-                console.log('error : ', error);
+                console.log('cart_error : ', error);
             }
         }
         fetchCart();
+
+        const fetchReview = async () => {
+            try{
+                const apiUrl = `review/list/`
+                const { data } = await axiosInstance.get(apiUrl, { headers });
+                console.log("review_data : ", data);
+                setReviewList(data)
+            }catch(error){
+                console.log('review_error : ', error);
+            }
+        }
+        fetchReview();
     }, []);
 
     return (
@@ -150,32 +132,7 @@ const UserProfile = () => {
                     </Card>
                 </Col>
 
-                <Col span={24} md={8} className="mb-24">
-                    <Card
-                        bordered={false}
-                        title={<h6 className="font-semibold m-0">작성글 목록</h6>}
-                        className="header-solid h-full"
-                        bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
-                    >
-                        <List
-                        itemLayout="horizontal"
-                        dataSource={data}
-                        split={false}
-                        className="conversations-list"
-                        renderItem={(item) => (
-                            <List.Item actions={[<Button type="link">REPLY</Button>]}>
-                            <List.Item.Meta
-                                avatar={
-                                <Avatar shape="square" size={48} src={item.avatar} />
-                                }
-                                title={item.title}
-                                description={item.description}
-                            />
-                            </List.Item>
-                        )}
-                        />
-                    </Card>
-                </Col>
+                {reviewList && <UserProfileReviewList reviewList={reviewList} />}
             </Row>
 
         </>

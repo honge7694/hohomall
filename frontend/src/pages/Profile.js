@@ -120,8 +120,8 @@ function Profile() {
       {selectedTab === "b" && <UserInfoEdit data={{userInfo, setUserInfo}} />}
       {selectedTab === "c" && <UserPasswordEdit data={{userInfo}}/>}
 
-
       {recentView && <RecentViewed recentView={recentView} />}
+
     </>
   );
 }
