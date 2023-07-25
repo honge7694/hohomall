@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
+
+import { axiosInstance } from 'api';
 import { useAppContext } from 'store';
 
 import {
@@ -26,7 +29,13 @@ import convesionImg2 from "assets/images/face-4.jpg";
 import convesionImg3 from "assets/images/face-5.jpeg";
 import convesionImg4 from "assets/images/face-6.jpeg";
 import convesionImg5 from "assets/images/face-2.jpg";
+import UserProfileCart from './UserProfileCart';
 const UserProfile = () => {
+    const { store: token } = useAppContext();
+    const headers = { Authorization: `Bearer ${token['jwtToken']}`};
+    const history = useNavigate();
+    const [cartList, setCartList] = useState([]);
+
     const pencil = [
         <svg
             width="20"
@@ -75,53 +84,25 @@ const UserProfile = () => {
         },
     ];
 
+    useEffect(() => {
+        async function fetchCart() {
+            try{
+                const apiUrl = `order/cart/`;
+                const { data } = await axiosInstance.get(apiUrl, { headers });
+                console.log("cart_data :", data);
+                setCartList(data);
+            }catch(error){
+                console.log('error : ', error);
+            }
+        }
+        fetchCart();
+    }, []);
+
     return (
         <>
             <Row gutter={[24, 0]}>
-                <Col span={24} md={8} className="mb-24 ">
-                    <Card
-                        bordered={false}
-                        className="header-solid h-full"
-                        extra={<Button type="link">더보기</Button>}
-                        title={<h6 className="font-semibold m-0">찜 목록</h6>}
-                    >
-                        <ul className="list settings-list">
-                        <li>
-                            <h6 className="list-header text-sm text-muted">ACCOUNT</h6>
-                        </li>
-                        <li>
-                            <Switch defaultChecked />
-
-                            <span>Email me when someone follows me</span>
-                        </li>
-                        <li>
-                            <Switch />
-                            <span>Email me when someone answers me</span>
-                        </li>
-                        <li>
-                            <Switch defaultChecked />
-                            <span>Email me when someone mentions me</span>
-                        </li>
-                        <li>
-                            <h6 className="list-header text-sm text-muted m-0">
-                            APPLICATION
-                            </h6>
-                        </li>
-                        <li>
-                            <Switch defaultChecked />
-                            <span>New launches and projects</span>
-                        </li>
-                        <li>
-                            <Switch defaultChecked />
-                            <span>Monthly product updates</span>
-                        </li>
-                        <li>
-                            <Switch defaultChecked />
-                            <span>Subscribe to newsletter</span>
-                        </li>
-                        </ul>
-                    </Card>
-                </Col>
+                
+                {cartList && <UserProfileCart cartList={cartList} />}
 
                 <Col span={24} md={8} className="mb-24">
                     <Card

@@ -220,7 +220,7 @@ const Order = () => {
             </Col>
           </Row>
         </div>
-      {cartData.map(item => (
+      {cartData && cartData.map(item => (
         <div key={item.id} style={{ marginBottom: '16px', textAlign: 'center' }}>
           <Row gutter={16}>
             <Col span={4}>
