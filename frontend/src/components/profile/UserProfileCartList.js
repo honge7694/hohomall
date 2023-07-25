@@ -4,7 +4,7 @@ import { Col, Card, Button, List, Avatar } from "antd";
 import "../../assets/styles/scroll.css";
 
 
-const UserProfileCart = ({cartList}) => {
+const UserProfileCartList = ({cartList}) => {
     console.log('cartList : ', cartList);
     const history = useNavigate();
 
@@ -14,7 +14,7 @@ const UserProfileCart = ({cartList}) => {
                 <Card
                     bordered={false}
                     className="header-solid h-full"
-                    extra={<Button type="link">이동</Button>}
+                    extra={<Button type="link" onClick={() => history('/cart')}>이동</Button>}
                     title={<h6 className="font-semibold m-0">찜 목록</h6>}
                 >
             <div className='scroll box1' style={{ maxHeight: '470px', overflowY: 'auto' }}> {/* 스크롤 스타일 적용 */}
@@ -46,4 +46,4 @@ const UserProfileCart = ({cartList}) => {
     )
 }
 
-export default UserProfileCart;
+export default UserProfileCartList;

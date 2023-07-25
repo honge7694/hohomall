@@ -6,8 +6,8 @@ import moment from "moment";
 import "../../assets/styles/scroll.css";
 
 
-const UserProfileReviewList = ({reviewList}) => {
-    console.log('reviewList : ', reviewList);
+const UserProfileOrderList = ({orderList}) => {
+    console.log('orderList : ', orderList);
     const history = useNavigate();
 
     return (
@@ -16,36 +16,32 @@ const UserProfileReviewList = ({reviewList}) => {
                 <Card
                     bordered={false}
                     className="header-solid h-full"
-                    title={<h6 className="font-semibold m-0">리뷰 목록</h6>}
+                    extra={<Button type="link" onClick={() => history('/order/list/')}>이동</Button>}
+                    title={<h6 className="font-semibold m-0">주문 목록</h6>}
                 >
             <div className='scroll box1' style={{ maxHeight: '470px', overflowY: 'auto' }}> {/* 스크롤 스타일 적용 */}
                     <List
                         itemLayout="horizontal"
-                        dataSource={reviewList}
+                        dataSource={orderList}
                         split={false}
                         className="conversations-list"
                         renderItem={(item) => (
-                            <List.Item actions={[<Button type="link" onClick={() => history('/product/' + item.product.id)}>이동</Button>]}>
+                            <List.Item actions={[<Button type="link" onClick={() => history('/order/list/' + item.id)}>이동</Button>]}>
                             <List.Item.Meta
-                                avatar={
-                                    <Avatar shape="square" size={48} src={item.images[0] ? item.images[0].image_src : null} />
-                                }
                                 title={
                                     <>
-                                    <Rating
-                                        count={5}
-                                        value={item.rating}
-                                        size={24}
-                                        activeColor="#ffd700"
-                                        edit={false}
-                                    />
-                                    {moment(item.created_at, "YYYY-MM-DD").format("YYYY-MM-DD")}
+                                        {item.order_details[0].product.name}{' '}
+                                        {item.order_details.length > 1 ? `외 ${item.order_details.length - 1}` : null}  
                                     </>
                                 }
                                 
                                 description={
                                     <>
-                                        {item.content}
+                                        {item.total_price.toLocaleString()} 원
+                                        <div>
+                                            {moment(item.created_at, "YYYY-MM-DD").format("YYYY-MM-DD")}
+                                        </div>
+                                        {/* {item.content} */}
                                         {/* {item.product_option.option_color}  {item.product_option.option_size}  {item.price.toLocaleString() }원 */}
                                     </>
                                 } 
@@ -60,4 +56,4 @@ const UserProfileReviewList = ({reviewList}) => {
     )
 }
 
-export default UserProfileReviewList;
+export default UserProfileOrderList;

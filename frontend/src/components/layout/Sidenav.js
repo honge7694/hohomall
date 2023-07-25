@@ -284,7 +284,16 @@ function Sidenav({ color }) {
             <span className="label">Billing</span>
           </NavLink>
         </Menu.Item>
+                
+        <Menu.Item className="menu-item-header" key="5">
+          Account Pages
+        </Menu.Item>
+        { linkElement }
 
+        <Menu.Item className="menu-item-header" key="5">
+          ECT Pages
+        </Menu.Item>
+        
         <Menu.Item key="4">
           <NavLink to="/qna">
             <span
@@ -298,11 +307,6 @@ function Sidenav({ color }) {
             <span className="label">QnA</span>
           </NavLink>
         </Menu.Item>
-        
-        <Menu.Item className="menu-item-header" key="5">
-          Account Pages
-        </Menu.Item>
-        { linkElement }
         {/* <Menu.Item key="6">
           <NavLink to="/profile">
             <span

@@ -24,13 +24,15 @@ import {
     VerticalAlignTopOutlined,
 } from "@ant-design/icons";
 
-import UserProfileCart from './UserProfileCart';
+import UserProfileCartList from './UserProfileCartList';
 import UserProfileReviewList from './UserProfileReviewList';
+import UserProfileOrderList from './UserProfileOrderList';
 const UserProfile = () => {
     const { store: token } = useAppContext();
     const headers = { Authorization: `Bearer ${token['jwtToken']}`};
     const history = useNavigate();
     const [cartList, setCartList] = useState([]);
+    const [orderList, setOrderList] = useState([]);
     const [reviewList, setReviewList] = useState([]);
 
     const pencil = [
@@ -67,6 +69,18 @@ const UserProfile = () => {
         }
         fetchCart();
 
+        const fetchOrder = async () => {
+            try{
+                const apiUrl = `order/`
+                const { data } = await axiosInstance.get(apiUrl, { headers });
+                console.log("order_data : ", data);
+                setOrderList(data)
+            }catch(error){
+                console.log('order_error : ', error);
+            }
+        }
+        fetchOrder();
+
         const fetchReview = async () => {
             try{
                 const apiUrl = `review/list/`
@@ -84,53 +98,9 @@ const UserProfile = () => {
         <>
             <Row gutter={[24, 0]}>
                 
-                {cartList && <UserProfileCart cartList={cartList} />}
+                {cartList && <UserProfileCartList cartList={cartList} />}
 
-                <Col span={24} md={8} className="mb-24">
-                    <Card
-                        bordered={false}
-                        title={<h6 className="font-semibold m-0">주문 목록</h6>}
-                        className="header-solid h-full card-profile-information"
-                        extra={<Button type="link">{pencil}</Button>}
-                        bodyStyle={{ paddingTop: 0, paddingBottom: 16 }}
-                    >
-                        {/* {selectedTab === "a" && <ProfileContent />} */}
-                        
-                        <p className="text-dark">
-                        {" "}
-                        Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer
-                        is no. If two equally difficult paths, choose the one more painful
-                        in the short term (pain avoidance is creating an illusion of
-                        equality).{" "}
-                        </p>
-                        <hr className="my-25" />
-                        <Descriptions title="Oliver Liam">
-                        <Descriptions.Item label="Full Name" span={3}>
-                            Sarah Emily Jacob
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Mobile" span={3}>
-                            (44) 123 1234 123
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Email" span={3}>
-                            sarahjacob@mail.com
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Location" span={3}>
-                            USA
-                        </Descriptions.Item>
-                        <Descriptions.Item label="Social" span={3}>
-                            <a href="#pablo" className="mx-5 px-5">
-                            {<TwitterOutlined />}
-                            </a>
-                            <a href="#pablo" className="mx-5 px-5">
-                            {<FacebookOutlined style={{ color: "#344e86" }} />}
-                            </a>
-                            <a href="#pablo" className="mx-5 px-5">
-                            {<InstagramOutlined style={{ color: "#e1306c" }} />}
-                            </a>
-                        </Descriptions.Item>
-                        </Descriptions>
-                    </Card>
-                </Col>
+                {orderList && <UserProfileOrderList orderList={orderList} />}
 
                 {reviewList && <UserProfileReviewList reviewList={reviewList} />}
             </Row>
