@@ -157,7 +157,7 @@ const BoardList = ({questionList, answerList}) => {
                 className="criclebox tablespace mb-24"
                 title={
                     <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                        자유게시판
+                        QnA게시판
                         <div>
                         <Select
                             value={searchType}

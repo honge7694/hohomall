@@ -1,4 +1,4 @@
-// import { useState } from "react";
+import { useState } from "react";
 import { Menu, Button } from "antd";
 import { NavLink, useLocation } from "react-router-dom";
 import logo from "../../assets/images/logo.png";
@@ -11,7 +11,11 @@ import { FiLogOut } from "react-icons/fi";
 
 function Sidenav({ color }) {
   const { pathname } = useLocation();
-  const page = pathname.replace("/", "");
+  const page = pathname.replace("/", "")
+  const [TSHIRTSSubMenuVisible, setTSHIRTSSubMenuVisible] = useState(false);
+  const [SHIRTSSubMenuVisible, setSHIRTSSubMenuVisible] = useState(false);
+  const [PANTSSubMenuVisible, setPANTSSubMenuVisible] = useState(false);
+
 
   const dashboard = [
     <svg
@@ -220,6 +224,48 @@ function Sidenav({ color }) {
       </>
     )
   }
+
+   // 상의 하위 메뉴 데이터 정의
+  const T_SHIRTSMenuData = [
+    { key: '1-1', label: 'SHORT SLEEVE' },
+    { key: '1-2', label: 'LONG SLEEVE' },
+    { key: '1-3', label: 'SLEEVE LESS' },
+    { key: '1-4', label: 'PK T-SHIRTS' },
+    { key: '1-5', label: 'HOOD T-SHIRTS' },
+    { key: '1-6', label: 'MTM' },
+    { key: '1-7', label: 'KNIT' },
+  ];
+
+  // 상의 하위 메뉴 보이기/숨기기 상태를 토글
+  const handleT_SHIRTSMenuDataClick = () => {
+    setTSHIRTSSubMenuVisible((prevVisible) => !prevVisible);
+  };
+
+  // 셔츠 하위 메뉴 데이터 정의
+  const SHIRTSMenuData = [
+    { key: '2-1', label: 'BASIC SHIRTS'},
+    { key: '2-2', label: 'CHECK SHIRTS'},
+    { key: '2-3', label: '1/2 SHIRTS'},
+  ];
+
+  // 셔츠 하위 메뉴 보이기/숨기기 상태를 토글
+  const handleSHIRTSMenuDataClick = () => {
+    setSHIRTSSubMenuVisible((prevVisible) => !prevVisible);
+  };
+
+  // 하의 하위 메뉴 데이터 정의
+  const PANTSMenuData = [
+    { key: '3-1', label: 'JEANS'},
+    { key: '3-2', label: 'COTTON PANTS'},
+    { key: '3-3', label: 'SLACKS'},
+    { key: '3-4', label: 'SHORT PANTS'},
+    { key: '3-5', label: 'TRAINING PANTS'},
+  ];
+
+  // 하의 하위 메뉴 보이기/숨기기 상태를 토글
+  const handlePANTSMenuDataClick = () => {
+    setPANTSSubMenuVisible((prevVisible) => !prevVisible);
+  };
   
 
   return (
@@ -245,11 +291,11 @@ function Sidenav({ color }) {
         </Menu.Item>
         
         <Menu.Item key="1">
-          <NavLink to="/product">
+          <NavLink to="/">
             <span
               className="icon"
               style={{
-                background: page === "product" ? color : "",
+                background: page === "/" ? color : "",
               }}
             >
               {dashboard}
@@ -257,6 +303,105 @@ function Sidenav({ color }) {
             <span className="label">Main</span>
           </NavLink>
         </Menu.Item>
+
+        <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
+          <Menu.Item key="2" onClick={handleT_SHIRTSMenuDataClick}>
+            <NavLink to="product/T-SHIRTS">
+              <span className="icon" style={{ background: page.startsWith('product/T-SHIRTS') ? color : '' }}>
+                {dashboard}
+              </span>
+              <span className="label">T-SHIRTS</span>
+            </NavLink>
+          </Menu.Item>
+          {/* 하위 메뉴 렌더링 */}
+          {TSHIRTSSubMenuVisible && (
+            <Menu.Item key="sub1">
+              <Menu theme="dark" mode="inline" defaultSelectedKeys={['1-1']}>
+                {T_SHIRTSMenuData.map((item) => (
+                  <Menu.Item key={item.key}>
+                    <NavLink to={`/product/T-SHIRTS/${item.label}`}>
+                      <span
+                          style={{
+                            display: 'inline-block',
+                            padding: '4px 8px',
+                            borderRadius: '4px',
+                          }}
+                      >
+                        {item.label}
+                      </span>
+                    </NavLink>
+                  </Menu.Item>
+                ))}
+              </Menu>
+            </Menu.Item>
+          )}
+        </Menu>
+
+        <Menu theme="dark" mode="inline" defaultSelectedKeys={['2']}>
+          <Menu.Item key="2" onClick={handleSHIRTSMenuDataClick}>
+            <NavLink to="product/SHIRTS">
+              <span className="icon" style={{ background: page.startsWith('product/SHIRTS') ? color : '' }}>
+                {dashboard}
+              </span>
+              <span className="label">SHIRTS</span>
+            </NavLink>
+          </Menu.Item>
+          {/* 하위 메뉴 렌더링 */}
+          {SHIRTSSubMenuVisible && (
+            <Menu.Item key="sub1">
+              <Menu theme="dark" mode="inline" defaultSelectedKeys={['2-1']}>
+                {SHIRTSMenuData.map((item) => (
+                  <Menu.Item key={item.key}>
+                    <NavLink to={`/product/SHIRTS/${item.label}`}>
+                      <span
+                          style={{
+                            display: 'inline-block',
+                            padding: '4px 8px',
+                            borderRadius: '4px',
+                          }}
+                      >
+                        {item.label}
+                      </span>
+                    </NavLink>
+                  </Menu.Item>
+                ))}
+              </Menu>
+            </Menu.Item>
+          )}
+        </Menu>
+
+        <Menu theme="dark" mode="inline" defaultSelectedKeys={['3']}>
+          <Menu.Item key="2" onClick={handlePANTSMenuDataClick}>
+            <NavLink to="product/PANTS">
+              <span className="icon" style={{ background: page.startsWith('product/PANTS') ? color : '' }}>
+                {dashboard}
+              </span>
+              <span className="label">PANTS</span>
+            </NavLink>
+          </Menu.Item>
+          {/* 하위 메뉴 렌더링 */}
+          {PANTSSubMenuVisible && (
+            <Menu.Item key="sub1">
+              <Menu theme="dark" mode="inline" defaultSelectedKeys={['3-1']}>
+                {PANTSMenuData.map((item) => (
+                  <Menu.Item key={item.key}>
+                    <NavLink to={`/product/PANTS/${item.label}`}>
+                      <span
+                          style={{
+                            display: 'inline-block',
+                            padding: '4px 8px',
+                            borderRadius: '4px',
+                          }}
+                      >
+                        {item.label}
+                      </span>
+                    </NavLink>
+                  </Menu.Item>
+                ))}
+              </Menu>
+            </Menu.Item>
+          )}
+        </Menu>
 
         <Menu.Item key="2">
           <NavLink to="/tables">
