@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Review, ReviewImage, ReviewLike
 from account.serializers import UserInfoEditSerializer
+from product.serializers import ProductSerializer
 from product.models import Product
 import json
 
@@ -13,13 +14,14 @@ class ReviewImageSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
     user = UserInfoEditSerializer(source='user_id', read_only=True)
+    product = ProductSerializer(source='product_id', read_only=True)
     images = serializers.SerializerMethodField()
     like = serializers.SerializerMethodField()
     is_like = serializers.SerializerMethodField()
 
     class Meta:
         model = Review
-        fields = ['id', 'user', 'content', 'rating', 'like', 'is_like', 'images', 'created_at', 'updated_at']
+        fields = ['id', 'product', 'user', 'content', 'rating', 'like', 'is_like', 'images', 'created_at', 'updated_at']
 
     def get_images(self, obj):
         image = obj.reviewimage_set.all()
