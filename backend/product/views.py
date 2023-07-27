@@ -34,7 +34,7 @@ class ProductRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
         return super().retrieve(request, *args, **kwargs)
     
 
-class ProductDataListRetrieveAPIView(ListAPIView):
+class ProductTypeDataListRetrieveAPIView(ListAPIView):
     """
     상품 type 조회
     """
@@ -49,5 +49,24 @@ class ProductDataListRetrieveAPIView(ListAPIView):
         if type_param:
             print(type_param)
             qs = qs.filter(product_type=type_param)
+            print(qs)
+        return qs
+
+
+class ProductSubTypeDataListRetrieveAPIView(ListAPIView):
+    """
+    상품 subtype 조회
+    """
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['product_subtype']
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        subtype_param = self.request.query_params.get('subtype')
+        if subtype_param:
+            print(subtype_param)
+            qs = qs.filter(product_subtype=subtype_param)
             print(qs)
         return qs

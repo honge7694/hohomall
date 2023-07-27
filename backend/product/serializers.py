@@ -69,6 +69,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'brand_id',
             'brand',
             'product_type',
+            'product_subtype',
             'product_style',
             'purchase_count',
             'price',

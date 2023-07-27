@@ -24,6 +24,7 @@ class Product(models.Model):
         on_delete=models.CASCADE
     )
     product_type = models.CharField(max_length=50)
+    product_subtype = models.CharField(max_length=50)
     product_style = models.CharField(max_length=50)
     purchase_count = models.IntegerField(default=0)
     price = models.CharField(max_length=100)
