@@ -185,7 +185,7 @@ function Sidenav({ color }) {
   if (user['userId'] !== null){
     linkElement = (
       <>
-        <Menu.Item key="6">
+        <Menu.Item key="10">
           <NavLink to="/profile">
             <span
               className="icon"
@@ -198,7 +198,7 @@ function Sidenav({ color }) {
             <span className="label">Profile</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="8">
+        <Menu.Item key="9">
           <NavLink to="/sign-in" onClick={() => {resetUser(); dispatch(deleteToken());}}>
             <span className="icon">{logout}</span>
             <span className="label">Logout</span>
@@ -209,13 +209,13 @@ function Sidenav({ color }) {
   }else {
     linkElement = (
       <>
-        <Menu.Item key="7">
+        <Menu.Item key="8">
           <NavLink to="/sign-in">
             <span className="icon">{signin}</span>
             <span className="label">Sign In</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="8">
+        <Menu.Item key="7">
           <NavLink to="/sign-up">
             <span className="icon">{signup}</span>
             <span className="label">Sign Up</span>
@@ -276,7 +276,7 @@ function Sidenav({ color }) {
       </div>
       <hr />
       <Menu theme="light" mode="inline">
-        <Menu.Item key="1">
+        <Menu.Item key="99">
           <NavLink to="/dashboard">
             <span
               className="icon"
@@ -338,7 +338,7 @@ function Sidenav({ color }) {
         </Menu>
 
         <Menu theme="dark" mode="inline" defaultSelectedKeys={['2']}>
-          <Menu.Item key="2" onClick={handleSHIRTSMenuDataClick}>
+          <Menu.Item key="3" onClick={handleSHIRTSMenuDataClick}>
             <NavLink to="product/SHIRTS">
               <span className="icon" style={{ background: page.startsWith('product/SHIRTS') ? color : '' }}>
                 {dashboard}
@@ -348,7 +348,7 @@ function Sidenav({ color }) {
           </Menu.Item>
           {/* 하위 메뉴 렌더링 */}
           {SHIRTSSubMenuVisible && (
-            <Menu.Item key="sub1">
+            <Menu.Item key="sub2">
               <Menu theme="dark" mode="inline" defaultSelectedKeys={['2-1']}>
                 {SHIRTSMenuData.map((item) => (
                   <Menu.Item key={item.key}>
@@ -371,7 +371,7 @@ function Sidenav({ color }) {
         </Menu>
 
         <Menu theme="dark" mode="inline" defaultSelectedKeys={['3']}>
-          <Menu.Item key="2" onClick={handlePANTSMenuDataClick}>
+          <Menu.Item key="4" onClick={handlePANTSMenuDataClick}>
             <NavLink to="product/PANTS">
               <span className="icon" style={{ background: page.startsWith('product/PANTS') ? color : '' }}>
                 {dashboard}
@@ -381,7 +381,7 @@ function Sidenav({ color }) {
           </Menu.Item>
           {/* 하위 메뉴 렌더링 */}
           {PANTSSubMenuVisible && (
-            <Menu.Item key="sub1">
+            <Menu.Item key="sub3">
               <Menu theme="dark" mode="inline" defaultSelectedKeys={['3-1']}>
                 {PANTSMenuData.map((item) => (
                   <Menu.Item key={item.key}>
@@ -403,7 +403,7 @@ function Sidenav({ color }) {
           )}
         </Menu>
 
-        <Menu.Item key="2">
+        <Menu.Item key="97">
           <NavLink to="/tables">
             <span
               className="icon"
@@ -416,7 +416,7 @@ function Sidenav({ color }) {
             <span className="label">Tables</span>
           </NavLink>
         </Menu.Item>
-        <Menu.Item key="3">
+        <Menu.Item key="98">
           <NavLink to="/billing">
             <span
               className="icon"
@@ -430,7 +430,7 @@ function Sidenav({ color }) {
           </NavLink>
         </Menu.Item>
                 
-        <Menu.Item className="menu-item-header" key="5">
+        <Menu.Item className="menu-item-header" key="6">
           Account Pages
         </Menu.Item>
         { linkElement }
@@ -439,7 +439,7 @@ function Sidenav({ color }) {
           ECT Pages
         </Menu.Item>
         
-        <Menu.Item key="4">
+        <Menu.Item key="11">
           <NavLink to="/qna">
             <span
               className="icon"

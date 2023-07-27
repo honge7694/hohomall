@@ -44,7 +44,7 @@ const RecentViewed = ({recentView}) => {
         }
         fetchRecentViewed();
         
-        history('/product/'+id);
+        history('/product/detail/'+id);
     };
     
 

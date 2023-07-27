@@ -4,11 +4,11 @@ import { axiosInstance } from 'api';
 import ProductList from 'components/product/ProductList';
 
 
-const Product = () => {
+const ProductSubType = () => {
     const { type } = useParams();
     console.log('type : ', type)
     const [productList, setProductList] = useState([]);
-    const apiUrl = `/product/type/?type=${type}`;
+    const apiUrl = `/product/subtype/?subtype=${type}`;
 
     useEffect(() => {
         async function fetchProduct() {
@@ -30,4 +30,4 @@ const Product = () => {
     );
 };
 
-export default Product;
+export default ProductSubType;
