@@ -75,7 +75,7 @@ const RecentViewed = ({recentView}) => {
                         <a href="#" onClick={ (e) => handlerOnClick(e, recent.product.id) }>
                             <Card
                                 hoverable
-                                cover={<img alt={recent.product.name} src={recent.product.images[0].image_src} style={{ height: '280px', objectFit: 'cover' }} />}
+                                cover={<img alt={recent.product.name} src={recent.product.images[0] ? (recent.product.images[0].image_src) : (null)} style={{ height: '280px', objectFit: 'cover' }} />}
                                 style={{ display: 'grid', gridTemplateRows: 'auto 1fr auto', marginRight: '16px' }}
                             >
                                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

@@ -110,6 +110,7 @@ function Main({ children }) {
         )}
         <Content className="content-ant">
           {/* {children} */}
+
           <Outlet></Outlet>
         </Content>
         <Footer />

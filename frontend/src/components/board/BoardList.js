@@ -102,9 +102,9 @@ const BoardList = ({questionList, answerList}) => {
     const data = qnaData
         .filter((qna) => {
             if (showCompleted) {
-            return qna.answer;
+                return qna.answer;
             } else {
-            return true; // Show all questions if showCompleted is false
+                return true; // Show all questions if showCompleted is false
             }
         })
         .filter((qna) => {
@@ -113,11 +113,11 @@ const BoardList = ({questionList, answerList}) => {
             const searchTextLower = searchText.toLowerCase();
             
             if (searchType === 'title') {
-            return questionText.includes(searchTextLower);
+                return questionText.includes(searchTextLower);
             } else if (searchType === 'user') {
-            return userName.includes(searchTextLower);
+                return userName.includes(searchTextLower);
             } else {
-            return true; // Show all questions if searchType is invalid
+                return true; // Show all questions if searchType is invalid
             }
         })
         .map((qna) => ({

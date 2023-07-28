@@ -438,6 +438,20 @@ function Sidenav({ color }) {
         <Menu.Item className="menu-item-header" key="5">
           ECT Pages
         </Menu.Item>
+
+        <Menu.Item key="12">
+          <NavLink to="/coupon">
+            <span
+              className="icon"
+              style={{
+                background: page === "coupon" ? color : "",
+              }}
+            >
+              {billing}
+            </span>
+            <span className="label">Coupon</span>
+          </NavLink>
+        </Menu.Item>
         
         <Menu.Item key="11">
           <NavLink to="/qna">
