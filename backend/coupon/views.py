@@ -1,4 +1,6 @@
+from rest_framework import status
 from rest_framework.generics import ListCreateAPIView
+from rest_framework.response import Response
 from .models import Coupon, CouponUser, CouponStatus
 from .serializers import CouponSerializer, CouponUserSerializer
 
@@ -25,5 +27,13 @@ class CouponUserListCreateAPIView(ListCreateAPIView):
 
     def perform_create(self, serializer):
         user = self.request.user
+        coupon_id = self.request.data.get('coupon_id')
+        coupon = Coupon.objects.filter(pk=coupon_id).first()
+        
+        if CouponUser.objects.filter(user_id=user, coupon_id=coupon).exists():
+            return Response(
+                {'error': '이미 다운로드 받은 쿠폰입니다.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         serializer.save(user_id=user)
         return super().perform_create(serializer)

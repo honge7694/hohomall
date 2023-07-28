@@ -7,7 +7,6 @@ from enum import Enum
 User = get_user_model()
 
 class Coupon(models.Model):
-    brand_id = models.ForeignKey(Brand, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=500)
     discount_rate = models.IntegerField(default=0)
@@ -22,7 +21,7 @@ class Coupon(models.Model):
         db_table = 'coupon'
 
     def __str__(self) -> str:
-        return f"[{self.brand_id.name}] {self.name}"
+        return f"{self.name}"
 
 
 class CouponStatus(Enum):
