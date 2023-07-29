@@ -1,7 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import Home from "pages/Home";
-import Tables from "pages/Tables";
-import Billing from "pages/Billing";
+import HomePage from './HomePage';
 import Profile from "pages/Profile";
 import SignUp from "pages/SignUp";
 import SignIn from "pages/SignIn";
@@ -25,9 +23,7 @@ const Root = () => {
                 <Route path="/sign-up" element={<SignUp/> }/>
                 <Route path="/sign-in" element={<SignIn/> }/>
                 <Route  path="/" element={<Main/> }>
-                    <Route path="/dashboard" element={<Home/> }/>
-                    <Route path="/tables" element={<Tables/> }/>
-                    <Route path="/billing" element={<Billing/> }/>
+                    <Route index element={<HomePage/> }/>
                     <Route path="/profile" element={<Profile/> }/>
                     <Route path="/product/*" element={<ProductIndex/> }/>
                     <Route path="/cart/*" element={<CartIndex/> }/>

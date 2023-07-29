@@ -5,6 +5,7 @@ import Sidenav from "./Sidenav";
 import Header from "./Header";
 import Footer from "./Footer";
 
+
 const { Header: AntHeader, Content, Sider } = Layout;
 
 function Main({ children }) {
@@ -110,7 +111,6 @@ function Main({ children }) {
         )}
         <Content className="content-ant">
           {/* {children} */}
-
           <Outlet></Outlet>
         </Content>
         <Footer />

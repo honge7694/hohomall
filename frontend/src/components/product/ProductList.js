@@ -63,7 +63,7 @@ const ProductList = ({productList, type}) => {
     return (
         <>
             <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#d3d3d33b', padding: "15px", marginBottom: '15px'}}>
-                <h1 style={{ }}>모든 {type} 목록</h1>
+                <h1 style={{ }}> {type} 상품 목록</h1>
                 <div>
                     {filteredProductList.length}개의 상품이 표시됩니다. &nbsp;&nbsp;&nbsp;
                     <Select value={sortingOption} onChange={handleSortBy}>

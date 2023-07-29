@@ -275,21 +275,7 @@ function Sidenav({ color }) {
         <span>HoHoMall</span>
       </div>
       <hr />
-      <Menu theme="light" mode="inline">
-        <Menu.Item key="99">
-          <NavLink to="/dashboard">
-            <span
-              className="icon"
-              style={{
-                background: page === "dashboard" ? color : "",
-              }}
-            >
-              {dashboard}
-            </span>
-            <span className="label">Dashboard</span>
-          </NavLink>
-        </Menu.Item>
-        
+      <Menu theme="light" mode="inline" className='scroll box1' style={{ maxHeight: '700px', overflowY: 'auto' }}>        
         <Menu.Item key="1">
           <NavLink to="/">
             <span
@@ -402,34 +388,7 @@ function Sidenav({ color }) {
             </Menu.Item>
           )}
         </Menu>
-
-        <Menu.Item key="97">
-          <NavLink to="/tables">
-            <span
-              className="icon"
-              style={{
-                background: page === "tables" ? color : "",
-              }}
-            >
-              {tables}
-            </span>
-            <span className="label">Tables</span>
-          </NavLink>
-        </Menu.Item>
-        <Menu.Item key="98">
-          <NavLink to="/billing">
-            <span
-              className="icon"
-              style={{
-                background: page === "billing" ? color : "",
-              }}
-            >
-              {billing}
-            </span>
-            <span className="label">Billing</span>
-          </NavLink>
-        </Menu.Item>
-                
+                        
         <Menu.Item className="menu-item-header" key="6">
           Account Pages
         </Menu.Item>
