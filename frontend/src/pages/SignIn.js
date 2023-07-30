@@ -179,17 +179,12 @@ const SignIn =  () => {
           <div className="header-col header-nav">
             <Menu mode="horizontal" defaultSelectedKeys={["1"]}>
               <Menu.Item key="1">
-                <Link to="/dashboard">
+                <Link to="/">
                   {template}
-                  <span> Dashboard</span>
+                  <span> Home </span>
                 </Link>
               </Menu.Item>
-              <Menu.Item key="2">
-                <Link to="/profile">
-                  {profile}
-                  <span>Profile</span>
-                </Link>
-              </Menu.Item>
+          
               <Menu.Item key="3">
                 <Link to="/sign-up">
                   {signup}

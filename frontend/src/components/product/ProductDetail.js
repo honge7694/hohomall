@@ -27,6 +27,22 @@ const ProductDetail = ({productData}) => {
     const [wishlistModalVisible, setWishlistModalVisible] = useState(false);
     const [totalPrice, setTotalPrice] = useState(0);
 
+
+    useEffect(() => {
+        async function fetchRecentViewed() {
+            const data = { 
+                'product_id': id
+            }
+            try{
+                const response = await axiosInstance.post('/account/recent/viewed/', data, { headers });
+                console.log('ProductList RecentViewed response : ', response);
+            }catch(error){
+                console.log('error : ', error);
+            }
+        }
+        fetchRecentViewed();
+    })
+
     // options
     const options = productData.option.map((option) => (
         <Option key={option.id} value={option.id}>

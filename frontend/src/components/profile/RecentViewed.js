@@ -30,19 +30,6 @@ const RecentViewed = ({recentView}) => {
     const handlerOnClick = (e, id) => {
         e.preventDefault();
         console.log(id);
-
-        async function fetchRecentViewed() {
-            const data = { 
-                'product_id': id
-            }
-            try{
-                const response = await axiosInstance.post('/account/recent/viewed/', data, { headers });
-                console.log('ProductList RecentViewed response : ', response);
-            }catch(error){
-                console.log('error : ', error);
-            }
-        }
-        fetchRecentViewed();
         
         history('/product/detail/'+id);
     };

@@ -78,7 +78,7 @@ const BoardList = ({questionList, answerList}) => {
             key: 'answer',
             render: (answer, record) => (
             answer ? (
-                <span onClick={() => history(`answer/${record.key}`)} style={{ text: 'bold', color: 'red'}}>
+                <span onClick={() => history(`answer/${record.key}`)} style={{ text: 'bold', color: 'red', cursor: 'pointer'}}>
                     [답변 완료]
                 </span>
             ) : (

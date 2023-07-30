@@ -24,7 +24,7 @@ const UserProfileCartList = ({cartList}) => {
                         split={false}
                         className="conversations-list"
                         renderItem={(item) => (
-                            <List.Item actions={[<Button type="link" onClick={() => history('/product/' + item.product.id)}>이동</Button>]}>
+                            <List.Item actions={[<Button type="link" onClick={() => history('/product/detail/' + item.product.id)}>이동</Button>]}>
                             <List.Item.Meta
                                 avatar={
                                 <Avatar shape="square" size={48} src={item.product_image} />
