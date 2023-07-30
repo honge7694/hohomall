@@ -22,6 +22,7 @@ import { userState } from 'state';
 import UserInfoEdit from 'components/profile/UserInfoEdit';
 import UserPasswordEdit from 'components/profile/UserPasswordEdit';
 import UserProfile from 'components/profile/UserProfile';
+import UserDelete from 'components/profile/UserDelete';
 
 
 function Profile() {
@@ -105,7 +106,7 @@ function Profile() {
       {selectedTab === "a" && <UserProfile data={{userInfo}} />}
       {selectedTab === "b" && <UserInfoEdit data={{userInfo, setUserInfo}} />}
       {selectedTab === "c" && <UserPasswordEdit data={{userInfo}}/>}
-
+      {selectedTab === "d" && <UserDelete data={{userInfo}}/>}
       
 
     </>

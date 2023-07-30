@@ -25,12 +25,6 @@ import {
     UploadOutlined 
 } from "@ant-design/icons";
 
-import logo1 from "assets/images/logos-facebook.svg";
-import logo2 from "assets/images/logo-apple.svg";
-import logo3 from "assets/images/Google__G__Logo.svg.png";
-import UserPasswordEdit from './UserPasswordEdit';
-
-
 
 const UserInfoEdit = ({data}) => {
     console.log('UserInfoEdit_data : ', data);

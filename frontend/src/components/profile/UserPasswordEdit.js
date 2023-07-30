@@ -20,10 +20,6 @@ import {
     FrownOutlined 
 } from "@ant-design/icons";
 
-import logo1 from "assets/images/logos-facebook.svg";
-import logo2 from "assets/images/logo-apple.svg";
-import logo3 from "assets/images/Google__G__Logo.svg.png";
-
 
 const UserPasswordEdit = ({data}) => {
     console.log('UserPasswordEdit_data : ', data);
@@ -85,7 +81,7 @@ const UserPasswordEdit = ({data}) => {
                     <Form.Item
                         name="current_password"
                         rules={[
-                            { required: true, message: "Please input your current password!" },
+                            { required: true, message: "현재 비밀번호를 입력해주세요." },
                         ]}
                     >
                         <Input.Password placeholder="Current Password" />
@@ -94,7 +90,7 @@ const UserPasswordEdit = ({data}) => {
                     <Form.Item
                         name="password"
                         rules={[
-                            { required: true, message: "Please input your password!" },
+                            { required: true, message: "변경할 비밀번호를 입력해주세요." },
                         ]}
                     >
                         <Input.Password placeholder="Password" />

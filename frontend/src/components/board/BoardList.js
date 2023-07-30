@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Card, Table, notification, Typography, Button, Input, Select, Checkbox } from 'antd';
+import { useRecoilValue } from "recoil";
+import { userState } from 'state';
 
 
 const { Text } = Typography;
@@ -9,10 +11,12 @@ const { Option } = Select;
 const BoardList = ({questionList, answerList}) => {
     console.log('questionList : ', questionList)
     const history = useNavigate();
+    const user = useRecoilValue(userState);
+    const user_id = user['userId'];
+
     const [api, setApi] = notification.useNotification();
-    
     const [searchText, setSearchText] = useState('');
-    const [searchType, setSearchType] = useState('title'); // Default search by title
+    const [searchType, setSearchType] = useState('title');
     const [showCompleted, setShowCompleted] = useState(false);
 
     const onSearchTextChange = (e) => {
@@ -104,7 +108,7 @@ const BoardList = ({questionList, answerList}) => {
             if (showCompleted) {
                 return qna.answer;
             } else {
-                return true; // Show all questions if showCompleted is false
+                return true; 
             }
         })
         .filter((qna) => {
@@ -117,7 +121,7 @@ const BoardList = ({questionList, answerList}) => {
             } else if (searchType === 'user') {
                 return userName.includes(searchTextLower);
             } else {
-                return true; // Show all questions if searchType is invalid
+                return true;
             }
         })
         .map((qna) => ({
@@ -129,18 +133,8 @@ const BoardList = ({questionList, answerList}) => {
             created_at: qna.question.created_at,
         }));
 
-    // const data = qnaData.map((qna) => ({
-    //     key: qna.key,
-    //     subject: qna.question.subject,
-    //     title: qna.question.title,
-    //     user: qna.question.user,
-    //     answer: qna.answer,
-    //     created_at: qna.question.created_at,
-    // }));
-
     const handlerNew = (e) => {
         e.preventDefault();
-        // TODO: 로그인 안했으면 로그인 다시하기.
         history('new');
     }
 
@@ -173,7 +167,7 @@ const BoardList = ({questionList, answerList}) => {
                             onChange={onSearchTextChange}
                             style={{ width: 200, marginRight: 16 }}
                         />
-                        <Button onClick={handlerNew}>글쓰기</Button>
+                        {user_id ? (<Button onClick={handlerNew}>글쓰기</Button>) : (null)}
                         </div>
                     </div>
                 }
