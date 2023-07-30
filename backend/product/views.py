@@ -2,6 +2,7 @@ from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from .serializers import BrandSerializer, ProductSerializer
 from .models import Brand, Product
+from django.db.models import Q
 
 
 class BrandListCreateAPIView(ListCreateAPIView):
@@ -55,7 +56,7 @@ class ProductTypeDataListRetrieveAPIView(ListAPIView):
 
 class ProductSubTypeDataListRetrieveAPIView(ListAPIView):
     """
-    상품 subtype 조회
+    Product subtype 조회
     """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
@@ -69,4 +70,21 @@ class ProductSubTypeDataListRetrieveAPIView(ListAPIView):
             print(subtype_param)
             qs = qs.filter(product_subtype=subtype_param)
             print(qs)
+        return qs
+    
+
+class SearchListAPIView(ListAPIView):
+    """
+    Product Search 
+    """
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        search_query = self.request.query_params.get('search')
+        qs = super().get_queryset()
+        qs = qs.filter(Q(name__icontains=search_query) | 
+                    Q(product_type__icontains=search_query) | 
+                    Q(product_subtype__icontains=search_query) | 
+                    Q(product_style__icontains=search_query))
         return qs

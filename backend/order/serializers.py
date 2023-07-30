@@ -176,8 +176,6 @@ class OrderSerializer(serializers.ModelSerializer):
             coupon_user_id.is_used = CouponStatus.USED.value
             coupon_user_id.save()
         
-        
-
         return order
     
 
