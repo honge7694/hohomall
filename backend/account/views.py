@@ -76,7 +76,6 @@ class SignupListCreateAPIView(ListCreateAPIView):
         이메일 인증 링크 생성
         """
         verification_token = signing.dumps({'user_id': user.id})
-        # TODO: 이메일 인증 링크 변경 필요.
         return f'{settings.HOST_NAME}/account/verify/?token={verification_token}'
 
 
@@ -96,10 +95,9 @@ class EmailVerificationAPIView(GenericAPIView):
         user.status = EmailVerificationStatus.VERIFIED.value
         user.save()
 
-        return Response({'detail': '이메일 인증이 완료되었습니다.'}, status=status.HTTP_200_OK)
-        # TODO: 프론트엔드 페이지로 리다이렉트
-        # redirect_url = reverse('frontend-page')
-        # return redirect(redirect_url)
+        # 프론트엔드 페이지로 리다이렉트
+        redirect_url = settings.FRONTEND_URL
+        return redirect(redirect_url)
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):

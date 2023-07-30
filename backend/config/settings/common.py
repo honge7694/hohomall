@@ -178,6 +178,7 @@ SIMPLE_JWT = {
 }
 
 HOST_NAME = os.environ['HOST_NAME']
+FRONTEND_URL = 'http://localhost:3000'
 
 # Email Settings
 EMAIL_HOST = 'smtp.naver.com'
