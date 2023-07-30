@@ -7,6 +7,7 @@ from .views import (
     UserInfoRetrieveUpdateDestroyAPIView,
     UserPasswordRetrieveUpdateDestroyAPIView,
     RecentListCreateAPIView,
+    UserDeleteAPIView,
 )
 
 
@@ -16,6 +17,7 @@ urlpatterns = [
     path('recent/viewed/', RecentListCreateAPIView.as_view(), name='recent-viewed'),
     path('info/<int:pk>/', UserInfoRetrieveUpdateDestroyAPIView.as_view(), name='user-info'),
     path('info/password/<int:pk>/', UserPasswordRetrieveUpdateDestroyAPIView.as_view(), name='user-edit-password'),
+    path('delete/<int:pk>/', UserDeleteAPIView.as_view(), name='user-delete'),
     path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), 
 ]

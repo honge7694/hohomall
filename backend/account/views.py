@@ -9,8 +9,9 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect
 from django.utils import timezone
+from django.contrib.auth.hashers import check_password
 from product.models import Product
-from .serializers import SignupSerializer, CustomTokenObtainPairSerializer, UserInfoEditSerializer, UserPasswordEditSerializer, RecentViewedSerializer
+from .serializers import SignupSerializer, CustomTokenObtainPairSerializer, UserInfoEditSerializer, UserPasswordEditSerializer, RecentViewedSerializer, UserDeleteSerializer
 from .models import EmailVerificationStatus, RecentViewed
 from datetime import timedelta
 
@@ -144,6 +145,31 @@ class RecentListCreateAPIView(ListCreateAPIView):
         
         serializer.save(user_id=user)
         return super().perform_create(serializer)
+    
+
+class UserDeleteAPIView(RetrieveUpdateDestroyAPIView):
+    """
+    회원 탈퇴
+    """
+    queryset = User.objects.all()
+    serializer_class = UserDeleteSerializer
+
+    def delete(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = self.request.user
+        current_password = self.request.data.get('current_password')
+        print('current_password : ', current_password)
+
+        # 입력한 비밀번호와 현재 비밀번호 일치 여부 확인
+        if not check_password(current_password, user.password):
+            return Response({"error": "현재 비밀번호가 일치하지 않습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 회원 정보 삭제
+        user.delete()
+
+        return Response({"message": "회원 탈퇴가 완료되었습니다."}, status=status.HTTP_200_OK)
 
 
 

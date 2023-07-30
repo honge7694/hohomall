@@ -73,3 +73,10 @@ class RecentViewedSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecentViewed
         fields = ['id', 'product_id', 'product', 'created_at']
+
+
+class UserDeleteSerializer(serializers.ModelSerializer):
+    # current_password = serializers.CharField(write_only=True)
+    class Meta:
+        model = User
+        fields = ['id']
