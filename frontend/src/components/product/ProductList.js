@@ -65,7 +65,7 @@ const ProductList = ({productList, type}) => {
             <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#d3d3d33b', padding: "15px", marginBottom: '15px'}}>
                 <h1 style={{ }}> {type} 상품 목록</h1>
                 <div>
-                    {filteredProductList.length}개의 상품이 표시됩니다. &nbsp;&nbsp;&nbsp;
+                    {filteredProductList ? (filteredProductList.length) : (0)} 개의 상품이 표시됩니다. &nbsp;&nbsp;&nbsp;
                     <Select value={sortingOption} onChange={handleSortBy}>
                         <Option value="default">기본 정렬</Option>
                         <Option value="price">낮은 가격 순</Option>
@@ -74,7 +74,7 @@ const ProductList = ({productList, type}) => {
                 </div>
             </div>
             <Row gutter={[16, 16]}>
-                {filteredProductList.map((product) => (
+                {filteredProductList && filteredProductList.map((product) => (
                     <Col span={6} key={product.id}>
                         <a href="#" onClick={ (e) => handlerOnClick(e, product.id) }>
                             <Card

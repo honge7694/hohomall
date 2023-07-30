@@ -17,12 +17,12 @@ const Home = ({productList}) => {
     const [popularProductList, setPopularProductList] = useState();
 
 
-    // 인기상품 sort 30개
+    // 인기상품 sort 8개
     useEffect(() => {
         let sortedList = [...productList];
         sortedList.sort((a, b) => b.view_count - a.view_count);
         
-        const popularProductsToShow = sortedList.slice(0, 30); // 상위 30개
+        const popularProductsToShow = sortedList.slice(0, 8); // 상위 8개
         setPopularProductList(popularProductsToShow);
     }, [productList])
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   Row,
@@ -233,9 +234,12 @@ function Header({
   handleFixedNavbar,
 }) {
   const { Title, Text } = Typography;
+  
+  const history = useNavigate();
 
   const [visible, setVisible] = useState(false);
   const [sidenavType, setSidenavType] = useState("transparent");
+  const [searchQuery, setSearchQuery] = useState(''); // 검색
 
   useEffect(() => window.scrollTo(0, 0));
 
@@ -245,6 +249,12 @@ function Header({
   // user 상태
   const user = useRecoilValue(userState);
   const isLoggedIn = user['userId'] !== null;
+
+  const handleSearch = () => {
+    // 검색어를 사용하여 아이템 목록을 필터링하고, 결과를 새로운 페이지로 이동시킵니다.
+    // 이 예시에서는 검색어가 "apple"인 경우 "/search-results" 페이지로 이동합니다.
+    history('/product/search', {state: searchQuery});
+  };
 
   return (
     <>
@@ -385,8 +395,11 @@ function Header({
           </Link>
           <Input
             className="header-search"
-            placeholder="Type here..."
+            placeholder="검색어 입력"
             prefix={<SearchOutlined />}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onPressEnter={handleSearch}
           />
         </Col>
       </Row>
