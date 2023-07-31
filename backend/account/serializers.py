@@ -59,6 +59,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             "id": self.user.id,
             "nickname": self.user.nickname,
             "status": self.user.status,
+            "is_admin": self.user.is_admin,
         }
         return data
 

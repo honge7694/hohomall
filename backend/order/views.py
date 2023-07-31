@@ -1,4 +1,4 @@
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from .models import Cart, Order, Purchase
 from .serializers import CartSerializer, OrderSerializer, PurchaseSerializer
 from django.db.models import F
@@ -100,3 +100,11 @@ class PurchaseListCreateAPIView(ListCreateAPIView):
     #     user = self.request.user
     #     serializer.save(user_id=user)
     #     return super().perform_create(serializer)
+
+
+class AdminOrderListAPIView(ListAPIView):
+    """
+    Admin OrderList
+    """
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer

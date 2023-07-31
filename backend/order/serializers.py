@@ -4,6 +4,7 @@ from .models import Cart, Order, OrderDetail, OrderStatus, Purchase
 from coupon.models import Coupon, CouponUser, CouponStatus
 from product.models import Product, ProductOption, ProductImage, Brand
 from product.serializers import ProductImageSerializer
+from account.serializers import UserInfoEditSerializer
 
 
 class CartSerializer(serializers.ModelSerializer):
@@ -93,6 +94,7 @@ class OrderSerializer(serializers.ModelSerializer):
     )
     coupon_user = serializers.SerializerMethodField(read_only=True)
     order_details = serializers.SerializerMethodField()
+    user = UserInfoEditSerializer(source='user_id', read_only=True)
 
     class Meta:
         model = Order
@@ -110,7 +112,8 @@ class OrderSerializer(serializers.ModelSerializer):
             'address',
             'memo',
             'detail_address',
-            'created_at'
+            'created_at',
+            'user',
         ]
 
     def get_order_details(self, obj):
