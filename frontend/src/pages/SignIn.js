@@ -133,10 +133,11 @@ const SignIn =  () => {
       const { data : {access : jwtToken, refresh: refreshToken } } = response;
       dispatch(setToken(jwtToken, refreshToken));
 
-      // User 닉네임, Id
+      // User 닉네임, Id, is_admin
       setUser({
         userId: response.data.user.id,
         userNickname: response.data.user.nickname,
+        isAdmin: response.data.user.is_admin,
       });
 
       api.info({
@@ -145,7 +146,14 @@ const SignIn =  () => {
         icon: <SmileOutlined style={{ color: "#108ee9" }}/>  
       });
 
-      history('/');
+      // isAdmin 값에 따라 다른 페이지로 라우팅
+      if (response.data.user.is_admin) {
+        // 어드민 유저라면 어드민 페이지로 이동
+        history("/admin");
+      } else {
+        // 일반 유저라면 메인 페이지로 이동
+        history("/");
+      }
 
     }catch(error){
       console.log('error : ', error);

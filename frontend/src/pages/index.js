@@ -13,6 +13,7 @@ import CartIndex from './cart';
 import OrderIndex from './order/index';
 import BoardIndex from './board';
 import CouponIndex from './coupon'
+import AdminIndex from './admin/index';
 
 
 const Root = () => {
@@ -30,6 +31,7 @@ const Root = () => {
                     <Route path="/order/*" element={<OrderIndex/> }/>
                     <Route path="/qna/*" element={<BoardIndex/> }/>
                     <Route path="/coupon/*" element={<CouponIndex/> }/>
+                    <Route path="/admin/*" element={ <AdminIndex />}/>
                 </Route>
             </Routes>
         </div>
