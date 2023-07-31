@@ -153,12 +153,9 @@ class UserDeleteAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = UserDeleteSerializer
 
     def delete(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
         user = self.request.user
         current_password = self.request.data.get('current_password')
-        print('current_password : ', current_password)
+        # print('current_password : ', current_password)
 
         # 입력한 비밀번호와 현재 비밀번호 일치 여부 확인
         if not check_password(current_password, user.password):

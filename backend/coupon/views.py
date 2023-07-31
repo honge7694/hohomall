@@ -21,8 +21,8 @@ class CouponUserListCreateAPIView(ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        qs = CouponUser.objects.filter(is_used=CouponStatus.NOT_USED.value)
-        qs = qs.filter(user_id=user)
+        qs = CouponUser.objects.filter(user_id=user)
+        # qs = qs.filter(is_used=CouponStatus.NOT_USED.value)
         return qs
 
     def perform_create(self, serializer):
