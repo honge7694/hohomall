@@ -45,6 +45,7 @@ const Order = () => {
   const [memo, setMemo] = useState('');
 
   useEffect(() => {
+    // 유저 정보
     async function fetchUserInfo(){
       try{
         const { data } = await axiosInstance.get(`/account/info/${user['userId']}/`, { headers });
@@ -58,11 +59,14 @@ const Order = () => {
     }
     fetchUserInfo();
 
+    // 다운로드 쿠폰 데이터
     async function fetchCouponInfo(){
       try{
         const { data } = await axiosInstance.get(`/coupon/user/`, { headers });
-        console.log('Coupon Data : ', data);
-        setCouponInfo(data);
+        console.log('Coupon User Data : ', data);
+        // 미사용 쿠폰목록 filter
+        const unusedCoupons = data.filter((coupon) => coupon.is_used === "미사용");
+        setCouponInfo(unusedCoupons);
       }catch(error){
         console.log('Coupon Data Error : ', error);
       }

@@ -6,19 +6,12 @@ import { userState } from 'state';
 import { useSetRecoilState } from "recoil";
 
 import {
-    Layout,
-    Menu,
     Button,
-    Typography,
     Card,
     Form,
     Input,
     notification,
     Modal,
-    Checkbox,
-    Row,
-    Col,
-    Upload
 } from "antd";
 import {
     SmileOutlined, 
@@ -36,7 +29,6 @@ const UserDelete = ({data}) => {
     const headers = { Authorization: `Bearer ${token['jwtToken']}`};
     const [api, setApi] = notification.useNotification();
 
-    const [ fieldsErrors, SetFieldsErrors ] = useState({});
     const [currentPassword, setCurrentPassword] = useState();
     const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -128,7 +120,7 @@ const UserDelete = ({data}) => {
                     okText="예"
                     cancelText="취소"
                 >
-                    <p>정말 삭제하시겠습니까?</p>
+                    <p>정말 탈퇴하시겠습니까?</p>
                 </Modal>
             </Card>
         </>
