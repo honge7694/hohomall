@@ -275,7 +275,68 @@ function Sidenav({ color }) {
         <span>HoHoMall</span>
       </div>
       <hr />
+
       <Menu theme="light" mode="inline" className='scroll box1' style={{ maxHeight: '700px', overflowY: 'auto' }}>        
+        {user['isAdmin'] === true ? (
+          <>
+            <Menu.Item className="menu-item-header" key="5">
+              Admin Pages
+            </Menu.Item>
+
+              <Menu.Item key="13">
+                <NavLink to="/admin/order">
+                  <span
+                    className="icon"
+                    style={{
+                      background: page === "/admin/order" ? color : "",
+                    }}
+                  >
+                    {dashboard}
+                  </span>
+                  <span className="label">Order</span>
+                </NavLink>
+              </Menu.Item>
+
+              <Menu.Item key="15">
+                <NavLink to="/admin/product">
+                  <span
+                    className="icon"
+                    style={{
+                      background: page === "/admin/product" ? color : "",
+                    }}
+                  >
+                    {dashboard}
+                  </span>
+                  <span className="label">Product</span>
+                </NavLink>
+              </Menu.Item>
+
+
+              <Menu.Item key="16">
+                <NavLink to="/admin/user">
+                  <span
+                    className="icon"
+                    style={{
+                      background: page === "/admin/user" ? color : "",
+                    }}
+                  >
+                    {dashboard}
+                  </span>
+                  <span className="label">User</span>
+                </NavLink>
+              </Menu.Item>
+
+            <Menu.Item className="menu-item-header" key="5">
+              User Pages
+            </Menu.Item>
+          </>
+        ) : (
+          null
+        )
+      }
+
+
+      
         <Menu.Item key="1">
           <NavLink to="/">
             <span

@@ -51,7 +51,6 @@ const AdminOrderDetailPage = () => {
 
     // 주문 배송상태 수정
     const handleUpdateOrderStatus = () => {
-        // TODO: 배송 상태 업데이트 (서버)
         const fetchOrderStatus = async () => {
             try {
                 console.log('orderDetail : ', orderDetail);
