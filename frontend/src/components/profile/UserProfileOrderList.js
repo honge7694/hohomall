@@ -26,7 +26,7 @@ const UserProfileOrderList = ({orderList}) => {
                         split={false}
                         className="conversations-list"
                         renderItem={(item) => (
-                            <List.Item actions={[<Button type="link" onClick={() => history('/order/list/' + item.id)}>이동</Button>]}>
+                            <List.Item actions={[<Button type="link" onClick={() => history('/order/detail/' + item.id)}>이동</Button>]}>
                             <List.Item.Meta
                                 title={
                                     <>

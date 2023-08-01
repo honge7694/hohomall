@@ -77,7 +77,7 @@ const AdminOrderDetailPage = () => {
     // 이전으로 버튼
     const handleGoHome = () => {
         // 홈으로 이동하는 로직을 구현
-        history('/order/list');
+        history('/admin/order');
     };
 
     // 배송 상태 변경

@@ -13,7 +13,7 @@ const OrderIndex = () => {
                 <Route path='/' element={ <Order /> }></Route>
                 <Route path='/history' element={ <OrderHistory /> }></Route>
                 <Route path='/list' element= { <OrderHistoryList /> }></Route>
-                <Route path='/list/:id' element={ <OrderHistoryDetail /> }></Route>
+                <Route path='/detail/:id' element={ <OrderHistoryDetail /> }></Route>
             </Routes>
         </>
     );

@@ -10,17 +10,18 @@ const AdminOrderList = ({orderList}) => {
 
     // 정렬
     const [sortedInfo, setSortedInfo] = useState({
-        order: 'ascend', // 기본 오름차순 정렬
-        columnKey: 'status', // status 컬럼으로 정렬
+        order: 'descend', // 기본 오름차순 정렬
+        columnKey: 'created_at', // status 컬럼으로 정렬
     });
     
     const columns = [
         {
             title: '번호',
-            dataIndex: 'index',
-            key: 'index',
+            dataIndex: 'id',
+            key: 'id',
             width: "10%",
-            render: (text, record, index) => orderList.length - index,
+            render: (id) => id
+            // render: (text, record, index) => orderList.length - index,
         },
         {
             title: '제품',
