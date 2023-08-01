@@ -181,6 +181,28 @@ class OrderSerializer(serializers.ModelSerializer):
         
         return order
     
+    def update(self, instance, validated_data):
+        # order_details_data = validated_data.pop('order_details', [])
+        order_details_data = self.context['request'].data.get('order_details', []) 
+        print('order_details : ', order_details_data)
+
+        # OrderDetail 업데이트
+        for order_detail_data in order_details_data:
+            order_detail_id = order_detail_data.get('id')
+            try:
+                order_detail = OrderDetail.objects.get(id=order_detail_id, order_id=instance)
+            except OrderDetail.DoesNotExist:
+                continue
+
+            # OrderStatus 업데이트
+            order_status_data = order_detail_data.get('status', [])
+            if order_status_data:
+                order_status = order_detail.orderstatus_set.first()
+                if order_status:
+                    order_status.status = order_status_data[0].get('status', order_status.status)
+                    order_status.save()
+        return instance
+    
 
 class OrderStatusSerializer(serializers.ModelSerializer):
     class Meta:
