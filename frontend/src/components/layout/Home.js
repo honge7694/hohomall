@@ -82,8 +82,7 @@ const Home = ({productList}) => {
                 <Row gutter={[16, 16]}>
                     {productList.map((product) => (
                         <Col span={6} key={product.id}>
-                            {/* <a href="#" onClick={ (e) => handlerOnClick(e, product.id) }> */}
-                            <a>
+                            <a href="#" onClick={ (e) => handlerOnClick(e, product.id) }>
                                 <Card
                                     hoverable
                                     cover={<img alt={product.name} src={product.images[0] ? product.images[0].image_src : null} style={{ height: '280px', objectFit: 'cover' }} />}

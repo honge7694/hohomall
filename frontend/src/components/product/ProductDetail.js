@@ -67,8 +67,8 @@ const ProductDetail = ({productData}) => {
         }
     }
 
+    // 찜하기 버튼 동작
     const handleAddToWishlist = () => {
-        // 찜하기 버튼 동작
         const selectOption = productData.option.find((option) => option.id === selectedOption);
         console.log("handleWishList : ", selectOption);
         if (user.userId){
@@ -113,6 +113,11 @@ const ProductDetail = ({productData}) => {
         // 모달 창 닫기
         setWishlistModalVisible(false);
     };
+
+    // admin 상품 수정
+    const handleUpdateProduct = () => {
+        history('#');
+    }
 
     return (
         <div>
@@ -191,6 +196,11 @@ const ProductDetail = ({productData}) => {
                                 onConfirm={handleWishlistModalConfirm}
                                 onCancel={handleWishlistModalCancel}
                             />
+                            {user['isAdmin'] ? ( 
+                                <Button onClick={handleUpdateProduct} style={{ marginLeft: '10px'}}>수정하기</Button>
+                            ) : ( 
+                                null
+                            )}
                             {/* <Button type="primary" onClick={handleBuyNow} style={{ marginLeft: 8 }}>
                                 구매하기
                             </Button> */}
