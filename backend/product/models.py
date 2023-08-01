@@ -19,6 +19,7 @@ class Brand(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
+    content = models.TextField()
     brand_id = models.ForeignKey(
         Brand,
         on_delete=models.CASCADE
@@ -31,7 +32,7 @@ class Product(models.Model):
     view_count = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_active = models.CharField(max_length=1)
+    is_active = models.CharField(max_length=1, default='Y')
 
     class Meta:
         db_table = 'product'
