@@ -10,9 +10,8 @@ import { useAppContext } from 'store';
 
 const { Title, Text } = Typography;
 
-const QuestionWrite = ({questionData, userInfo}) => {
+const QuestionWrite = () => {
     const { id } = useParams();
-    console.log('questionData : ', questionData)
     const user = useRecoilValue(userState);
     const { store: token } = useAppContext();
     const headers = { Authorization: `Bearer ${token['jwtToken']}`};
