@@ -21,6 +21,7 @@ const AdminProductEdit = ({brandList, productData}) => {
     const [productImages, setProductImages] = useState([]);
     const [newImages, setNewImages] = useState([]); // 수정에서 새로 추가한 이미지
     const [deletedImageIds, setDeletedImageIds] = useState([]); // 수정에서 삭제한 이미지
+    const [deletedOptionIds, setDeletedOptionIds] = useState([]); // 수정에서 삭제한 옵션
     
 
     // 이미지 미리보기에 넣기위한 커스텀
@@ -51,6 +52,18 @@ const AdminProductEdit = ({brandList, productData}) => {
         console.log('delete Image ids : ', deletedImageIds);
     };
 
+    // 옵션 삭제 처리
+    const handleOptionRemove = (index, remove) => {
+        // 옵션 삭제 버튼을 누를 때 해당 옵션 데이터의 ID를 delete_option_ids에 추가
+        setDeletedOptionIds(prevDeletedOptionIds => [
+            ...prevDeletedOptionIds,
+            form.getFieldValue(['options', index, 'id']),
+        ]);
+        console.log('deleteOption : ', deletedOptionIds)
+
+        remove(index); // 필드 제거 로직을 수행하는 함수를 호출합니다.
+    };
+
     // 스타일 정보를 배열로 변환
     const initialStyles = productData.product_style.split(',');
 
@@ -70,7 +83,7 @@ const AdminProductEdit = ({brandList, productData}) => {
     // 폼 작성 완료
     const onFinish = async (values) => {
         console.log('onFinish Value : ', values);
-        const { product_type, product_subtype, style, brand_id, name, content, purchase_count, price, images } = values;
+        const { product_type, product_subtype, style, brand_id, name, content, purchase_count, price, images, options } = values;
         const selectedStyles = style.join(','); // 배열로 전달되는 style을 문자열로 변환
 
         const formData = new FormData();
@@ -83,6 +96,8 @@ const AdminProductEdit = ({brandList, productData}) => {
         formData.append('purchase_count', purchase_count);
         formData.append('price', price);
         formData.append('deleted_images', JSON.stringify(deletedImageIds));
+        formData.append('options', JSON.stringify(options));
+        formData.append('deleted_option_ids', JSON.stringify(deletedOptionIds));
         newImages.forEach((file) => {
             formData.append('new_images', file.originFileObj)
         })
@@ -98,6 +113,10 @@ const AdminProductEdit = ({brandList, productData}) => {
         
     };
 
+    // 제품 삭제
+    const handleProductDelete = () => {
+        console.log('handleProductDelete : ')
+    }
 
     return (
         <>
@@ -110,6 +129,9 @@ const AdminProductEdit = ({brandList, productData}) => {
                     content: productData.content,
                     purchase_count: productData.purchase_count,
                     price: parseInt(productData.price.replace(',', '')),
+                    options: productData.options.map((option) => ({
+                        ...option,
+                    })),
                 }} >
                     <Form.Item label="Product Type" name="product_type" initialValue="T-SHIRTS" rules={[{ required: true, message: '상품 타입을 선택하세요.' }]}>
                         <Radio.Group>
@@ -213,7 +235,43 @@ const AdminProductEdit = ({brandList, productData}) => {
                     <Form.Item label="내용" name="content" rules={[{ required: true, message: '내용을 입력하세요.' }]}>
                         <Input.TextArea rows={4} placeholder='#을 이용하여 상품을 설명해보세요. ' />
                     </Form.Item>
-                    
+                
+                    <Form.List name="options">
+                        {(fields, { add, remove }) => (
+                            <>
+                            {fields.map((field, index) => (
+                                <div key={field.key}>
+                                    <Form.Item label={`Size ${index + 1}`} {...field} name={[field.name, 'option_size']} fieldKey={[field.fieldKey, 'option_size']} rules={[{ required: true, message: '사이즈를 입력하세요.' }]}>
+                                        <Input />
+                                    </Form.Item>
+
+                                    <Form.Item label={`Color ${index + 1}`} {...field} name={[field.name, 'option_color']} fieldKey={[field.fieldKey, 'option_color']} rules={[{ required: true, message: '색상을 입력하세요.' }]}>
+                                        <Input />
+                                    </Form.Item>
+
+                                    <Form.Item label={`Option Price ${index + 1}`} {...field} name={[field.name, 'price']} fieldKey={[field.fieldKey, 'price']} rules={[{ required: true, message: '가격을 입력하세요.' }]}>
+                                        <Input />
+                                    </Form.Item>
+
+                                    {/* <Form.Item label={`Delivery Fee ${index + 1}`} {...field} name={[field.name, 'delivery_fee']} fieldKey={[field.fieldKey, 'delivery_fee']} rules={[{ required: true, message: '배송비를 입력하세요.' }]}>
+                                        <Input />
+                                    </Form.Item> */}
+
+                                    <Form.Item label={`Quantity ${index + 1}`} {...field} name={[field.name, 'quantity']} fieldKey={[field.fieldKey, 'quantity']} rules={[{ required: true, message: '수량을 입력하세요.' }]}>
+                                        <Input />
+                                    </Form.Item>
+
+                                    <Button danger onClick={() => handleOptionRemove(index, remove)} style={{ marginBottom: '10px' }}>Remove Option</Button>
+                                </div>
+                            ))}
+
+                                <Form.Item>
+                                    <Button onClick={() => add()}>Add Option</Button>
+                                </Form.Item>
+                            </>
+                        )}
+                    </Form.List>
+
                     <Form.Item name='images'>
                         <Upload
                             multiple
@@ -239,7 +297,8 @@ const AdminProductEdit = ({brandList, productData}) => {
 
                     <Form.Item>
                         <Button type="primary" htmlType="submit">저장</Button>
-                        <Button onClick={() => {history('/admin/product')}}style={{ marginLeft: '8px' }}>취소</Button>
+                        <Button onClick={() => {history(`/product/detail/${id}`)}} style={{ marginLeft: '8px' }}>취소</Button>
+                        <Button danger onClick={() => handleProductDelete()} style={{ marginLeft: '8px' }}>삭제</Button>
                     </Form.Item>
                 </Form>
             </Card>

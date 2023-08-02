@@ -194,9 +194,9 @@ const AdminProductNew = ({brandList}) => {
                                         <Input />
                                     </Form.Item>
 
-                                    <Form.Item label={`Delivery Fee ${index + 1}`} {...field} name={[field.name, 'delivery_fee']} fieldKey={[field.fieldKey, 'delivery_fee']} rules={[{ required: true, message: '배송비를 입력하세요.' }]}>
+                                    {/* <Form.Item label={`Delivery Fee ${index + 1}`} {...field} name={[field.name, 'delivery_fee']} fieldKey={[field.fieldKey, 'delivery_fee']} rules={[{ required: true, message: '배송비를 입력하세요.' }]}>
                                         <Input />
-                                    </Form.Item>
+                                    </Form.Item> */}
 
                                     <Form.Item label={`Quantity ${index + 1}`} {...field} name={[field.name, 'quantity']} fieldKey={[field.fieldKey, 'quantity']} rules={[{ required: true, message: '수량을 입력하세요.' }]}>
                                         <Input />
