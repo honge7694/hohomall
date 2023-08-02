@@ -42,7 +42,7 @@ const AdminProductNew = ({brandList}) => {
     // 폼 작성 완료
     const onFinish = async (values) => {
         console.log('onFinish Value : ', values);
-        const { product_type, product_subtype, style, brand_id, name, content, purchase_count, price, images } = values;
+        const { product_type, product_subtype, style, brand_id, name, content, purchase_count, price, images, options } = values;
         const selectedStyles = style.join(','); // 배열로 전달되는 style을 문자열로 변환
 
         const formData = new FormData();
@@ -54,6 +54,7 @@ const AdminProductNew = ({brandList}) => {
         formData.append('content', content);
         formData.append('purchase_count', purchase_count);
         formData.append('price', price);
+        formData.append('options', JSON.stringify(options));
         productImages.forEach((file) => {
             formData.append('images', file.originFileObj)
         })
@@ -175,6 +176,42 @@ const AdminProductNew = ({brandList}) => {
                     <Form.Item label="내용" name="content" rules={[{ required: true, message: '내용을 입력하세요.' }]}>
                         <Input.TextArea rows={4} placeholder='#을 이용하여 상품을 설명해보세요. ' />
                     </Form.Item>
+
+                    <Form.List name="options">
+                        {(fields, { add, remove }) => (
+                            <>
+                            {fields.map((field, index) => (
+                                <div key={field.key}>
+                                    <Form.Item label={`Size ${index + 1}`} {...field} name={[field.name, 'option_size']} fieldKey={[field.fieldKey, 'option_size']} rules={[{ required: true, message: '사이즈를 입력하세요.' }]}>
+                                        <Input />
+                                    </Form.Item>
+
+                                    <Form.Item label={`Color ${index + 1}`} {...field} name={[field.name, 'option_color']} fieldKey={[field.fieldKey, 'option_color']} rules={[{ required: true, message: '색상을 입력하세요.' }]}>
+                                        <Input />
+                                    </Form.Item>
+
+                                    <Form.Item label={`Option Price ${index + 1}`} {...field} name={[field.name, 'price']} fieldKey={[field.fieldKey, 'price']} rules={[{ required: true, message: '가격을 입력하세요.' }]}>
+                                        <Input />
+                                    </Form.Item>
+
+                                    <Form.Item label={`Delivery Fee ${index + 1}`} {...field} name={[field.name, 'delivery_fee']} fieldKey={[field.fieldKey, 'delivery_fee']} rules={[{ required: true, message: '배송비를 입력하세요.' }]}>
+                                        <Input />
+                                    </Form.Item>
+
+                                    <Form.Item label={`Quantity ${index + 1}`} {...field} name={[field.name, 'quantity']} fieldKey={[field.fieldKey, 'quantity']} rules={[{ required: true, message: '수량을 입력하세요.' }]}>
+                                        <Input />
+                                    </Form.Item>
+
+                                    <Button onClick={() => remove(field.name)} style={{marginBottom: '10px'}}>Remove Option</Button>
+                                </div>
+                            ))}
+
+                                <Form.Item>
+                                    <Button onClick={() => add()}>Add Option</Button>
+                                </Form.Item>
+                            </>
+                        )}
+                    </Form.List>
                     
                     <Form.Item name='images'>
                         <Upload
