@@ -2,6 +2,8 @@ from rest_framework import serializers
 from .models import Brand, Product, ProductImage, ProductOption
 from review.models import Review
 import locale
+import json
+
 
 locale.setlocale(locale.LC_ALL, '') # 현재 환경의 로칼 설정
 
@@ -147,6 +149,32 @@ class ProductSerializer(serializers.ModelSerializer):
             ProductOption.objects.create(product_id=product, **option_data)
 
         return product
+    
+    def update(self, instance, validated_data):
+        deleted_images_str = self.context['request'].data.get('deleted_images', '[]')
+        deleted_images = json.loads(deleted_images_str)
+        new_images = self.context['request'].FILES
+
+        # 이미지 삭제 처리
+        for image_id in deleted_images:
+            instance.productimage_set.filter(id=image_id).delete()
+        
+        # 새로운 이미지 추가 처리
+        for image_data in new_images.getlist('new_images'):
+            ProductImage.objects.create(product_id=instance, image_src=image_data)
+
+        # Product 모델의 필드 업데이트
+        instance.product_type = validated_data.get('product_type', instance.product_type)
+        instance.product_subtype = validated_data.get('product_subtype', instance.product_subtype)
+        instance.product_style = validated_data.get('product_style', instance.product_style)
+        instance.brand_id = validated_data.get('brand_id', instance.brand_id)
+        instance.name = validated_data.get('name', instance.name)
+        instance.content = validated_data.get('content', instance.content)
+        instance.purchase_count = validated_data.get('purchase_count', instance.purchase_count)
+        instance.price = validated_data.get('price', instance.price)
+        instance.save()
+
+        return instance
 
 
 
