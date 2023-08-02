@@ -67,7 +67,7 @@ class ProductOption(models.Model):
         default=ProductActive.ACTIVE.value
         )
     price = models.FloatField()
-    delivery_fee = models.FloatField()
+    delivery_fee = models.FloatField(default=3000)
     quantity = models.IntegerField()
 
     class Meta:

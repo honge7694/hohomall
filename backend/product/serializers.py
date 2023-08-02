@@ -146,7 +146,6 @@ class ProductSerializer(serializers.ModelSerializer):
             ProductImage.objects.create(product_id=product, image_src=image_data)
 
         for option_data in options_data:
-            print(option_data)
             option_data = dict(option_data) 
             ProductOption.objects.create(product_id=product, **option_data)
 
@@ -155,6 +154,11 @@ class ProductSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         deleted_images_str = self.context['request'].data.get('deleted_images', '[]')
         deleted_images = json.loads(deleted_images_str)
+        options_data_str = self.context['request'].data.get('options', '[]')
+        options_data = json.loads(options_data_str)
+        deleted_option_str = self.context['request'].data.get('deleted_option_ids', [])
+        deleted_option_ids = json.loads(deleted_option_str)
+        print('deleted_option_ids : ', deleted_option_ids)
         new_images = self.context['request'].FILES
 
         # 이미지 삭제 처리
@@ -164,6 +168,24 @@ class ProductSerializer(serializers.ModelSerializer):
         # 새로운 이미지 추가 처리
         for image_data in new_images.getlist('new_images'):
             ProductImage.objects.create(product_id=instance, image_src=image_data)
+
+        # ProductOption 삭제
+        for option_id in deleted_option_ids:
+            print('option_id : ', option_id)
+            ProductOption.objects.filter(id=option_id, product_id=instance).delete()
+
+        # ProductOption 업데이트
+        for option_data in options_data:
+            option_id = option_data.get('id')
+            if option_id:
+                # 옵션 데이터에 id가 있다면, 기존 데이터 업데이트
+                option_instance = ProductOption.objects.get(id=option_id, product_id=instance.id)
+                option_serializer = ProductOptionSerializer(option_instance, data=option_data)
+                if option_serializer.is_valid():
+                    option_serializer.save()
+            else:
+                # 옵션 데이터에 id가 없다면, 새로운 데이터 생성
+                ProductOption.objects.create(product_id=instance, **option_data)
 
         # Product 모델의 필드 업데이트
         instance.product_type = validated_data.get('product_type', instance.product_type)
