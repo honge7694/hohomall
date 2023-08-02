@@ -138,13 +138,15 @@ class ProductSerializer(serializers.ModelSerializer):
         Product + ProductOption + ProductImage 생성
         """
         images_data = self.context['request'].FILES.getlist('images')
-        options_data = self.context['request'].data.get('options', [])
+        options_data_str = self.context['request'].data.get('options', '[]')
+        options_data = json.loads(options_data_str)
         product = Product.objects.create(**validated_data)
 
         for image_data in images_data:
             ProductImage.objects.create(product_id=product, image_src=image_data)
 
         for option_data in options_data:
+            print(option_data)
             option_data = dict(option_data) 
             ProductOption.objects.create(product_id=product, **option_data)
 
