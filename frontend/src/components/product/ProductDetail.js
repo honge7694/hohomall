@@ -116,7 +116,7 @@ const ProductDetail = ({productData}) => {
 
     // admin 상품 수정
     const handleUpdateProduct = () => {
-        history('#');
+        history(`/admin/product/edit/${id}`);
     }
 
     return (
