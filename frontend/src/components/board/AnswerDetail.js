@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
-import { useNavigate, seParams } from "react-router-dom";
-import { Card, Image, Typography, List, Modal, Row, Col, Button } from 'antd';
-import { EditOutlined, DeleteOutlined, MenuOutlined, MessageOutlined , CheckSquareOutlined} from "@ant-design/icons";
+import { useNavigate, useParams } from "react-router-dom";
+import { Card, Image, Typography, Modal, Row, Col, notification } from 'antd';
+import { EditOutlined, DeleteOutlined, MenuOutlined, MessageOutlined, SmileOutlined, FrownOutlined } from "@ant-design/icons";
 import ImageGallery from 'react-image-gallery';
 import { useRecoilValue, useResetRecoilState } from "recoil";
 import { userState } from 'state';
+import { axiosInstance } from 'api';
+import { useAppContext } from 'store';
+
 
 const { Title, Text } = Typography;
 
 const QuestionDetail = ({answerData, userInfo}) => {
     console.log('answerData : ', answerData)
+    const { id } = useParams();
     const user = useRecoilValue(userState);
+    const { store: token } = useAppContext();
+    const headers = { Authorization: `Bearer ${token['jwtToken']}`};
     const history = useNavigate();
 
     const [selectedImage, setSelectedImage] = useState(null);
@@ -24,14 +30,26 @@ const QuestionDetail = ({answerData, userInfo}) => {
         setSelectedImage(answerData.images[index].original);
     };
 
-    const subjectColor = () => {
-        let color = 'black';
-        if (answerData.subject === '배송문의') color = 'blue';
-        else if (answerData.subject === '상품문의') color = 'green';
-        else if (answerData.subject === '결제문의') color = 'purple';
-        else if (answerData.subject === '기타문의') color = 'violet';
+    // 삭제 함수
+    const handlerDelete = async () => {
+        try{
+            const response = await axiosInstance.delete(`/board/answer/detail/${id}/`, { headers });
+            console.log(response);
 
-        return color
+            notification.open({
+                message: '게시글 삭제가 완료되었습니다.',
+                icon: <SmileOutlined style={{ color: "#108ee9" }}/>
+                
+            });
+        }catch(error){
+            console.log('error : ', error);
+            notification.open({
+                message: '게시글이 삭제되지 않았습니다.',
+                description: '게시글을 삭제할 권한이 없습니다.',
+                icon: <FrownOutlined style={{ color: "red" }}/>
+            });
+        }
+        history('/qna');
     }
 
     // 사용자 권한에 따라 수정, 삭제 버튼 렌더링
@@ -42,22 +60,14 @@ const QuestionDetail = ({answerData, userInfo}) => {
             return [
                 <MenuOutlined onClick={() => history('/qna')}></MenuOutlined>,
             ];
-        } else if (user['userNickname'] === 'super') {
+        } else if (user['isAdmin']) {
             // 관리자는 답변하기 버튼 렌더링
             console.log("관리자");
             return [
                 <MenuOutlined onClick={() => history('/qna')}></MenuOutlined>,
                 <MessageOutlined onClick={() => history('answer')}>답변</MessageOutlined>,
                 <EditOutlined onClick={() => history('edit')}>수정</EditOutlined>,
-                <DeleteOutlined onClick={() => history('delete')}>삭제</DeleteOutlined>,
-            ];
-        } else if (user['userId'] === answerData.admin.id) {
-             // 글 작성자는 수정, 삭제 버튼 렌더링
-            console.log("글 작성자");
-            return [
-                <MenuOutlined onClick={() => history('/qna')}></MenuOutlined>,
-                <EditOutlined onClick={() => history('edit')}>수정</EditOutlined>,
-                <DeleteOutlined onClick={() => history('delete')}>삭제</DeleteOutlined>,
+                <DeleteOutlined onClick={() => handlerDelete()}>삭제</DeleteOutlined>,
             ];
         } else {
           // 다른 사용자는 홈 버튼

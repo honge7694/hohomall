@@ -77,7 +77,7 @@ const QuestionDetail = ({questionData, userInfo}) => {
             return [
                 <MenuOutlined onClick={() => history('/qna')}></MenuOutlined>,
             ];
-        } else if (user['userNickname'] === 'super') {
+        } else if (user['isAdmin']) {
             // 관리자는 답변하기 버튼 렌더링
             console.log("관리자");
             return [
@@ -92,7 +92,7 @@ const QuestionDetail = ({questionData, userInfo}) => {
             return [
                 <MenuOutlined onClick={() => history('/qna')}></MenuOutlined>,
                 <EditOutlined onClick={() => history('edit')}>수정</EditOutlined>,
-                <DeleteOutlined onClick={() => history('delete')}>삭제</DeleteOutlined>,
+                <DeleteOutlined onClick={(e) => handlerDelete(e, questionData.user.id)}>삭제</DeleteOutlined>,
             ];
         } else {
           // 다른 사용자는 홈 버튼
