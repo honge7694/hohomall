@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
-import { Card, Image, Typography, Button, Form, Input, Upload, Radio, Checkbox, Select } from 'antd';
+import { Card, Image, Typography, Button, Form, Input, Upload, Radio, Checkbox, Select, Modal } from 'antd';
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { useRecoilValue, useResetRecoilState } from "recoil";
 import { userState } from 'state';
@@ -13,6 +13,7 @@ const { Title, Text } = Typography;
 const AdminProductEdit = ({brandList, productData}) => {
     const { id } = useParams();
     const user = useRecoilValue(userState);
+    const resetUser = useResetRecoilState(userState);
     const { store: token } = useAppContext();
     const headers = { Authorization: `Bearer ${token['jwtToken']}`};
     const history = useNavigate();
@@ -22,6 +23,7 @@ const AdminProductEdit = ({brandList, productData}) => {
     const [newImages, setNewImages] = useState([]); // 수정에서 새로 추가한 이미지
     const [deletedImageIds, setDeletedImageIds] = useState([]); // 수정에서 삭제한 이미지
     const [deletedOptionIds, setDeletedOptionIds] = useState([]); // 수정에서 삭제한 옵션
+    const [isModalVisible, setIsModalVisible] = useState(false); // 모달
     
 
     // 이미지 미리보기에 넣기위한 커스텀
@@ -114,9 +116,30 @@ const AdminProductEdit = ({brandList, productData}) => {
     };
 
     // 제품 삭제
-    const handleProductDelete = () => {
+    const handleProductDelete = async () => {
         console.log('handleProductDelete : ')
+        if (user['isAdmin']){
+            setIsModalVisible(true);
+        }else{
+            resetUser();
+            history('/sign-in');
+        }
     }
+
+    const handleOk = async () => {
+        try {
+            const response = await axiosInstance.delete(`/product/detail/${id}`, {headers});
+            console.log(response)
+
+            history('/admin/product');
+        }catch(error){
+            console.log("delete error : ", error)
+        }
+    };
+    
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
 
     return (
         <>
@@ -302,6 +325,16 @@ const AdminProductEdit = ({brandList, productData}) => {
                     </Form.Item>
                 </Form>
             </Card>
+            <Modal
+                title="회원 탈퇴"
+                visible={isModalVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                okText="예"
+                cancelText="취소"
+            >
+                    <p>정말 삭제하시겠습니까?</p>
+            </Modal>
         </>
     );
 };
