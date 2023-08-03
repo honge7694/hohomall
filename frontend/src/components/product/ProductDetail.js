@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
-import { Card, Row, Col, Typography, Select, Button, Divider } from 'antd';
+import { Card, Row, Col, Typography, Select, Button, Divider, Tag } from 'antd';
 import ImageGallery from 'react-image-gallery';
 import WishListModal from 'components/product/WishListModal';
 import 'react-image-gallery/styles/css/image-gallery.css';
@@ -26,6 +26,7 @@ const ProductDetail = ({productData}) => {
     const [selectedOption, setSelectedOption] = useState('');
     const [wishlistModalVisible, setWishlistModalVisible] = useState(false);
     const [totalPrice, setTotalPrice] = useState(0);
+    
 
 
     useEffect(() => {
@@ -119,6 +120,15 @@ const ProductDetail = ({productData}) => {
         history(`/admin/product/edit/${id}`);
     }
 
+    // content에서 해시태그 추출하기 (예: "#필수아이템 #기본아이템 #남녀공용")
+    const hashTags = productData && productData.productInfo.content.match(/#([^\s#]+)/g);
+
+    // 랜덤 색상 반환 함수
+    const getRandomColor = () => {
+        const colors = ['magenta', 'red', 'volcano', 'orange', 'gold', 'lime', 'green', 'cyan', 'blue', 'geekblue', 'purple'];
+        return colors[Math.floor(Math.random() * colors.length)];
+    };
+
     return (
         <div>
             <Row gutter={[16, 16]}>
@@ -162,7 +172,14 @@ const ProductDetail = ({productData}) => {
                                 <Text style={{ fontSize: 19 }}>상품 정보</Text>
                             </div>
                             <div>
-                                <Text style={{ fontSize: 19 }}></Text>
+                                <Text style={{ fontSize: 19 }}>
+                                    {hashTags &&
+                                        hashTags.map((tag, index) => (
+                                        <Tag key={index} color={getRandomColor()}>
+                                            {tag}
+                                        </Tag>
+                                    ))}
+                                </Text>
                             </div>
                         </div>
                         <Divider />

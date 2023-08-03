@@ -174,7 +174,7 @@ const AdminProductNew = ({brandList}) => {
                     </Form.Item>
 
                     <Form.Item label="내용" name="content" rules={[{ required: true, message: '내용을 입력하세요.' }]}>
-                        <Input.TextArea rows={4} placeholder='#을 이용하여 상품을 설명해보세요. ' />
+                        <Input.TextArea rows={4} placeholder='#을 이용하여 상품을 설명해보세요. ex) #필수아이템#남녀공용 ' />
                     </Form.Item>
 
                     <Form.List name="options">
