@@ -5,6 +5,7 @@ import QuestionPage from './QuestionPage';
 import QuestionEditPage from './QuestionEditPage';
 import AnswerPage from './AnswerPage';
 import QuestionWritePage from './QuestionWritePage';
+import AnswerWritePage from './AnswerWritePage';
 
 
 const BoardIndex = () => {
@@ -16,6 +17,7 @@ const BoardIndex = () => {
                 <Route path="/question/:id" element={ <QuestionPage /> }></Route>
                 <Route path="/question/:id/edit" element={ <QuestionEditPage /> }></Route>
                 <Route path="/answer/:id" element={ <AnswerPage /> }></Route>
+                <Route path="/question/:id/answer" element={ <AnswerWritePage /> }></Route>
             </Routes>
         </>
     );

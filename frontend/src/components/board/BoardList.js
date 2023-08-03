@@ -34,10 +34,10 @@ const BoardList = ({questionList, answerList}) => {
     const columns = [
         {
             title: '번호',
-            dataIndex: 'index',
-            key: 'index',
+            dataIndex: 'key',
+            key: 'key',
             width: "10%",
-            render: (text, record, index) => questionList.length - index,
+            render: (key) => key
         },
         {
             title: '제목',
@@ -82,7 +82,7 @@ const BoardList = ({questionList, answerList}) => {
             key: 'answer',
             render: (answer, record) => (
             answer ? (
-                <span onClick={() => history(`answer/${record.key}`)} style={{ text: 'bold', color: 'red', cursor: 'pointer'}}>
+                <span onClick={() => history(`answer/${answer.id}`)} style={{ text: 'bold', color: 'red', cursor: 'pointer'}}>
                     [답변 완료]
                 </span>
             ) : (
