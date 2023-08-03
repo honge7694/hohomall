@@ -69,7 +69,7 @@ class AnswerSerializer(serializers.ModelSerializer):
 
     def get_images(self, obj):
         image = obj.answerimage_set.all()
-        return AnswerImageSerializer(instance=image, many=True).data
+        return AnswerImageSerializer(instance=image, many=True, context=self.context).data
 
     def create(self, validated_data):
         question_id = self.context['request'].data.get('question_id')  # question_id 받기
@@ -78,6 +78,27 @@ class AnswerSerializer(serializers.ModelSerializer):
 
         for image_data in image_set.getlist('images'):
             AnswerImage.objects.create(answer=instance, image_src=image_data)
+
+        return instance
+    
+    def update(self, instance, validated_data):
+        deleted_images_str = self.context['request'].data.get('deleted_images', '[]')
+        deleted_images = json.loads(deleted_images_str)
+        print('deleted_images : ', deleted_images)
+        new_images = self.context['request'].FILES
+
+        # 이미지 삭제 처리
+        for image_id in deleted_images:
+            instance.answerimage_set.filter(id=image_id).delete()
+        
+        # 새로운 이미지 추가 처리
+        for image_data in new_images.getlist('new_images'):
+            AnswerImage.objects.create(answer=instance, image_src=image_data)
+
+        # Question 모델의 필드 업데이트
+        instance.title = validated_data.get('title', instance.title)
+        instance.content = validated_data.get('content', instance.content)
+        instance.save()
 
         return instance
     
