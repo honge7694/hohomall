@@ -4,17 +4,20 @@ import { Button, Row, Col, Typography, Divider, notification, Select } from 'ant
 import { SmileOutlined } from '@ant-design/icons';
 import { axiosInstance } from 'api';
 import { useAppContext } from 'store';
+import { useRecoilValue, useResetRecoilState } from "recoil";
+import { userState } from 'state';
 
 
 const { Text } = Typography;
 const { Option } = Select;
 
 const AdminOrderDetailPage = () => {
-    
     const { id } = useParams();
     const { store: token } = useAppContext();
     const headers = { Authorization: `Bearer ${token['jwtToken']}`};
     const history = useNavigate();
+    const user = useRecoilValue(userState);
+    const resetUser = useResetRecoilState(userState);
     
     const [orderDetail, setOrderDetail] = useState();
     const [orderStatus, setOrderStatus] = useState();
@@ -22,6 +25,12 @@ const AdminOrderDetailPage = () => {
 
     // OrderHistoryDetail Data 가져오기
     useEffect(() => {
+        
+        if (!user['isAdmin']){
+            resetUser();
+            history('/sign-in');
+        }
+
         const fetchOrderDetail = async () => {
             try {
                 const { data } = await axiosInstance.get(`/order/detail/${id}/`, { headers });

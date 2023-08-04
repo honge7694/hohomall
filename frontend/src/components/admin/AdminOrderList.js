@@ -4,7 +4,7 @@ import { Card, Table, notification } from 'antd';
 
 
 const AdminOrderList = ({orderList}) => {
-    console.log('orderList : ', orderList)
+    console.log('orderList : ', orderList, orderList.map(order => typeof(order.total_price)))
     const history = useNavigate();
     const [api, setApi] = notification.useNotification();
 
@@ -49,6 +49,8 @@ const AdminOrderList = ({orderList}) => {
             title: '가격',
             dataIndex: 'total_price',
             key: 'total_price',
+            sorter: (a, b) => a.total_price - b.total_price,
+            sortOrder: sortedInfo.columnKey === 'total_price' && sortedInfo.order,
             render: (total_price) => (
                 <span>{total_price.toLocaleString()} 원</span> // 천 단위 구분 기호와 소수점 표시
             ),

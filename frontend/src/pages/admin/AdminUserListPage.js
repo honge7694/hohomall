@@ -9,16 +9,16 @@ import { axiosInstance } from 'api';
 import { useAppContext } from 'store';
 import moment from "moment";
 import axios from 'axios';
-import AdminOrderList from 'components/admin/AdminOrderList';
+import AdminUserList from 'components/admin/AdminUserList';
 
-const AdminOrderPage = () => {
+const AdminUserListPage = () => {
     const { store: token } = useAppContext();
     const headers = { Authorization: `Bearer ${token['jwtToken']}`};
     const history = useNavigate();
     const user = useRecoilValue(userState);
     const resetUser = useResetRecoilState(userState);
 
-    const [adminOrderList, setAdminOrderList] = useState([]);
+    const [userList, setUserList] = useState([]);
 
     useEffect(() => {
         if (!user['isAdmin']){
@@ -26,29 +26,25 @@ const AdminOrderPage = () => {
             history('/sign-in');
         }
         
-        const fetchOrderList = async () => {
+        const fetchUserList = async () => {
             try{
-                const { data } = await axiosInstance.get('/order/admin/', { headers })
-                console.log('Admin Order List : ', data);
-                setAdminOrderList(data);
+                const { data } = await axiosInstance.get('/account/signup/')
+                console.log('Admin User List : ', data);
+                setUserList(data);
             }catch(error){
                 console.log(error);
-                if (error.response.status === 403){
-                    resetUser();
-                    history('/sign-in');
-                }
             }
         }
 
-        fetchOrderList();
+        fetchUserList();
     }, []);
         
     return (
         <>
-            {adminOrderList && <AdminOrderList orderList={adminOrderList} />}
+            {userList && <AdminUserList userList={userList} />}
         </>
     )
 }
 
 
-export default AdminOrderPage;
+export default AdminUserListPage;
