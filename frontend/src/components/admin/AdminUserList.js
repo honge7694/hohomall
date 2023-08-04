@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Card, Table, notification, Select, Input } from 'antd';
+import AdminUserModal from './AdminUserModal';
 
 
 const { Option } = Select;
@@ -17,6 +18,8 @@ const AdminUserList = ({userList}) => {
     });
     const [searchText, setSearchText] = useState(''); // 검색어
     const [searchType, setSearchType] = useState('user'); // 검색 타입
+    const [showModal, setShowModal] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
 
     const onSearchTextChange = (e) => {
         setSearchText(e.target.value);
@@ -40,7 +43,7 @@ const AdminUserList = ({userList}) => {
             key: 'id',
             render: (email, record) => (
                 <>
-                    <span style={{cursor: 'pointer'}}>{email} ({record.nickname})</span>
+                    <span style={{cursor: 'pointer'}} onClick={(e) => handleUserClick(record)}>{email} ({record.nickname})</span>
                 </>
             )
         },
@@ -79,6 +82,19 @@ const AdminUserList = ({userList}) => {
     const handleTableChange = (pagination, filters, sorter) => {
         setSortedInfo(sorter);
     };
+
+    // user detail modal open
+    const handleUserClick = (user) => {
+        console.log(user)
+        setSelectedUser(user);
+        setShowModal(true);
+    };
+
+    // user detail modal close
+    const handleModalCancel = () => {
+        setSelectedUser(false);
+        setShowModal(null);
+    };
     
     const data = userList
         .filter((user) => {
@@ -100,6 +116,7 @@ const AdminUserList = ({userList}) => {
             nickname: user.nickname,
             status: user.status,
             total_amount_used: user.total_amount_used,
+            image_src: user.image_src,
             created_at: user.created_at,
         }));
 
@@ -136,6 +153,14 @@ const AdminUserList = ({userList}) => {
                     <Table dataSource={data} columns={columns} onChange={handleTableChange} className="ant-border-space" />;
                 </div>
             </Card>
+
+            {/* Modal */}
+            {selectedUser && (
+                <AdminUserModal
+                    userData={selectedUser}
+                    onCancel={handleModalCancel}
+                />
+            )}
         </>
     )
 }
