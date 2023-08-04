@@ -297,7 +297,7 @@ function Sidenav({ color }) {
                 </NavLink>
               </Menu.Item>
 
-              <Menu.Item key="15">
+              <Menu.Item key="16">
                 <NavLink to="/admin/product">
                   <span
                     className="icon"
@@ -310,9 +310,22 @@ function Sidenav({ color }) {
                   <span className="label">Product</span>
                 </NavLink>
               </Menu.Item>
+              
+              <Menu.Item key="15">
+                <NavLink to="/admin/brand">
+                  <span
+                    className="icon"
+                    style={{
+                      background: page === "/admin/brand" ? color : "",
+                    }}
+                  >
+                    {dashboard}
+                  </span>
+                  <span className="label">Brand</span>
+                </NavLink>
+              </Menu.Item>
 
-
-              <Menu.Item key="16">
+              <Menu.Item key="17">
                 <NavLink to="/admin/user">
                   <span
                     className="icon"
@@ -326,19 +339,7 @@ function Sidenav({ color }) {
                 </NavLink>
               </Menu.Item>
 
-              <Menu.Item key="17">
-                <NavLink to="/admin/brand">
-                  <span
-                    className="icon"
-                    style={{
-                      background: page === "/admin/brand" ? color : "",
-                    }}
-                  >
-                    {dashboard}
-                  </span>
-                  <span className="label">Brand</span>
-                </NavLink>
-              </Menu.Item>
+             
 
             <Menu.Item className="menu-item-header" key="5">
               User Pages
