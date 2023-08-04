@@ -41,7 +41,7 @@ const AdminUserListPage = () => {
         
     return (
         <>
-            {userList && <AdminUserList userList={userList} />}
+            {userList && <AdminUserList userList={userList} setUserList={setUserList}/>}
         </>
     )
 }

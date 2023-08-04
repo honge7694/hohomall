@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Card, Table, notification, Select, Input } from 'antd';
 import AdminUserModal from './AdminUserModal';
+import { axiosInstance } from 'api';
 
 
 const { Option } = Select;
 
-const AdminUserList = ({userList}) => {
+const AdminUserList = ({userList, setUserList}) => {
     console.log('AdminUserList : ', userList)
     const history = useNavigate();
     const [api, setApi] = notification.useNotification();
@@ -90,6 +91,20 @@ const AdminUserList = ({userList}) => {
         setShowModal(true);
     };
 
+    // user detail modal ok
+    const handleModalOk = () => {
+        const fetchUserList = async () => {
+            try{
+                const { data } = await axiosInstance.get('/account/signup/')
+                console.log('Admin User List : ', data);
+                setUserList(data);
+            }catch(error){
+                console.log(error);
+            }
+        }
+        fetchUserList();
+    };
+
     // user detail modal close
     const handleModalCancel = () => {
         setSelectedUser(false);
@@ -118,6 +133,7 @@ const AdminUserList = ({userList}) => {
             total_amount_used: user.total_amount_used,
             image_src: user.image_src,
             created_at: user.created_at,
+            updated_at: user.updated_at,
         }));
 
     return (
@@ -158,6 +174,7 @@ const AdminUserList = ({userList}) => {
             {selectedUser && (
                 <AdminUserModal
                     userData={selectedUser}
+                    onOk={handleModalOk}
                     onCancel={handleModalCancel}
                 />
             )}
