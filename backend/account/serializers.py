@@ -10,6 +10,7 @@ User = get_user_model()
 
 class UserInfoEditSerializer(serializers.ModelSerializer):
     email = serializers.CharField(read_only=True)
+
     class Meta:
         model = User
         fields = ['id', 'email', 'nickname', 'image_src']
@@ -18,6 +19,7 @@ class UserInfoEditSerializer(serializers.ModelSerializer):
 class UserPasswordEditSerializer(serializers.ModelSerializer):
     current_password = serializers.CharField(write_only=True)
     password = serializers.CharField(write_only=True)
+
     class Meta:
         model = User
         fields = ['id', 'current_password', 'password']
@@ -36,10 +38,11 @@ class UserPasswordEditSerializer(serializers.ModelSerializer):
 
 class SignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    total_amount_used = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'password', 'nickname', 'image_src', 'status']
+        fields = ['id', 'email', 'password', 'nickname', 'image_src', 'status', 'total_amount_used', 'created_at']
 
     def create(self, validated_data):
         user = User.objects.create(
@@ -50,6 +53,18 @@ class SignupSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
+    
+    def get_total_amount_used(self, obj):
+        user_order = obj.order_set.all()
+        total_price = 0
+
+        # 주문들을 순회하면서 user_id가 같은 주문들의 총 금액을 더함
+        for order in user_order:
+            print(str(order.user_id), obj.id, type(obj.email))
+            if str(order.user_id) == obj.email:
+                total_price += order.total_price
+
+        return total_price
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
