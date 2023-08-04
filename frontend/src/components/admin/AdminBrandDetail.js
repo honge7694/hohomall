@@ -10,8 +10,9 @@ import { useAppContext } from 'store';
 const { Title, Text } = Typography;
 const { Option } = Select;
 
-const AdminBrandDetail = ({brandProductList}) => {
+const AdminBrandDetail = ({brandProductList, brandInfo}) => {
     console.log('brandProductList : ', brandProductList)
+    console.log('brandInfo : ', brandInfo)
     const { store: token } = useAppContext();
     const headers = { Authorization: `Bearer ${token['jwtToken']}`};
     const history = useNavigate();
@@ -51,7 +52,7 @@ const AdminBrandDetail = ({brandProductList}) => {
         <div>    
             <div style={{ padding: '20px' }}>
                 <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#d3d3d33b', padding: "15px", marginBottom: '20px' }}>
-                    <h3>{brandProductList[0].brand.name} 전체 상품</h3>
+                    <h3>{brandInfo.name} 전체 상품</h3>
                     <div>
                         {filteredProductList ? (filteredProductList.length) : (0)} 개의 상품이 표시됩니다. &nbsp;&nbsp;&nbsp;
                         <Select value={sortingOption} onChange={handleSortBy}>

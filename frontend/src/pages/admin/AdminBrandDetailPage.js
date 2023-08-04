@@ -18,13 +18,11 @@ const AdminBrandDetailPage = () => {
     const resetUser = useResetRecoilState(userState);
     const history = useNavigate();
     
-
     const [brandProductList, setBrandProductList] = useState();
-
+    const [brandInfo, setBrandInfo] = useState();
 
     useEffect(() => {
         const fetchBrandList = async () => {
-
             if (!user['isAdmin']){
                 resetUser();
                 history('/sign-in');
@@ -39,12 +37,23 @@ const AdminBrandDetailPage = () => {
             }
         }
         fetchBrandList();
+
+        const fetchBrandInfo = async () => {
+            try{
+                const { data } = await axiosInstance.get(`product/brand/${id}/`);
+                console.log('fetchBrandInfo data : ', data);
+                setBrandInfo(data);
+            }catch(error){
+                console.log('fetchBrandInfo error : ', error);
+            }
+        }
+        fetchBrandInfo();
     }, [])
 
     return (
         <div>
             {/* 전체 상품 */}
-            { brandProductList && <AdminBrandDetail brandProductList={brandProductList} /> }
+            { brandProductList && brandInfo && <AdminBrandDetail brandProductList={brandProductList} brandInfo={brandInfo} /> }
         </div>
     );
 };
