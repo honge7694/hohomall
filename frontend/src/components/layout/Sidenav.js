@@ -326,6 +326,20 @@ function Sidenav({ color }) {
                 </NavLink>
               </Menu.Item>
 
+              <Menu.Item key="17">
+                <NavLink to="/admin/brand">
+                  <span
+                    className="icon"
+                    style={{
+                      background: page === "/admin/brand" ? color : "",
+                    }}
+                  >
+                    {dashboard}
+                  </span>
+                  <span className="label">Brand</span>
+                </NavLink>
+              </Menu.Item>
+
             <Menu.Item className="menu-item-header" key="5">
               User Pages
             </Menu.Item>

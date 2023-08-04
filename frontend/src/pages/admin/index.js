@@ -6,6 +6,7 @@ import AdminProductListPage from './AdminProductListPage';
 import AdminProductNewPage from './AdminProductNewPage'
 import AdminProductEditPage from './AdminProductEditPage'
 import AdminUserListPage from './AdminUserListPage';
+import AdminBrandListPage from './AdminBrandListPage';
 
 
 const AdminIndex = () => {
@@ -18,6 +19,7 @@ const AdminIndex = () => {
                 <Route path='/product/new' element={ <AdminProductNewPage /> }></Route>
                 <Route path='/product/edit/:id' element={ <AdminProductEditPage /> }></Route>
                 <Route path='/user' element={ <AdminUserListPage /> }></Route>
+                <Route path='/brand' element={ <AdminBrandListPage />}></Route>
             </Routes>
         </>
     );
