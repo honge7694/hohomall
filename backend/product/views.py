@@ -13,6 +13,14 @@ class BrandListCreateAPIView(ListCreateAPIView):
     serializer_class = BrandSerializer
 
 
+class BrandRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    """
+    브랜드 수정 및 삭제
+    """
+    queryset = Brand.objects.all()
+    serializer_class = BrandSerializer
+    
+
 class BrandProductListAPIView(ListAPIView):
     """
     브랜드 상품 리스트
