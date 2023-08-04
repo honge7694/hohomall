@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import BrandListCreateAPIView, ProductListCreateAPIView, ProductRetrieveUpdateDestroyAPIView, ProductTypeDataListRetrieveAPIView, ProductSubTypeDataListRetrieveAPIView, SearchListAPIView
+from .views import BrandListCreateAPIView, ProductListCreateAPIView, ProductRetrieveUpdateDestroyAPIView, ProductTypeDataListRetrieveAPIView, ProductSubTypeDataListRetrieveAPIView, SearchListAPIView, BrandProductListAPIView
 
 urlpatterns = [
     path('', ProductListCreateAPIView.as_view(), name='product'),
@@ -8,4 +8,5 @@ urlpatterns = [
     path('detail/<int:pk>/', ProductRetrieveUpdateDestroyAPIView.as_view(), name='product-detail'),
     path('search/', SearchListAPIView.as_view(), name='product-search'),
     path('brand/', BrandListCreateAPIView.as_view(), name='brand'),
+    path('brand/product/', BrandProductListAPIView.as_view(), name='brand-product'),
 ]

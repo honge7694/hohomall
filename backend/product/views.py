@@ -13,6 +13,20 @@ class BrandListCreateAPIView(ListCreateAPIView):
     serializer_class = BrandSerializer
 
 
+class BrandProductListAPIView(ListAPIView):
+    """
+    브랜드 상품 리스트
+    """
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        brand_id = self.request.query_params.get('brand_id')
+        qs = super().get_queryset()
+        qs = qs.filter(brand_id=brand_id)
+        return qs
+
+
 class ProductListCreateAPIView(ListCreateAPIView):
     """
     상품 생성 및 리스트
