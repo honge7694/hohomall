@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Carousel, Row, Col, Card, Typography, Select, Button } from 'antd';
 import Rating from 'react-rating-stars-component';
 
@@ -13,6 +13,7 @@ const { Option } = Select;
 const AdminBrandDetail = ({brandProductList, brandInfo}) => {
     console.log('brandProductList : ', brandProductList)
     console.log('brandInfo : ', brandInfo)
+    const { id } = useParams();
     const { store: token } = useAppContext();
     const headers = { Authorization: `Bearer ${token['jwtToken']}`};
     const history = useNavigate();
@@ -60,7 +61,7 @@ const AdminBrandDetail = ({brandProductList, brandInfo}) => {
                             <Option value="price">낮은 가격 순</Option>
                             <Option value="popular">인기 순</Option>
                         </Select>
-                        <Button onClick={() => history('/admin/brand/edit')} style={{ marginLeft: '10px'}}>브랜드 정보 수정</Button>
+                        <Button onClick={() => history(`/admin/brand/${id}/edit`)} style={{ marginLeft: '10px'}}>브랜드 정보 수정</Button>
                     </div>
                 </div>
                 <Row gutter={[16, 16]}>
