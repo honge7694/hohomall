@@ -1,5 +1,5 @@
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from .models import Coupon, CouponUser, CouponStatus
 from .serializers import CouponSerializer, CouponUserSerializer
@@ -8,6 +8,14 @@ from .serializers import CouponSerializer, CouponUserSerializer
 class CouponListCreateAPIView(ListCreateAPIView):
     """
     쿠폰 생성 및 목록
+    """
+    queryset = Coupon.objects.all()
+    serializer_class = CouponSerializer
+
+
+class CouponRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    """
+    쿠폰 수정 및 삭제
     """
     queryset = Coupon.objects.all()
     serializer_class = CouponSerializer

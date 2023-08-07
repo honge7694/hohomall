@@ -13,7 +13,7 @@ class UserInfoEditSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'nickname', 'image_src']
+        fields = ['id', 'email', 'nickname', 'status', 'image_src']
 
 
 class UserPasswordEditSerializer(serializers.ModelSerializer):
@@ -42,7 +42,7 @@ class SignupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'email', 'password', 'nickname', 'image_src', 'status', 'total_amount_used', 'created_at']
+        fields = ['id', 'email', 'password', 'nickname', 'image_src', 'status', 'total_amount_used', 'created_at', 'updated_at']
 
     def create(self, validated_data):
         user = User.objects.create(
