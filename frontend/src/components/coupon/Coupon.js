@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, Row, Col, Typography, Button, notification } from 'antd';
 import { DownloadOutlined, SmileOutlined, FrownOutlined } from '@ant-design/icons';
-
 import moment from "moment";
+
+import { useRecoilValue, useResetRecoilState } from "recoil";
+import { userState } from 'state';
 import { axiosInstance } from 'api';
 import { useAppContext } from 'store';
 
@@ -12,6 +15,8 @@ const { Title, Text } = Typography;
 const Coupon = ({couponList, couponUserList, setCouponUserList}) => {
     console.log('couponList : ', couponList)
     console.log('couponUserList : ', couponUserList)
+    const user = useRecoilValue(userState);
+    const history = useNavigate();
     const { store: token } = useAppContext();
     const headers = { Authorization: `Bearer ${token['jwtToken']}`};
 
@@ -55,7 +60,13 @@ const Coupon = ({couponList, couponUserList, setCouponUserList}) => {
     return (
         <div>
             {setApi}
-            <h1>쿠폰 목록</h1>
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#d3d3d33b', padding: "15px", marginBottom: '20px' }}>
+                <h1>쿠폰 목록</h1>
+                {user['isAdmin'] ? (
+                    <Button onClick={() => history('new')} style={{ marginLeft: '10px'}}>쿠폰추가</Button>
+                ): (null)}
+                
+            </div>
             <Row gutter={[16, 16]}>
                 {couponList.map((coupon) => (
                     <Col span={8} key={coupon.id}>
