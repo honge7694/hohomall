@@ -57,6 +57,12 @@ const Coupon = ({couponList, couponUserList, setCouponUserList}) => {
         }
     };
 
+    const handlerOnClick = (e, id) => {
+        e.preventDefault();
+        console.log('click : ', id)
+        history(`edit/${id}`)
+    }
+
     return (
         <div>
             {setApi}
@@ -70,22 +76,24 @@ const Coupon = ({couponList, couponUserList, setCouponUserList}) => {
             <Row gutter={[16, 16]}>
                 {couponList.map((coupon) => (
                     <Col span={8} key={coupon.id}>
-                        <Card
-                            hoverable
-                            cover={<img alt={coupon.name} src={coupon.image_src ? (coupon.image_src) : (null)} style={{ height: '280px', objectFit: 'cover' }} />}
-                            style={{ display: 'grid', gridTemplateRows: 'auto 1fr auto' }}
-                            actions={
-                                [
-                                    renderDownloadButton(coupon.id)
-                                ]
-                            }
-                        >
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
-                                <Text style={{ fontSize: "18px", fontWeight: 'bold' }}>{coupon.name}</Text>
-                                <Text type="">{moment(coupon.start_date, "YYYY-MM-DD").format("YYYY-MM-DD")} ~ {moment(coupon.end_date, "YYYY-MM-DD").format("YYYY-MM-DD")}</Text>
-                            </div>
-                            <Text>{coupon.description}</Text>
-                        </Card>
+                        <a href="#" onClick={ (e) => user['isAdmin'] ? (handlerOnClick(e, coupon.id)) : ('#') }>
+                            <Card
+                                hoverable
+                                cover={<img alt={coupon.name} src={coupon.image_src ? (coupon.image_src) : (null)} style={{ height: '280px', objectFit: 'cover' }} />}
+                                style={{ display: 'grid', gridTemplateRows: 'auto 1fr auto' }}
+                                actions={
+                                    [
+                                        renderDownloadButton(coupon.id)
+                                    ]
+                                }
+                            >
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
+                                    <Text style={{ fontSize: "18px", fontWeight: 'bold' }}>{coupon.name}</Text>
+                                    <Text type="">{moment(coupon.start_date, "YYYY-MM-DD").format("YYYY-MM-DD")} ~ {moment(coupon.end_date, "YYYY-MM-DD").format("YYYY-MM-DD")}</Text>
+                                </div>
+                                <Text>{coupon.description}</Text>
+                            </Card>
+                        </a>
                     </Col>
                 ))}
             </Row>
