@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
-import { Card, Image, Typography, Button, Form, Input, Upload, Radio, Checkbox, Select, DatePicker } from 'antd';
+import { Card, Image, Typography, Button, Form, Input, Upload, Radio, Checkbox, Select, DatePicker, Modal } from 'antd';
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { useRecoilValue, useResetRecoilState } from "recoil";
 import { userState } from 'state';
@@ -14,6 +14,7 @@ const { Title, Text } = Typography;
 const CouponEdit = ({couponData}) => {
     const { id } = useParams();
     const user = useRecoilValue(userState);
+    const resetUser = useResetRecoilState(userState);
     const { store: token } = useAppContext();
     const headers = { Authorization: `Bearer ${token['jwtToken']}`};
     const history = useNavigate();
@@ -21,6 +22,7 @@ const CouponEdit = ({couponData}) => {
     const [form] = Form.useForm();
     const [couponImage, setCouponImage] = useState([]);
     const [newImage, setNewImage] = useState([]); // 수정에서 새로 추가한 이미지
+    const [isModalVisible, setIsModalVisible] = useState(false); // 모달
 
     // 이미지 미리보기에 넣기위한 커스텀
     useEffect(() => {
@@ -69,6 +71,32 @@ const CouponEdit = ({couponData}) => {
             console.log(error);
         }
         
+    };
+
+    // 쿠폰 삭제
+    const handleCouponDelete = async () => {
+        console.log('handleCouponDelete : ')
+        if (user['isAdmin']){
+            setIsModalVisible(true);
+        }else{
+            resetUser();
+            history('/sign-in');
+        }
+    }
+
+    const handleOk = async () => {
+        try {
+            const response = await axiosInstance.delete(`/coupon/${id}/`, {headers});
+            console.log(response)
+
+            history('/coupon');
+        }catch(error){
+            console.log("delete error : ", error)
+        }
+    };
+    
+    const handleCancel = () => {
+        setIsModalVisible(false);
     };
 
 
@@ -130,9 +158,20 @@ const CouponEdit = ({couponData}) => {
                     <Form.Item>
                         <Button type="primary" htmlType="submit">저장</Button>
                         <Button onClick={() => {history('/coupon')}}style={{ marginLeft: '8px' }}>취소</Button>
+                        <Button danger onClick={() => handleCouponDelete()} style={{ marginLeft: '8px' }}>삭제</Button>
                     </Form.Item>
                 </Form>
             </Card>
+            <Modal
+                title="쿠폰 삭제"
+                visible={isModalVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                okText="예"
+                cancelText="취소"
+            >
+                    <p>정말 삭제하시겠습니까?</p>
+            </Modal>
         </>
     );
 };

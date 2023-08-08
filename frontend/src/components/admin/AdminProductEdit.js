@@ -326,7 +326,7 @@ const AdminProductEdit = ({brandList, productData}) => {
                 </Form>
             </Card>
             <Modal
-                title="회원 탈퇴"
+                title="상품 삭제"
                 visible={isModalVisible}
                 onOk={handleOk}
                 onCancel={handleCancel}

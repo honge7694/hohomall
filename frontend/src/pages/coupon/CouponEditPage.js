@@ -30,7 +30,7 @@ const CouponEditPage = () => {
         async function fetchCouponDetail() {
             
             try{
-                const { data } = await axiosInstance.get(`/coupon/detail/${id}/`, { headers });
+                const { data } = await axiosInstance.get(`/coupon/${id}/`, { headers });
                 console.log("couponData :", data);
                 setCouponData(data);
                 if (!user['isAdmin']){

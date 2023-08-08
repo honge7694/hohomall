@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
-import { Card, Image, Typography, Button, Form, Input, Upload, Radio, Checkbox, Select } from 'antd';
+import { Card, Image, Typography, Button, Form, Input, Upload, Radio, Checkbox, Select, Modal } from 'antd';
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { useRecoilValue, useResetRecoilState } from "recoil";
 import { userState } from 'state';
@@ -13,6 +13,7 @@ const { Title, Text } = Typography;
 const AdminBrandEdit = ({brandData}) => {
     const { id } = useParams();
     const user = useRecoilValue(userState);
+    const resetUser = useResetRecoilState(userState);
     const { store: token } = useAppContext();
     const headers = { Authorization: `Bearer ${token['jwtToken']}`};
     const history = useNavigate();
@@ -20,6 +21,7 @@ const AdminBrandEdit = ({brandData}) => {
     const [form] = Form.useForm();
     const [brandImage, setBrandImage] = useState([]);
     const [newImages, setNewImages] = useState([]); // 수정에서 새로 추가한 이미지
+    const [isModalVisible, setIsModalVisible] = useState(false); // 모달
 
     // 이미지 미리보기에 넣기위한 커스텀
     useEffect(() => {
@@ -68,6 +70,31 @@ const AdminBrandEdit = ({brandData}) => {
         
     };
 
+    // 브랜드 삭제
+    const handleBrandDelete = async () => {
+        console.log('handleBrandDelete : ')
+        if (user['isAdmin']){
+            setIsModalVisible(true);
+        }else{
+            resetUser();
+            history('/sign-in');
+        }
+    }
+
+    const handleOk = async () => {
+        try {
+            const response = await axiosInstance.delete(`/product/brand/${id}/`, {headers});
+            console.log(response)
+
+            history('/admin/brand');
+        }catch(error){
+            console.log("delete error : ", error)
+        }
+    };
+    
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
 
     return (
         <>
@@ -112,9 +139,20 @@ const AdminBrandEdit = ({brandData}) => {
                     <Form.Item>
                         <Button type="primary" htmlType="submit">저장</Button>
                         <Button onClick={() => {history('/admin/brand')}}style={{ marginLeft: '8px' }}>취소</Button>
+                        <Button danger onClick={() => handleBrandDelete()} style={{ marginLeft: '8px' }}>삭제</Button>
                     </Form.Item>
                 </Form>
             </Card>
+            <Modal
+                title="상품 삭제"
+                visible={isModalVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                okText="예"
+                cancelText="취소"
+            >
+                    <p>정말 삭제하시겠습니까?</p>
+            </Modal>
         </>
     );
 };
