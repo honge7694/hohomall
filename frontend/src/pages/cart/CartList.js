@@ -92,7 +92,7 @@ const CartList = () => {
 
   const handleMoveProductPage = (productId) => {
     console.log('MoveProductPage : ', productId);
-    history(`/product/${productId}`);
+    history(`/product/detail/${productId}`);
   }
 
   const totalPrice = cartList

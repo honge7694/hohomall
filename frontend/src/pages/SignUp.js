@@ -213,7 +213,7 @@ const SignUp = () => {
               title={<h5>Register With</h5>}
               bordered="false"
             >
-              <div className="sign-up-gateways">
+              {/* <div className="sign-up-gateways">
                 <Button type="false">
                   <img src={logo1} alt="logo 1" />
                 </Button>
@@ -223,8 +223,8 @@ const SignUp = () => {
                 <Button type="false">
                   <img src={logo3} alt="logo 3" />
                 </Button>
-              </div>
-              <p className="text-center my-25 font-semibold text-muted">Or</p>
+              </div> */}
+              {/* <p className="text-center my-25 font-semibold text-muted">Or</p> */}
               <Form
                 name="basic"
                 initialValues={{ remember: true }}

@@ -149,7 +149,7 @@ const SignIn =  () => {
       // isAdmin 값에 따라 다른 페이지로 라우팅
       if (response.data.user.is_admin) {
         // 어드민 유저라면 어드민 페이지로 이동
-        history("/admin");
+        history("/admin/order");
       } else {
         // 일반 유저라면 메인 페이지로 이동
         history("/");

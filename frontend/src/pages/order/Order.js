@@ -43,6 +43,7 @@ const Order = () => {
   const [contact, setContact] = useState('');
   const [detailAddress, setDetailAddress] = useState('');
   const [memo, setMemo] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false); // 모달
 
   useEffect(() => {
     // 유저 정보
@@ -138,7 +139,16 @@ const Order = () => {
   };
 
   const handleOrderClick = async () => {
+    setIsModalVisible(true);
+  };
+  
+  const handleOk = async () => {
     const couponId = selectedCoupon?.id ?? null;
+    if (!recipient || !contact || !selectedPostalCode || !selectedAddress || !detailAddress) {
+      alert('모든 필수 정보를 입력하세요.');
+      setIsModalVisible(false);
+      return;
+    }
     const orderData = {
       'coupon_user_id': couponId,
       'discount_price': discountedPrice,
@@ -197,7 +207,10 @@ const Order = () => {
       console.log('구매 기록 저장 실패 : ', error)
     }
   };
-  
+
+  const handleCancel = () => {
+      setIsModalVisible(false);
+  };
 
   return (
     <div>
@@ -502,6 +515,17 @@ const Order = () => {
         style={{ width: '500px' }}
       >
         <DaumPostcode onComplete={handleComplete} />
+      </Modal>
+
+      <Modal
+          title="주문"
+          visible={isModalVisible}
+          onOk={handleOk}
+          onCancel={handleCancel}
+          okText="예"
+          cancelText="취소"
+      >
+        <p>주문을 완료하시겠습니까?</p>
       </Modal>
     </div>
     

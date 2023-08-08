@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Row, Col, Typography, Divider, notification } from 'antd';
+import { Button, Row, Col, Typography, Divider, notification, Modal } from 'antd';
 import { SmileOutlined } from '@ant-design/icons';
 import { axiosInstance } from 'api';
 import { useAppContext } from 'store';
@@ -17,6 +17,7 @@ const OrderHistoryDetail = () => {
     
     const [orderDetail, setOrderDetail] = useState();
     const [api, setApi] = notification.useNotification();
+    const [isModalVisible, setIsModalVisible] = useState(false); // 모달
 
     // OrderHistoryDetail Data 가져오기
     useEffect(() => {
@@ -45,6 +46,16 @@ const OrderHistoryDetail = () => {
 
     // 주문 취소
     const handleCancelOrder = () => {
+        setIsModalVisible(true);
+    };
+    
+    // 이전으로 버튼
+    const handleGoHome = () => {
+        // 홈으로 이동하는 로직을 구현
+        history('/order/list');
+    };
+
+    const handleOk = () => {
         const fetchOrderDetailDelete = async () => {
             try {
                 const response = await axiosInstance.delete(`/order/detail/${id}/`, { headers });
@@ -63,12 +74,9 @@ const OrderHistoryDetail = () => {
         fetchOrderDetailDelete();
     };
     
-    // 이전으로 버튼
-    const handleGoHome = () => {
-        // 홈으로 이동하는 로직을 구현
-        history('/order/list');
+    const handleCancel = () => {
+        setIsModalVisible(false);
     };
-
 
     return (
         <>
@@ -244,6 +252,16 @@ const OrderHistoryDetail = () => {
                     <Button onClick={handleGoHome}>이전으로</Button>
                 </div>
             </div>
+            <Modal
+                title="주문취소"
+                visible={isModalVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                okText="예"
+                cancelText="취소"
+            >
+                <p>주문을 취소하시겠습니까?</p>
+            </Modal>
         </>
     )
 }
