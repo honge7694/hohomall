@@ -4,6 +4,6 @@ from .views import CouponListCreateAPIView, CouponUserListCreateAPIView, CouponR
 
 urlpatterns = [
     path('', CouponListCreateAPIView.as_view(), name='coupon'),
-    path('detail/<int:pk>/', CouponRetrieveUpdateDestroyAPIView.as_view(), name='coupon-detail'),
+    path('<int:pk>/', CouponRetrieveUpdateDestroyAPIView.as_view(), name='coupon-detail'),
     path('user/', CouponUserListCreateAPIView.as_view(), name='coupon_user'),
 ]

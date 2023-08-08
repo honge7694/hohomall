@@ -203,6 +203,16 @@ class OrderSerializer(serializers.ModelSerializer):
                     order_status.save()
         return instance
     
+    # def delete(self, instance):
+    #     # 쿠폰의 is_used를 미사용으로 변경
+    #     coupon_user = instance.coupon_user_id
+    #     print(coupon_user)
+    #     if coupon_user:
+    #         if coupon_user.is_used == CouponStatus.USED.value:
+    #             coupon_user.is_used = CouponStatus.NOT_USED.value
+    #             coupon_user.save()
+    #     instance.delete()
+
 
 class OrderStatusSerializer(serializers.ModelSerializer):
     class Meta:

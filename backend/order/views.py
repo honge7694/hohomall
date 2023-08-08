@@ -1,8 +1,11 @@
+from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
+from rest_framework.response import Response
 from .models import Cart, Order, Purchase
 from .serializers import CartSerializer, OrderSerializer, PurchaseSerializer
 from django.db.models import F
 from product.models import Product
+from coupon.models import CouponStatus
 
 
 class CartListCreateAPIView(ListCreateAPIView):
@@ -68,6 +71,19 @@ class OrderRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     """
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        # 쿠폰의 is_used를 미사용으로 변경
+        coupon_user = instance.coupon_user_id
+        if coupon_user and coupon_user.is_used == CouponStatus.USED.value:
+            coupon_user.is_used = CouponStatus.NOT_USED.value
+            coupon_user.save()
+
+        # 주문 삭제
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class PurchaseListCreateAPIView(ListCreateAPIView):
