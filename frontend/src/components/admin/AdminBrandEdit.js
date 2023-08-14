@@ -55,7 +55,7 @@ const AdminBrandEdit = ({brandData}) => {
         formData.append('name', name);
         formData.append('description', description);
         formData.append('links', 0)
-        brandImage.forEach((file) => {
+        newImages.forEach((file) => {
             formData.append('logo_img', file.originFileObj)
         })
 
@@ -114,7 +114,7 @@ const AdminBrandEdit = ({brandData}) => {
                         <Input.TextArea rows={4} placeholder='브랜드를 소개해보세요.' />
                     </Form.Item>
                     
-                    <Form.Item label="브랜드 이미지" name='logo_img' rules={[{ required: true, message: '브랜드 이미지를 등록하세요.' }]}>
+                    <Form.Item label="브랜드 이미지" name='logo_img'>
                         <Upload
                             multiple
                             fileList={brandImage}

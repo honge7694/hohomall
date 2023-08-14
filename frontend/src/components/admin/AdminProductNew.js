@@ -202,7 +202,7 @@ const AdminProductNew = ({brandList}) => {
                                         <Input />
                                     </Form.Item>
 
-                                    <Button onClick={() => remove(field.name)} style={{marginBottom: '10px'}}>Remove Option</Button>
+                                    <Button danger onClick={() => remove(field.name)} style={{marginBottom: '10px'}}>Remove Option</Button>
                                 </div>
                             ))}
 

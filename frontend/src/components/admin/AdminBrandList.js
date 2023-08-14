@@ -67,16 +67,16 @@ const AdminBrandList = ({brandList}) => {
                             <a href="#" onClick={ (e) => handlerOnClick(e, brand.id) }>
                                 <Card
                                     hoverable
-                                    cover={<img alt={brand.name} src={brand.logo_img ? brand.logo_img : null} style={{ height: '280px', objectFit: 'cover' }} />}
+                                    cover={<img alt={brand.name} src={brand.logo_img ? brand.logo_img : null} style={{ height: '280px', objectFit: 'contain' }} />}
                                     style={{ display: 'grid', gridTemplateRows: 'auto 1fr auto' }}
                                 >
-                                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-                                        <Title level={5}>{brand.name}</Title>
-                                        
+                                    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '10px', paddingBottom: '10px'}}>
+                                        <Text style={{fontSize: '16px', fontWeight: 'bold'}}>{brand.name}</Text>
+                                        <Text type="secondary">{new Date(brand.created_at).toLocaleDateString()}</Text> 
                                     </div>
                                     <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
                                         <Text type="secondary">{brand.description}</Text> 
-                                        <Text type="secondary">{new Date(brand.created_at).toLocaleDateString()}</Text> 
+                                        {/* <Text type="secondary">{new Date(brand.created_at).toLocaleDateString()}</Text>  */}
                                     </div>
                                 </Card>
                             </a>

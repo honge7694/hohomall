@@ -144,7 +144,7 @@ const Order = () => {
   
   const handleOk = async () => {
     const couponId = selectedCoupon?.id ?? null;
-    if (!recipient || !contact || !selectedPostalCode || !selectedAddress || !detailAddress) {
+    if (!recipient || !contact || !selectedPostalCode || !selectedAddress || !detailAddress || !memo) {
       alert('모든 필수 정보를 입력하세요.');
       setIsModalVisible(false);
       return;
