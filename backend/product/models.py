@@ -59,7 +59,7 @@ class ProductOption(models.Model):
         Product,
         on_delete=models.CASCADE
     )
-    option_size = models.IntegerField()
+    option_size = models.CharField(max_length=20)
     option_color = models.CharField(max_length=50)
     is_active = models.CharField(
         max_length=20,
