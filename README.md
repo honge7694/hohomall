@@ -41,6 +41,7 @@ REACT + DRF로 개발한 의류 쇼핑몰입니다.
 </br>
 
 ###  DB
+![Untitled](https://github.com/honge7694/hohomall/assets/76715487/a12468f8-dc60-4d15-97ef-d68f7385eda1)
 
 
 </br>
