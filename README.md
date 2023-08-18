@@ -9,9 +9,14 @@ REACT + DRF로 개발한 의류 쇼핑몰입니다.
 ## 🌠 Service View
 
 + 서비스 웹사이트
+ 
+ ![User](https://github.com/honge7694/hohomall/assets/76715487/e2057a72-822e-4645-a946-c67de24eb95d)
 
 
 + 관리자 웹사이트
+
+ ![Admin](https://github.com/honge7694/hohomall/assets/76715487/c2c31803-575b-44c9-ac16-e5361c3b52da)
+
   
 
 
@@ -19,6 +24,8 @@ REACT + DRF로 개발한 의류 쇼핑몰입니다.
 
 
 ## IA
+
+![io drawio (1)](https://github.com/honge7694/hohomall/assets/76715487/3ebeabb7-e167-4bbc-9f6d-8766467a3a83)
 
 
 
@@ -247,16 +254,23 @@ REACT + DRF로 개발한 의류 쇼핑몰입니다.
 
 ## 💻 Development
 
-
 ### 로그인/회원가입
++ email 인증을 통해 회원가입 가능합니다.
+ + email 인증을 하지않으면 로그인 불가합니다.
+ + admin 계정을 이용하여 인증으로 바꾸기 가능합니다.
 
 </br>
 
 ### 검색
++ 상품 이름, 타입, 스타일, 브랜드 등을 검색을 통해 찾아볼 수 있습니다.
++ 
 
 </br>
 
 ### 상품
++ 찜을 하여 상품을 장바구니에 담아 구매를 할 수 있습니다.
++ 
+
 
 </br>
 
