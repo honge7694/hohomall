@@ -1,6 +1,6 @@
 ## hohomall 쇼핑몰 사이트
 REACT + DRF로 개발한 의류 쇼핑몰입니다.
- 
+
  #### 바로가기 👉 http://www.hohomallshop.com
 
 </br>
@@ -9,8 +9,10 @@ REACT + DRF로 개발한 의류 쇼핑몰입니다.
 ## 🌠 Service View
 
 + 서비스 웹사이트
+
+![ezgif com-video-to-gif](https://github.com/honge7694/hohomall/assets/76715487/518af87b-b0b0-407c-ab52-698439485dd6)
+
  
- ![User](https://github.com/honge7694/hohomall/assets/76715487/e2057a72-822e-4645-a946-c67de24eb95d)
 
 
 + 관리자 웹사이트
