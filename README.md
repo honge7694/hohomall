@@ -315,7 +315,7 @@ PW : asdf1234
 ### 찜 & 주문 
 ![image](https://github.com/honge7694/hohomall/assets/76715487/455edf06-acc4-4241-94fe-5e8ca975a2a8)
 + front-end에서 선택한 상품과 상품의 옵션, 가격을 받아 데이터를 저장합니다.
-+ 데이터가 이미 존재할 시 상품의 개수를 1개 더 추가합니다.
++ 데이터가 이미 존재할 시 `F` 객체를 사용하여 상품의 개수 필드를 수정합니다.
 
 ![image](https://github.com/honge7694/hohomall/assets/76715487/04edaec1-a5eb-438b-8a4c-a59c135b5bf1)
 
